@@ -81,6 +81,8 @@ namespace Battleship2pMP
         {
             ref GameBoardTile[,] TargetGameBoard = ref IsClient ? ref ClientGameBoard : ref HostGameBoard;
 
+            bool ShipDestroyed = true;
+
             List<Point> NewHits = new List<Point>();
             List<Point> NewMisses = new List<Point>();
 
@@ -91,6 +93,19 @@ namespace Battleship2pMP
                 if (targetTile.TileType == TileType.Ship)
                 {
                     targetTile.TileType = TileType.Hit;
+
+                    ref Networking.NetworkSprite HitShipSprite = ref IsClient ? ref ClientSpriteTable[targetTile.SpriteID] : ref HostSpriteTable[targetTile.SpriteID];
+
+                    foreach(Point Coveredtile in HitShipSprite.CoveredTiles)
+                    {
+                        if(TargetGameBoard[Coveredtile.X,Coveredtile.Y].TileType != TileType.Hit)
+                        {
+                            ShipDestroyed = false;
+                            break;
+                        }
+                    }
+
+                    HitShipSprite.Enabled = ShipDestroyed;
 
                 }
                 else

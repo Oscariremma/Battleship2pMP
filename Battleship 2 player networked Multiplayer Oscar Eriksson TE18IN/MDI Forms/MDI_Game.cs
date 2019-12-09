@@ -499,21 +499,21 @@ namespace Battleship2pMP.MDI_Forms
 
                 Location = position;
 
-                List<Point> CoverdTileCordsList = new List<Point>();
+                List<Point> CoveredTileCordsList = new List<Point>();
 
                 foreach(GameLogic.GameBoardTile tile in TilesCovered)
                 {
-                    CoverdTileCordsList.Add(new Point(tile.Rectangle.X / 61 - 1, tile.Rectangle.Y / 61));
+                    CoveredTileCordsList.Add(new Point(tile.Rectangle.X / 61 - 1, tile.Rectangle.Y / 61));
                 }
 
-                CoveredTileCords = CoverdTileCordsList.ToArray();
+                CoveredTileCords = CoveredTileCordsList.ToArray();
                 ShipOrientation = Orientation;
                 Enabled = SpriteEnabled;
 
 
             }
 
-            public Sprite(Ships.ShipEnum ship, ShipOrientation Orientation, Point position, Point[] CoverdTileCords, bool SpriteEnabled = true)
+            public Sprite(Ships.ShipEnum ship, ShipOrientation Orientation, Point position, Point[] CoveredTilesCords, bool SpriteEnabled = true)
             {
                 ShipType = Ships.Ship.ShipFromShipEnum(ship);
 
@@ -537,7 +537,7 @@ namespace Battleship2pMP.MDI_Forms
                 }
 
                 Location = position;
-                CoveredTileCords = CoverdTileCords;
+                CoveredTileCords = CoveredTilesCords;
                 ShipOrientation = Orientation;
                 Enabled = SpriteEnabled;
 
