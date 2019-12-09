@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29215.179
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Battleship2pMP", "Battleship 2 player networked Multiplayer Oscar Eriksson TE18IN\Battleship2pMP.csproj", "{0C68D4D6-8BF8-4D11-A7F5-0E3F04134004}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0C68D4D6-8BF8-4D11-A7F5-0E3F04134004}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C68D4D6-8BF8-4D11-A7F5-0E3F04134004}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C68D4D6-8BF8-4D11-A7F5-0E3F04134004}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C68D4D6-8BF8-4D11-A7F5-0E3F04134004}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1609BDD8-AA31-430C-B834-07262B427204}
+	EndGlobalSection
+EndGlobal
