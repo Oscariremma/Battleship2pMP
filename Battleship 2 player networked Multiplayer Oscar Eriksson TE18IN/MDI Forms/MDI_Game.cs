@@ -307,9 +307,9 @@ namespace Battleship2pMP.MDI_Forms
 
                         if (localGameBoardTiles[point.X, point.Y].TileType == GameLogic.TileType.Ship)
                         {
-                            foreach (GameLogic.GameBoardTile coveredtile in localSpriteTable[localGameBoardTiles[point.X, point.Y].SpriteID].CoveredTiles)
+                            foreach (Point coveredtile in localSpriteTable[localGameBoardTiles[point.X, point.Y].SpriteID].CoveredTileCords)
                             {
-                                localGameBoardTiles[coveredtile.Rectangle.X / 61 - 1, coveredtile.Rectangle.Y / 61].TileType = GameLogic.TileType.Water;
+                                localGameBoardTiles[coveredtile.X, coveredtile.Y].TileType = GameLogic.TileType.Water;
                             }
 
                             //Update Radio buttons
@@ -322,9 +322,9 @@ namespace Battleship2pMP.MDI_Forms
                             //Adjust sprite IDs to match the new sprite table
                             foreach (Sprite sprite in localSpriteTable)
                             {
-                                foreach (GameLogic.GameBoardTile spriteTile in sprite.CoveredTiles)
+                                foreach (Point spriteTile in sprite.CoveredTileCords)
                                 {
-                                    ref GameLogic.GameBoardTile ShipGameBoardTile = ref localGameBoardTiles[spriteTile.Rectangle.X / 61 - 1, spriteTile.Rectangle.Y / 61];
+                                    ref GameLogic.GameBoardTile ShipGameBoardTile = ref localGameBoardTiles[spriteTile.X, spriteTile.Y];
 
                                     if (localGameBoardTiles[point.X, point.Y].SpriteID < ShipGameBoardTile.SpriteID)
                                     {
@@ -470,7 +470,7 @@ namespace Battleship2pMP.MDI_Forms
             public Ships.Ship ShipType;
             public Image SpriteImage;
             public Point Location;
-            public GameLogic.GameBoardTile[] CoveredTiles;
+            public Point[] CoveredTileCords;
             public ShipOrientation ShipOrientation;
             public bool Enabled;
 
@@ -498,7 +498,46 @@ namespace Battleship2pMP.MDI_Forms
                 }
 
                 Location = position;
-                CoveredTiles = TilesCovered;
+
+                List<Point> CoverdTileCordsList = new List<Point>();
+
+                foreach(GameLogic.GameBoardTile tile in TilesCovered)
+                {
+                    CoverdTileCordsList.Add(new Point(tile.Rectangle.X / 61 - 1, tile.Rectangle.Y / 61));
+                }
+
+                CoveredTileCords = CoverdTileCordsList.ToArray();
+                ShipOrientation = Orientation;
+                Enabled = SpriteEnabled;
+
+
+            }
+
+            public Sprite(Ships.ShipEnum ship, ShipOrientation Orientation, Point position, Point[] CoverdTileCords, bool SpriteEnabled = true)
+            {
+                ShipType = Ships.Ship.ShipFromShipEnum(ship);
+
+                SpriteImage = (Image)ShipType.ShipSprite.Clone();
+                switch (Orientation)
+                {
+                    case ShipOrientation.Down:
+                        break;
+
+                    case ShipOrientation.Left:
+                        SpriteImage.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                        break;
+
+                    case ShipOrientation.Right:
+                        SpriteImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                        break;
+
+                    case ShipOrientation.Up:
+                        SpriteImage.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                        break;
+                }
+
+                Location = position;
+                CoveredTileCords = CoverdTileCords;
                 ShipOrientation = Orientation;
                 Enabled = SpriteEnabled;
 

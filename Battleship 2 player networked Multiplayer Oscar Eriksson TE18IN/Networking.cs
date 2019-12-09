@@ -25,7 +25,7 @@ namespace Battleship2pMP
 
             public Ships.ShipEnum ShipType;
             public System.Drawing.Point Location;
-            public GameLogic.GameBoardTile[] CoveredTiles;
+            public System.Drawing.Point[] CoveredTiles;
             public ShipOrientation ShipOrientation;
             public bool Enabled;
 
@@ -33,7 +33,7 @@ namespace Battleship2pMP
             {
                 ShipType = sprite.ShipType.ShipEnum;
                 Location = sprite.Location;
-                CoveredTiles = sprite.CoveredTiles;
+                CoveredTiles = sprite.CoveredTileCords;
                 ShipOrientation = sprite.ShipOrientation;
                 Enabled = sprite.Enabled;
             }
@@ -42,7 +42,7 @@ namespace Battleship2pMP
             {
                 ShipType = sprite.ShipType.ShipEnum;
                 Location = sprite.Location;
-                CoveredTiles = sprite.CoveredTiles;
+                CoveredTiles = sprite.CoveredTileCords;
                 ShipOrientation = sprite.ShipOrientation;
                 Enabled = EnabelOverride;
             }
