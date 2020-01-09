@@ -52,19 +52,11 @@ namespace Battleship2pMP
         public void BothPlayersDonePlacingShips()
         {
 
-            MDI_Game.staticGame.remoteGameBoardTiles = ClientGameBoard;
-            List<MDI_Game.Sprite> clientSpriteTable = new List<MDI_Game.Sprite>();
-            foreach (Networking.NetworkSprite networkSprite in ClientSpriteTable)
-            {
-                clientSpriteTable.Add(new MDI_Game.Sprite(networkSprite.ShipType, networkSprite.ShipOrientation, networkSprite.Location, networkSprite.CoveredTiles, networkSprite.Enabled));
-            }
-            MDI_Game.staticGame.remoteSpriteTable = clientSpriteTable;
-
-            Networking.NetworkServer.StaticClientInterface.UpdateHostGameBoard(GetBinaryArray(HostGameBoard, true), GetBinaryArray(HostSpriteTable, true));
+            PushGameBoardUpdates();
 
             //Randomly select who starts
             Random random = new Random();
-            if(random.Next(2) == 0)
+            if(random.Next(100) < 50)
             {
                 //Host starts
                 MDI_Game.staticGame.Invoke(MDI_Game.staticGame.DSwitchGameBoardView, new object[] { true });
@@ -81,13 +73,11 @@ namespace Battleship2pMP
         {
             ref GameBoardTile[,] TargetGameBoard = ref IsClient ? ref ClientGameBoard : ref HostGameBoard;
 
-            bool ShipDestroyed = true;
-
-            List<Point> NewHits = new List<Point>();
-            List<Point> NewMisses = new List<Point>();
 
             foreach(Point target in Targets)
             {
+                bool ShipDestroyed = true;
+
                 ref GameBoardTile targetTile = ref TargetGameBoard[target.X, target.Y];
 
                 if (targetTile.TileType == TileType.Ship)
@@ -105,18 +95,56 @@ namespace Battleship2pMP
                         }
                     }
 
-                    HitShipSprite.Enabled = ShipDestroyed;
+
+
+                    if (ShipDestroyed)
+                    {
+                        HitShipSprite.Enabled = true;
+                        HitShipSprite.ShipDestroyed = true;
+                    }
+
 
                 }
                 else
                 {
                     targetTile.TileType = TileType.Miss;
-                    NewMisses.Add(target);
                 }
+
+
             }
+
+            PushGameBoardUpdates();
 
         }
 
+        void PushGameBoardUpdates()
+        {
+            MDI_Game.staticGame.remoteGameBoardTiles = ClientGameBoard;
+            List<MDI_Game.Sprite> clientSpriteTable = new List<MDI_Game.Sprite>();
+            foreach (Networking.NetworkSprite networkSprite in ClientSpriteTable)
+            {
+                clientSpriteTable.Add(new MDI_Game.Sprite(networkSprite.ShipType, networkSprite.ShipOrientation, networkSprite.Location, networkSprite.CoveredTiles, networkSprite.Enabled, networkSprite.ShipDestroyed));
+            }
+            MDI_Game.staticGame.remoteSpriteTable = clientSpriteTable;
+
+            List<MDI_Game.Sprite> hostSpriteTable = new List<MDI_Game.Sprite>();
+            MDI_Game.staticGame.localGameBoardTiles = HostGameBoard;
+            foreach (Networking.NetworkSprite networkSprite in HostSpriteTable)
+            {
+                hostSpriteTable.Add(new MDI_Game.Sprite(networkSprite.ShipType, networkSprite.ShipOrientation, networkSprite.Location, networkSprite.CoveredTiles, networkSprite.Enabled, networkSprite.ShipDestroyed));
+            }
+            MDI_Game.staticGame.localSpriteTable = hostSpriteTable;
+
+            Networking.NetworkServer.StaticClientInterface.UpdateHostGameBoard(GetBinaryArray(HostGameBoard, true), GetBinaryArray(HostSpriteTable, true));
+            Networking.NetworkServer.StaticClientInterface.UpdateClientGameBoard(GetBinaryArray(ClientGameBoard, true), GetBinaryArray(ClientSpriteTable, true));
+            ReDrawGameBoards();
+        }
+
+        void ReDrawGameBoards()
+        {
+            MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DInvalidate);
+            Networking.NetworkServer.StaticClientInterface.InvalidateGameBoard();
+        }
 
 
 

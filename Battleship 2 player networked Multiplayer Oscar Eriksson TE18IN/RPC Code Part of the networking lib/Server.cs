@@ -89,7 +89,7 @@ namespace RemoteProcedureCalls
                 InterfaceType = interfaceType;
                 this.Type = Type;
                 this.InstanceId = instanceId;
-                SubscribedClients = new Dictionary<ShortGuid, RPCClientSubscription>();                
+                SubscribedClients = new Dictionary<ShortGuid, RPCClientSubscription>();
             }
 
             public void AddClientSubscription<T, I>(Connection connection) where T : I

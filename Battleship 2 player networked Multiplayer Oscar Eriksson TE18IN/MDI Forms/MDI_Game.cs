@@ -21,12 +21,14 @@ namespace Battleship2pMP.MDI_Forms
 
         public delegate void DelUpdateGameBoard(GameLogic.GameBoardTile[,] gameBoard);
         public delegate void DelSwitchGameBoardView(bool ShowOpponentsGameBoard);
+        public delegate void DelInvalidate();
 
         public DelUpdateGameBoard DUpdateGameBoard;
         /// <summary>
         /// Switches the players view to the local game board if false and the opponents if true
         /// </summary>
         public DelSwitchGameBoardView DSwitchGameBoardView;
+        public DelInvalidate DInvalidate;
 
         private ShipOrientation orientation = ShipOrientation.Down;
 
@@ -35,6 +37,7 @@ namespace Battleship2pMP.MDI_Forms
 
         private bool drawLocalGameBoard = true;
         private bool showReticle = false;
+        private bool drawTargets = false;
 
         private List<Point> Targets;
         private bool firstTurn = true;
@@ -79,6 +82,7 @@ namespace Battleship2pMP.MDI_Forms
             }
             DUpdateGameBoard = new DelUpdateGameBoard(UpdateGameBoard);
             DSwitchGameBoardView = new DelSwitchGameBoardView(SwitchGameBoard);
+            DInvalidate = new DelInvalidate(pnlGameBoard.Invalidate);
             staticGame = this;
             Invalidate();
 
@@ -95,6 +99,7 @@ namespace Battleship2pMP.MDI_Forms
         {
             Point pointPnl = pnlGameBoard.PointToClient(Cursor.Position);
             Point point = new Point(pointPnl.X / 61 - 1, pointPnl.Y / 61);
+
 
             if (point.X >= 0 && point.X <= 8 && point.Y >= 0 && point.Y <= 8 && !DeleteMode)
             {
@@ -169,6 +174,7 @@ namespace Battleship2pMP.MDI_Forms
             ref GameLogic.GameBoardTile[,] gameBoardDrawRef = ref drawLocalGameBoard ? ref localGameBoardTiles : ref remoteGameBoardTiles;
             ref List<Sprite> spriteTableDrawRef = ref drawLocalGameBoard ? ref localSpriteTable : ref remoteSpriteTable;
 
+            List<Rectangle> DestroyedShipsRects = new List<Rectangle>();
 
             e.Graphics.FillRectangles(Brushes.DarkTurquoise, coordinateTiles);
             foreach (GameLogic.GameBoardTile tile in gameBoardDrawRef)
@@ -181,6 +187,10 @@ namespace Battleship2pMP.MDI_Forms
 
                     case GameLogic.TileType.Hit:
                         e.Graphics.FillRectangle(Brushes.Red, tile.Rectangle);
+                        if (spriteTableDrawRef[tile.SpriteID].ShipDestroyed && spriteTableDrawRef[tile.SpriteID].Enabled)
+                        {
+                            DestroyedShipsRects.Add(tile.Rectangle);
+                        }
                         break;
 
                     case GameLogic.TileType.Miss:
@@ -202,12 +212,18 @@ namespace Battleship2pMP.MDI_Forms
                 }
             }
 
-            if (showReticle)
+            if (drawTargets)
             {
                 foreach (Point TargetPoint in Targets)
                 {
                     e.Graphics.DrawImage(Program.Red_Reticle, TargetPoint);
                 }
+            }
+
+            foreach(Rectangle ShipRect in DestroyedShipsRects)
+            {
+                e.Graphics.DrawLine(BlackPen, ShipRect.X, ShipRect.Y, ShipRect.X + 61, ShipRect.Y + 61);
+                e.Graphics.DrawLine(BlackPen, ShipRect.X + 61, ShipRect.Y, ShipRect.X, ShipRect.Y + 61);
             }
 
         }
@@ -338,7 +354,7 @@ namespace Battleship2pMP.MDI_Forms
                 else
                 {
 
-                    Point Reticle_Cord = new Point(pbx_Reticle.Location.X / 61, (pbx_Reticle.Location.Y / 61) - 1);
+                    Point Reticle_Cord = new Point(((pbx_Reticle.Location.X +10) / 61) -1 , (pbx_Reticle.Location.Y +10) / 61);
 
                     if (remoteGameBoardTiles[Reticle_Cord.X,Reticle_Cord.Y].TileType == GameLogic.TileType.Ship || remoteGameBoardTiles[Reticle_Cord.X, Reticle_Cord.Y].TileType == GameLogic.TileType.Water)
                     {
@@ -353,7 +369,7 @@ namespace Battleship2pMP.MDI_Forms
 
                                 foreach (Point currentTaget in Targets)
                                 {
-                                    CordTargets.Add(new Point(currentTaget.X / 61, (currentTaget.Y / 61) - 1));
+                                    CordTargets.Add(new Point(((currentTaget.X + 10) / 61) - 1, (currentTaget.Y + 10) / 61));
                                 }
 
                                 showReticle = false;
@@ -365,7 +381,8 @@ namespace Battleship2pMP.MDI_Forms
                                 }
                                 else
                                 {
-                                    Networking.NetworkClient.RemoteServerInterface.FireShots(CordTargets.ToArray());
+                                    MessageBox.Show(GetBinaryArray(CordTargets.ToArray(), true).Length.ToString());
+                                    Networking.NetworkClient.RemoteServerInterface.FireShots(GetBinaryArray(CordTargets.ToArray(), false));
                                 }
 
                             }
@@ -383,7 +400,7 @@ namespace Battleship2pMP.MDI_Forms
                             }
                             else
                             {
-                                Networking.NetworkClient.RemoteServerInterface.FireShots(new Point[] { Reticle_Cord });
+                                Networking.NetworkClient.RemoteServerInterface.FireShots(GetBinaryArray(new Point[] { Reticle_Cord }, true));
                             }
                         }
                     }
@@ -437,7 +454,6 @@ namespace Battleship2pMP.MDI_Forms
 
         private void ShipRotationChanged()
         {
-            //Image.Dispose();
             if (pbx_Selected_Ship.Image != null)
             {
                 pbx_Selected_Ship.Image.Dispose();
@@ -473,8 +489,9 @@ namespace Battleship2pMP.MDI_Forms
             public Point[] CoveredTileCords;
             public ShipOrientation ShipOrientation;
             public bool Enabled;
+            public bool ShipDestroyed;
 
-            public Sprite(Ships.ShipEnum ship, ShipOrientation Orientation, Point position, GameLogic.GameBoardTile[] TilesCovered, bool SpriteEnabled = true)
+            public Sprite(Ships.ShipEnum ship, ShipOrientation Orientation, Point position, GameLogic.GameBoardTile[] TilesCovered, bool SpriteEnabled = true, bool Destroyed = false)
             {
                 ShipType = Ships.Ship.ShipFromShipEnum(ship);
 
@@ -509,11 +526,12 @@ namespace Battleship2pMP.MDI_Forms
                 CoveredTileCords = CoveredTileCordsList.ToArray();
                 ShipOrientation = Orientation;
                 Enabled = SpriteEnabled;
+                ShipDestroyed = Destroyed;
 
 
             }
 
-            public Sprite(Ships.ShipEnum ship, ShipOrientation Orientation, Point position, Point[] CoveredTilesCords, bool SpriteEnabled = true)
+            public Sprite(Ships.ShipEnum ship, ShipOrientation Orientation, Point position, Point[] CoveredTilesCords, bool SpriteEnabled = true, bool Destroyed = false)
             {
                 ShipType = Ships.Ship.ShipFromShipEnum(ship);
 
@@ -540,7 +558,7 @@ namespace Battleship2pMP.MDI_Forms
                 CoveredTileCords = CoveredTilesCords;
                 ShipOrientation = Orientation;
                 Enabled = SpriteEnabled;
-
+                ShipDestroyed = Destroyed;
 
             }
 
@@ -779,6 +797,7 @@ namespace Battleship2pMP.MDI_Forms
                 drawLocalGameBoard = false;
                 pnlGameBoard.Invalidate();
                 showReticle = true;
+                drawTargets = true;
                 pbx_Reticle.Visible = true;
                 Targets = new List<Point>();
             }
@@ -787,6 +806,7 @@ namespace Battleship2pMP.MDI_Forms
                 drawLocalGameBoard = true;
                 pnlGameBoard.Invalidate();
                 showReticle = false;
+                drawTargets = false;
                 pbx_Reticle.Visible = false;
             }
         }

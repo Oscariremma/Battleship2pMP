@@ -28,6 +28,7 @@ namespace Battleship2pMP
             public System.Drawing.Point[] CoveredTiles;
             public ShipOrientation ShipOrientation;
             public bool Enabled;
+            public bool ShipDestroyed;
 
             public NetworkSprite(MDI_Game.Sprite sprite)
             {
@@ -36,6 +37,7 @@ namespace Battleship2pMP
                 CoveredTiles = sprite.CoveredTileCords;
                 ShipOrientation = sprite.ShipOrientation;
                 Enabled = sprite.Enabled;
+                ShipDestroyed = sprite.ShipDestroyed;
             }
 
             public NetworkSprite(MDI_Game.Sprite sprite, bool EnabelOverride)
@@ -45,6 +47,7 @@ namespace Battleship2pMP
                 CoveredTiles = sprite.CoveredTileCords;
                 ShipOrientation = sprite.ShipOrientation;
                 Enabled = EnabelOverride;
+                ShipDestroyed = sprite.ShipDestroyed;
             }
 
         }
@@ -56,8 +59,7 @@ namespace Battleship2pMP
 
             void DonePlacingShips(byte[] ClientNetworkSprites, byte[] ClientGameBoard);
 
-            void FireShots(System.Drawing.Point[] Target);
-
+            void FireShots(byte[] TargetsBinaryArray);
 
             void LeaveGame();
         }
@@ -76,6 +78,12 @@ namespace Battleship2pMP
             /// Updates the map of the hosts game board including sprite table on the client instance
             /// </summary>
             void UpdateHostGameBoard(byte[] HostGameBoardBinaryArray, byte[] HostNetworkSpriteTableBinaryArray);
+            /// <summary>
+            /// Updates the map of the clients game board including sprite table on the client instance
+            /// </summary>
+            void UpdateClientGameBoard(byte[] HostGameBoardBinaryArray, byte[] HostNetworkSpriteTableBinaryArray);
+
+            void InvalidateGameBoard();
 
             void LeaveGame();
         }
@@ -115,9 +123,10 @@ namespace Battleship2pMP
                 }
             }
 
-            public void FireShots(System.Drawing.Point[] Targets)
+            public void FireShots(byte[] TargetsBinaryArray)
             {
-                NetworkServer.StaticgameLogic.FireShots(Targets, true);
+                Console.WriteLine(TargetsBinaryArray.Length);
+                NetworkServer.StaticgameLogic.FireShots(GetObjectFromBinaryArray<System.Drawing.Point[]>(TargetsBinaryArray), false);
             }
 
 
@@ -153,9 +162,28 @@ namespace Battleship2pMP
                 List<MDI_Game.Sprite> hostSpriteTable = new List<MDI_Game.Sprite>();
                 foreach(NetworkSprite networkSprite in GetObjectFromBinaryArray<NetworkSprite[]>(HostNetworkSpriteTableBinaryArray, true))
                 {
-                    hostSpriteTable.Add(new MDI_Game.Sprite(networkSprite.ShipType, networkSprite.ShipOrientation, networkSprite.Location, networkSprite.CoveredTiles, networkSprite.Enabled));
+                    hostSpriteTable.Add(new MDI_Game.Sprite(networkSprite.ShipType, networkSprite.ShipOrientation, networkSprite.Location, networkSprite.CoveredTiles, networkSprite.Enabled, networkSprite.ShipDestroyed));
                 }
                 MDI_Game.staticGame.remoteSpriteTable = hostSpriteTable;
+            }
+
+            /// <summary>
+            /// Updates the map of the clients game board including sprite table on the client instance
+            /// </summary>
+            public void UpdateClientGameBoard(byte[] ClientGameBoardBinaryArray, byte[] ClientNetworkSpriteTableBinaryArray)
+            {
+                MDI_Game.staticGame.localGameBoardTiles = GetObjectFromBinaryArray<GameLogic.GameBoardTile[,]>(ClientGameBoardBinaryArray, true);
+                List<MDI_Game.Sprite> clientSpriteTable = new List<MDI_Game.Sprite>();
+                foreach (NetworkSprite networkSprite in GetObjectFromBinaryArray<NetworkSprite[]>(ClientNetworkSpriteTableBinaryArray, true))
+                {
+                    clientSpriteTable.Add(new MDI_Game.Sprite(networkSprite.ShipType, networkSprite.ShipOrientation, networkSprite.Location, networkSprite.CoveredTiles, networkSprite.Enabled, networkSprite.ShipDestroyed));
+                }
+                MDI_Game.staticGame.localSpriteTable = clientSpriteTable;
+            }
+
+            public void InvalidateGameBoard()
+            {
+                MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DInvalidate);
             }
 
             public void LeaveGame()
