@@ -15,13 +15,14 @@ namespace Battleship2pMP.MDI_Forms
 {
     public partial class MDI_Game : Form
     {
-        private Pen BlackPen = new Pen(Color.Black, 3);
+        private readonly Pen BlackPen = new Pen(Color.Black, 3);
 
         public static MDI_Game staticGame;
 
         public delegate void DelUpdateGameBoard(GameLogic.GameBoardTile[,] gameBoard);
         public delegate void DelSwitchGameBoardView(bool ShowOpponentsGameBoard);
         public delegate void DelInvalidate();
+        public delegate void DelStopUpdateTimer();
 
         public DelUpdateGameBoard DUpdateGameBoard;
         /// <summary>
@@ -29,6 +30,7 @@ namespace Battleship2pMP.MDI_Forms
         /// </summary>
         public DelSwitchGameBoardView DSwitchGameBoardView;
         public DelInvalidate DInvalidate;
+        public DelStopUpdateTimer DStopUpdateTimer;
 
         private ShipOrientation orientation = ShipOrientation.Down;
 
@@ -60,6 +62,9 @@ namespace Battleship2pMP.MDI_Forms
         private byte DestroyersLeft = 2;
         private byte SubmarinesLeft = 3;
 
+        public Timer UpdateTimer;
+        EventHandler UpdateEventHandler;
+
         public MDI_Game()
         {
             InitializeComponent();
@@ -86,10 +91,13 @@ namespace Battleship2pMP.MDI_Forms
             staticGame = this;
             Invalidate();
 
-            Timer timer = new Timer();
-            timer.Interval = 10;
-            timer.Tick += new EventHandler(Update);
-            timer.Start();
+            UpdateTimer = new Timer();
+            UpdateTimer.Interval = 10;
+            UpdateEventHandler = new EventHandler(Update);
+            UpdateTimer.Tick += UpdateEventHandler;
+            UpdateTimer.Start();
+
+            DStopUpdateTimer = new DelStopUpdateTimer(StopUpdateTimer);
 
             pbx_Selected_Ship.Image = (Image)Ships.Ship.Carrier.ShipSprite.Clone();
             SelectedShipType = Ships.ShipEnum.Carrier;
@@ -97,70 +105,83 @@ namespace Battleship2pMP.MDI_Forms
 
         private void Update(object sender, EventArgs eventArgs)
         {
-            Point pointPnl = pnlGameBoard.PointToClient(Cursor.Position);
-            Point point = new Point(pointPnl.X / 61 - 1, pointPnl.Y / 61);
 
-
-            if (point.X >= 0 && point.X <= 8 && point.Y >= 0 && point.Y <= 8 && !DeleteMode)
+            try
             {
-                if (showReticle)
+                Point pointPnl = pnlGameBoard.PointToClient(Cursor.Position);
+                Point point = new Point(pointPnl.X / 61 - 1, pointPnl.Y / 61);
+
+
+                if (point.X >= 0 && point.X <= 8 && point.Y >= 0 && point.Y <= 8 && !DeleteMode)
                 {
-                    pbx_Reticle.Location = new Point((point.X + 1) * 61, (point.Y) * 61);
-                    pbx_Reticle.Invalidate();
-                }
-                else
-                {
-                    //Sets pbx_Selected_Ship location to the cursor with a offset depending on ship orientation. Prevents the ship from going of the game board.
-                    switch (orientation)
+                    if (showReticle)
                     {
-                        case ShipOrientation.Down:
-                            if (point.Y + Ships.Ship.ShipFromShipEnum(SelectedShipType).Length - 1 <= 8)
-                            {
-                                pbx_Selected_Ship.Location = new Point((((point.X + 1) * 61) - pbx_Selected_Ship.Width / 2) + 31, (point.Y * 61) + 10);
-                            }
-                            else
-                            {
-                                pbx_Selected_Ship.Location = new Point((((point.X + 1) * 61) - pbx_Selected_Ship.Width / 2) + 31, ((611 - (Ships.Ship.ShipFromShipEnum(SelectedShipType).Length + 1) * 61)) + 10);
-                            }
-                            break;
-
-                        case ShipOrientation.Left:
-                            if (point.X + Ships.Ship.ShipFromShipEnum(SelectedShipType).Length - 1 <= 8)
-                            {
-                                pbx_Selected_Ship.Location = new Point(((point.X + 1) * 61) + 10, (point.Y * 61) + 31 - pbx_Selected_Ship.Height / 2);
-                            }
-                            else
-                            {
-                                pbx_Selected_Ship.Location = new Point((611 - (Ships.Ship.ShipFromShipEnum(SelectedShipType).Length) * 61) + 10, (point.Y * 61) + 31 - pbx_Selected_Ship.Height / 2);
-                            }
-                            break;
-
-                        case ShipOrientation.Right:
-                            if (point.X - (Ships.Ship.ShipFromShipEnum(SelectedShipType).Length - 1) >= 0)
-                            {
-                                pbx_Selected_Ship.Location = new Point(((point.X + 1) * 61) + 52 - pbx_Selected_Ship.Width, (point.Y * 61) + 31 - pbx_Selected_Ship.Height / 2);
-                            }
-                            else
-                            {
-                                pbx_Selected_Ship.Location = new Point(((Ships.Ship.ShipFromShipEnum(SelectedShipType).Length) * 61) + 52 - pbx_Selected_Ship.Width, (point.Y * 61) + 31 - pbx_Selected_Ship.Height / 2);
-                            }
-                            break;
-
-                        case ShipOrientation.Up:
-                            if (point.Y - (Ships.Ship.ShipFromShipEnum(SelectedShipType).Length - 1) >= 0)
-                            {
-                                pbx_Selected_Ship.Location = new Point((((point.X + 1) * 61) - pbx_Selected_Ship.Width / 2) + 31, (point.Y * 61) - pbx_Selected_Ship.Height + 56);
-                            }
-                            else
-                            {
-                                pbx_Selected_Ship.Location = new Point((((point.X + 1) * 61) - pbx_Selected_Ship.Width / 2) + 31, ((Ships.Ship.ShipFromShipEnum(SelectedShipType).Length - 1) * 61) - pbx_Selected_Ship.Height + 56);
-                            }
-                            break;
+                        pbx_Reticle.Location = new Point((point.X + 1) * 61, (point.Y) * 61);
+                        pbx_Reticle.Invalidate();
                     }
+                    else
+                    {
+                        //Sets pbx_Selected_Ship location to the cursor with a offset depending on ship orientation. Prevents the ship from going of the game board.
+                        switch (orientation)
+                        {
+                            case ShipOrientation.Down:
+                                if (point.Y + Ships.Ship.ShipFromShipEnum(SelectedShipType).Length - 1 <= 8)
+                                {
+                                    pbx_Selected_Ship.Location = new Point((((point.X + 1) * 61) - pbx_Selected_Ship.Width / 2) + 31, (point.Y * 61) + 10);
+                                }
+                                else
+                                {
+                                    pbx_Selected_Ship.Location = new Point((((point.X + 1) * 61) - pbx_Selected_Ship.Width / 2) + 31, ((611 - (Ships.Ship.ShipFromShipEnum(SelectedShipType).Length + 1) * 61)) + 10);
+                                }
+                                break;
 
-                    pbx_Selected_Ship.Invalidate();
+                            case ShipOrientation.Left:
+                                if (point.X + Ships.Ship.ShipFromShipEnum(SelectedShipType).Length - 1 <= 8)
+                                {
+                                    pbx_Selected_Ship.Location = new Point(((point.X + 1) * 61) + 10, (point.Y * 61) + 31 - pbx_Selected_Ship.Height / 2);
+                                }
+                                else
+                                {
+                                    pbx_Selected_Ship.Location = new Point((611 - (Ships.Ship.ShipFromShipEnum(SelectedShipType).Length) * 61) + 10, (point.Y * 61) + 31 - pbx_Selected_Ship.Height / 2);
+                                }
+                                break;
+
+                            case ShipOrientation.Right:
+                                if (point.X - (Ships.Ship.ShipFromShipEnum(SelectedShipType).Length - 1) >= 0)
+                                {
+                                    pbx_Selected_Ship.Location = new Point(((point.X + 1) * 61) + 52 - pbx_Selected_Ship.Width, (point.Y * 61) + 31 - pbx_Selected_Ship.Height / 2);
+                                }
+                                else
+                                {
+                                    pbx_Selected_Ship.Location = new Point(((Ships.Ship.ShipFromShipEnum(SelectedShipType).Length) * 61) + 52 - pbx_Selected_Ship.Width, (point.Y * 61) + 31 - pbx_Selected_Ship.Height / 2);
+                                }
+                                break;
+
+                            case ShipOrientation.Up:
+                                if (point.Y - (Ships.Ship.ShipFromShipEnum(SelectedShipType).Length - 1) >= 0)
+                                {
+                                    pbx_Selected_Ship.Location = new Point((((point.X + 1) * 61) - pbx_Selected_Ship.Width / 2) + 31, (point.Y * 61) - pbx_Selected_Ship.Height + 56);
+                                }
+                                else
+                                {
+                                    pbx_Selected_Ship.Location = new Point((((point.X + 1) * 61) - pbx_Selected_Ship.Width / 2) + 31, ((Ships.Ship.ShipFromShipEnum(SelectedShipType).Length - 1) * 61) - pbx_Selected_Ship.Height + 56);
+                                }
+                                break;
+                        }
+
+                        pbx_Selected_Ship.Invalidate();
+                    }
                 }
             }
+            catch
+            {
+                if (!UpdateTimer.Enabled)
+                {
+                    UpdateTimer.Stop();
+                }
+            }
+
+
         }
 
         public void UpdateGameBoard(GameLogic.GameBoardTile[,] gameBoard)
@@ -809,6 +830,13 @@ namespace Battleship2pMP.MDI_Forms
                 drawTargets = false;
                 pbx_Reticle.Visible = false;
             }
+        }
+
+        void StopUpdateTimer()
+        {
+            UpdateTimer.Stop();
+            UpdateTimer.Tick -= UpdateEventHandler;
+            UpdateTimer.Dispose();
         }
 
 

@@ -14,6 +14,8 @@ namespace Battleship2pMP
     public partial class MDI_Container : Form
     {
         public static MDI_Container staticMdi_Container;
+        public delegate void DelLostConnection();
+        public DelLostConnection DLostConnection;
         MDI_MainMenu mdi_MainMenu;
         MDI_Game mdi_Game;
         MDI_Host mdi_Host;
@@ -29,6 +31,7 @@ namespace Battleship2pMP
             InitializeComponent();
             staticMdi_Container = this;
             DSwitchMDI = new DelSwitchMDI(SwitchMDI);
+            DLostConnection = new DelLostConnection(LostConnection);
         }
 
         private void MDI_Container_Load(object sender, EventArgs e)
@@ -59,7 +62,13 @@ namespace Battleship2pMP
                 case MDI_Form_Enum.MDI_Game:
                     if (ResetMDI)
                     {
-                        if (staticMdi_Container.mdi_Game != null) staticMdi_Container.mdi_Game.Dispose();
+                        if (staticMdi_Container.mdi_Game != null)
+                        {
+                            staticMdi_Container.mdi_Game.Invoke(staticMdi_Container.mdi_Game.DStopUpdateTimer);
+                            System.Threading.Thread.Sleep(30);
+                            staticMdi_Container.mdi_Game.Close();
+                            staticMdi_Container.mdi_Game.Dispose();
+                        }
                         staticMdi_Container.mdi_Game = new MDI_Game();
                     }
                     staticMdi_Container.CurrentMDI = staticMdi_Container.mdi_Game;
@@ -89,7 +98,33 @@ namespace Battleship2pMP
 
         }
 
+        public void LostConnection()
+        {
+
+            SwitchMDI(MDI_Form_Enum.MDI_MainMenu, true);
+            if (staticMdi_Container.mdi_Game != null)
+            {
+                staticMdi_Container.mdi_Game.Invoke(staticMdi_Container.mdi_Game.DStopUpdateTimer);
+                System.Threading.Thread.Sleep(30);
+                staticMdi_Container.mdi_Game.Close();
+                staticMdi_Container.mdi_Game.Dispose();
+            }
+            staticMdi_Container.mdi_Game = null;
+            RemoteProcedureCalls.Server.ShutdownAllRPC();
+            try
+            {
+                RemoteProcedureCalls.Server.serverConnection.CloseConnection(true);
+            }
+            catch
+            {
+
+            }
+            RemoteProcedureCalls.Server.serverConnection = null;
+            MessageBox.Show("The Game has lost the connection to your opponent. Returning to the Main Menu", "Network Communication Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
     }
+
 
     public enum MDI_Form_Enum
     {
