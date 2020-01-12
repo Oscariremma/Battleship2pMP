@@ -65,7 +65,6 @@ namespace Battleship2pMP
                         if (staticMdi_Container.mdi_Game != null)
                         {
                             staticMdi_Container.mdi_Game.Invoke(staticMdi_Container.mdi_Game.DStopUpdateTimer);
-                            System.Threading.Thread.Sleep(30);
                             staticMdi_Container.mdi_Game.Close();
                             staticMdi_Container.mdi_Game.Dispose();
                         }
@@ -105,7 +104,6 @@ namespace Battleship2pMP
             if (staticMdi_Container.mdi_Game != null)
             {
                 staticMdi_Container.mdi_Game.Invoke(staticMdi_Container.mdi_Game.DStopUpdateTimer);
-                System.Threading.Thread.Sleep(30);
                 staticMdi_Container.mdi_Game.Close();
                 staticMdi_Container.mdi_Game.Dispose();
             }

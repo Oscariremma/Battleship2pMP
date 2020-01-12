@@ -42,7 +42,7 @@ namespace Battleship2pMP
             pfc.AddMemoryFont(fontDataPointer, fontByteLength);
 
             //Load the main menu image in to ram
-            MainMenuImg = Image.FromHbitmap(Properties.Resources._1695px_BB61_USS_Iowa_BB61_broadside_USN.GetHbitmap());
+            MainMenuImg = Image.FromHbitmap(Properties.Resources.USS_Iowa_BB61_broadside_USN.GetHbitmap());
             //Load the game background image in to ram
             GameBackground = Image.FromHbitmap(Properties.Resources.Water_texture_1380389_Nevit.GetHbitmap());
 

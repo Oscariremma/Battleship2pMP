@@ -87,6 +87,49 @@ namespace LibOscar
                 graphics.DrawLine(pen, line.StartPoint, line.EndPoint);
             }
         }
+
+    }
+
+    public static class ExecutionTimer
+    {
+        static List<System.Timers.Timer> Timers = new List<System.Timers.Timer>();
+
+        public static void ExecuteAfterDelay(System.Timers.ElapsedEventHandler DelayedMethod, int Delay)
+        {
+            System.Timers.Timer Timer = new System.Timers.Timer();
+
+            Timer.Interval = Delay;
+            Timer.AutoReset = false;
+            Timer.Elapsed += DelayedMethod;
+            Timer.Elapsed += (sender, e) => RemoveElapsedTimer(sender, e, Timer);
+
+            Timers.Add(Timer);
+
+            Timer.Start();
+        }
+
+        public static void ExecuteAfterDelay(System.Timers.ElapsedEventHandler DelayedMethod, int Delay, System.ComponentModel.ISynchronizeInvoke SynchronizingObject)
+        {
+            System.Timers.Timer Timer = new System.Timers.Timer();
+
+            Timer.Interval = Delay;
+            Timer.AutoReset = false;
+            Timer.SynchronizingObject = SynchronizingObject;
+            Timer.Elapsed += DelayedMethod;
+            Timer.Elapsed += (sender, e) => RemoveElapsedTimer(sender, e, Timer);
+
+            Timers.Add(Timer);
+
+            Timer.Start();
+        }
+
+        static void RemoveElapsedTimer(object sender, System.Timers.ElapsedEventArgs e, System.Timers.Timer timerToDispose)
+        {
+            timerToDispose.Stop();
+            Timers.Remove(timerToDispose);
+            timerToDispose.Dispose();
+        }
+
     }
 
     public struct Line

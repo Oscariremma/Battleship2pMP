@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,16 +6,16 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
 using System;
 using System.Collections.Generic;
@@ -40,7 +40,7 @@ namespace NetworkCommsDotNet.Connections
         /// The <see cref="PacketBuilder"/> for this connection
         /// </summary>
         protected PacketBuilder packetBuilder;
-                
+
         /// <summary>
         /// The total bytes read so far within dataBuffer
         /// </summary>
@@ -59,7 +59,9 @@ namespace NetworkCommsDotNet.Connections
         /// <summary>
         /// True if the async listen method is in a beginRead
         /// </summary>
+#pragma warning disable CS3026 // CLS-compliant field cannot be volatile
         protected volatile bool asyncListenerInRead = false;
+#pragma warning restore CS3026 // CLS-compliant field cannot be volatile
 
         /// <summary>
         /// A connection specific method which triggers any requisites for accepting incoming data
@@ -67,7 +69,7 @@ namespace NetworkCommsDotNet.Connections
         protected abstract void StartIncomingDataListen();
 
         /// <summary>
-        /// Attempts to use the data provided in packetBuilder to recreate something useful. If we don't have enough data 
+        /// Attempts to use the data provided in packetBuilder to recreate something useful. If we don't have enough data
         /// yet that value is set in packetBuilder.
         /// </summary>
         /// <param name="packetBuilder">The <see cref="PacketBuilder"/> containing incoming cached data</param>
@@ -196,7 +198,7 @@ namespace NetworkCommsDotNet.Connections
 #endif
                                 }
                             }
-                            
+
                             //We clear the bytes we have just handed off
                             if (NetworkComms.LoggingEnabled) NetworkComms.Logger.Trace("Removing " + (packetHeaderSize + topPacketHeader.TotalPayloadSize).ToString() + " bytes from incoming packet builder from connection with " + ConnectionInfo +".");
                             packetBuilder.ClearNTopBytes(packetHeaderSize + topPacketHeader.TotalPayloadSize);
@@ -209,7 +211,7 @@ namespace NetworkCommsDotNet.Connections
                             #endregion
                         }
                         else
-                            throw new CommunicationException("This should be impossible!");   
+                            throw new CommunicationException("This should be impossible!");
                     }
 
                     loopCounter++;
@@ -242,7 +244,7 @@ namespace NetworkCommsDotNet.Connections
             SentPacket packetToReSend;
             lock (sentPacketsLocker)
             {
-                string checkSumRequested = NetworkComms.InternalFixedSendReceiveOptions.DataSerializer.DeserialiseDataObject<string>(packetDataSection, 
+                string checkSumRequested = NetworkComms.InternalFixedSendReceiveOptions.DataSerializer.DeserialiseDataObject<string>(packetDataSection,
                     NetworkComms.InternalFixedSendReceiveOptions.DataProcessors, NetworkComms.InternalFixedSendReceiveOptions.Options);
 
                 if (sentPackets.ContainsKey(checkSumRequested))

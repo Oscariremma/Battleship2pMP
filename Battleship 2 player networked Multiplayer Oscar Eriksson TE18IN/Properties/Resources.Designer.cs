@@ -61,16 +61,6 @@ namespace Battleship2pMP.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap _1695px_BB61_USS_Iowa_BB61_broadside_USN {
-            get {
-                object obj = ResourceManager.GetObject("1695px-BB61_USS_Iowa_BB61_broadside_USN", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         public static byte[] font_armalite {
@@ -156,6 +146,16 @@ namespace Battleship2pMP.Properties {
         public static System.Drawing.Bitmap ShipSubMarineComplete {
             get {
                 object obj = ResourceManager.GetObject("ShipSubMarineComplete", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap USS_Iowa_BB61_broadside_USN {
+            get {
+                object obj = ResourceManager.GetObject("USS_Iowa_BB61_broadside_USN", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
