@@ -17,6 +17,9 @@ namespace Battleship2pMP
         static public Image GameBackground;
         static public Image Green_Reticle;
         static public Image Red_Reticle;
+        static public Image HitFire;
+        static public Image MissWaterFoam;
+        static public Image Water;
 
 
         /// <summary>
@@ -42,12 +45,16 @@ namespace Battleship2pMP
             pfc.AddMemoryFont(fontDataPointer, fontByteLength);
 
             //Load the main menu image in to ram
-            MainMenuImg = Image.FromHbitmap(Properties.Resources.USS_Iowa_BB61_broadside_USN.GetHbitmap());
+            MainMenuImg = (Image)Properties.Resources.USS_Iowa_BB61_broadside_USN.Clone();
             //Load the game background image in to ram
-            GameBackground = Image.FromHbitmap(Properties.Resources.Water_texture_1380389_Nevit.GetHbitmap());
+            GameBackground = (Image)Properties.Resources.Water_texture_1380389_Nevit.Clone();
 
             Green_Reticle = (Image)Properties.Resources.Green_Reticle.Clone();
             Red_Reticle = (Image)Properties.Resources.Red_Reticle.Clone();
+
+            HitFire = (Image)Properties.Resources.HitFire.Clone();
+            MissWaterFoam = (Image)Properties.Resources.Miss_WaterFoam.Clone();
+            Water = (Image)Properties.Resources.Water.Clone();
 
             //Load all ship sprites in to memory
             Ships.Ship.LoadShips();

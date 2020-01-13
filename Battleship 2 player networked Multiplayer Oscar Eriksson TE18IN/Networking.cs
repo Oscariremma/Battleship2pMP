@@ -278,6 +278,7 @@ namespace Battleship2pMP
 
             public static void InitializeServerRPC(PacketHeader header, Connection connection, string message)
             {
+
                 //Remove the handler that called this function
                 NetworkComms.RemoveGlobalIncomingPacketHandler<string>("Initialize-Connection", InitializeServerRPC);
                 //Get the servers RPC interface

@@ -22,6 +22,8 @@ namespace Battleship2pMP
 
         public bool OpponentDonePlacingShips = false;
 
+        bool ClientsTurn;
+
         public GameLogic()
         {
             int x = 61;
@@ -60,18 +62,22 @@ namespace Battleship2pMP
             {
                 //Host starts
                 MDI_Game.staticGame.Invoke(MDI_Game.staticGame.DSwitchGameBoardView, new object[] { true });
+                Networking.NetworkServer.StaticClientInterface.SwitchGameBoard(false);
+                ClientsTurn = false;
             }
             else
             {
                 //Client Starts
+                MDI_Game.staticGame.Invoke(MDI_Game.staticGame.DSwitchGameBoardView, new object[] { false });
                 Networking.NetworkServer.StaticClientInterface.SwitchGameBoard(true);
+                ClientsTurn = true;
             }
 
         }
 
-        public void FireShots(System.Drawing.Point[] Targets, bool IsClient)
+        public void FireShots(System.Drawing.Point[] Targets, bool TargetClient)
         {
-            ref GameBoardTile[,] TargetGameBoard = ref IsClient ? ref ClientGameBoard : ref HostGameBoard;
+            ref GameBoardTile[,] TargetGameBoard = ref TargetClient ? ref ClientGameBoard : ref HostGameBoard;
 
 
             foreach(Point target in Targets)
@@ -84,7 +90,7 @@ namespace Battleship2pMP
                 {
                     targetTile.TileType = TileType.Hit;
 
-                    ref Networking.NetworkSprite HitShipSprite = ref IsClient ? ref ClientSpriteTable[targetTile.SpriteID] : ref HostSpriteTable[targetTile.SpriteID];
+                    ref Networking.NetworkSprite HitShipSprite = ref TargetClient ? ref ClientSpriteTable[targetTile.SpriteID] : ref HostSpriteTable[targetTile.SpriteID];
 
                     foreach(Point Coveredtile in HitShipSprite.CoveredTiles)
                     {
@@ -115,6 +121,8 @@ namespace Battleship2pMP
 
             PushGameBoardUpdates();
 
+            ExecutionTimer.ExecuteAfterDelay((o, ee) => TurnDone(), 3000);
+
         }
 
         void PushGameBoardUpdates()
@@ -144,6 +152,24 @@ namespace Battleship2pMP
         {
             MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DInvalidate);
             Networking.NetworkServer.StaticClientInterface.InvalidateGameBoard();
+        }
+
+        void TurnDone()
+        {
+            if (ClientsTurn)
+            {
+                //Hosts Turn
+                MDI_Game.staticGame.Invoke(MDI_Game.staticGame.DSwitchGameBoardView, new object[] { true });
+                Networking.NetworkServer.StaticClientInterface.SwitchGameBoard(false);
+                ClientsTurn = false;
+            }
+            else
+            {
+                //Clients Turn
+                MDI_Game.staticGame.Invoke(MDI_Game.staticGame.DSwitchGameBoardView, new object[] { false });
+                Networking.NetworkServer.StaticClientInterface.SwitchGameBoard(true);
+                ClientsTurn = true;
+            }
         }
 
 

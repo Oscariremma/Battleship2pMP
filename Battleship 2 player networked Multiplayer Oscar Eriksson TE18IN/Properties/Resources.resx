@@ -124,8 +124,14 @@
   <data name="Green_Reticle" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Img\Green Reticle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="HitFire" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Img\HitFire.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Menu_Board" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Img\Menu Board.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Miss_WaterFoam" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Img\Miss_WaterFoam.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Red_Reticle" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Img\Red Reticle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -147,6 +153,9 @@
   </data>
   <data name="USS_Iowa_BB61_broadside_USN" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Img\1695px-BB61_USS_Iowa_BB61_broadside_USN.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Water" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Img\Water.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Water_texture_1380389_Nevit" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Img\Water_texture_1380389_Nevit.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

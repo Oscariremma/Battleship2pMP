@@ -221,14 +221,16 @@
   <ItemGroup>
     <Content Include="Img\1695px-BB61_USS_Iowa_BB61_broadside_USN.jpg" />
     <None Include="Img\Menu Board.png" />
-    <None Include="Img\Reticle.png" />
     <None Include="Img\Red Reticle.png" />
     <None Include="Img\Green Reticle.png" />
+    <None Include="Img\Miss_WaterFoam.png" />
+    <None Include="Img\HitFire.png" />
     <Content Include="Img\Ships\ShipBattleshipComplete.png" />
     <Content Include="Img\Ships\ShipCarrierHullComplete.png" />
     <Content Include="Img\Ships\ShipCruiserComplete.png" />
     <Content Include="Img\Ships\ShipDestroyerComplete.png" />
     <Content Include="Img\Ships\ShipSubMarineComplete.png" />
+    <None Include="Img\Water.png" />
     <Content Include="Img\Water_texture_1380389_Nevit.jpg" />
     <None Include="Resources\WoodBoard.bmp" />
   </ItemGroup>

@@ -203,11 +203,11 @@ namespace Battleship2pMP.MDI_Forms
                 switch (tile.TileType)
                 {
                     case GameLogic.TileType.Water:
-                        e.Graphics.FillRectangle(Brushes.Blue, tile.Rectangle);
+                        e.Graphics.DrawImage(Program.Water, tile.Rectangle.Location);
                         break;
 
                     case GameLogic.TileType.Hit:
-                        e.Graphics.FillRectangle(Brushes.Red, tile.Rectangle);
+                        e.Graphics.DrawImage(Program.HitFire, tile.Rectangle.Location);
                         if (spriteTableDrawRef[tile.SpriteID].ShipDestroyed && spriteTableDrawRef[tile.SpriteID].Enabled)
                         {
                             DestroyedShipsRects.Add(tile.Rectangle);
@@ -215,11 +215,11 @@ namespace Battleship2pMP.MDI_Forms
                         break;
 
                     case GameLogic.TileType.Miss:
-                        e.Graphics.FillRectangle(Brushes.AntiqueWhite, tile.Rectangle);
+                        e.Graphics.DrawImage(Program.MissWaterFoam, tile.Rectangle.Location);
                         break;
 
                     case GameLogic.TileType.Ship:
-                        e.Graphics.FillRectangle(Brushes.Blue, tile.Rectangle);
+                        e.Graphics.DrawImage(Program.Water, tile.Rectangle.Location);
                         break;
                 }
             }
@@ -398,13 +398,14 @@ namespace Battleship2pMP.MDI_Forms
 
                                 if (Networking.IsServer)
                                 {
-                                    Networking.NetworkServer.StaticgameLogic.FireShots(CordTargets.ToArray(), false);
+                                    Networking.NetworkServer.StaticgameLogic.FireShots(CordTargets.ToArray(), true);
                                 }
                                 else
                                 {
-                                    MessageBox.Show(GetBinaryArray(CordTargets.ToArray(), true).Length.ToString());
                                     Networking.NetworkClient.RemoteServerInterface.FireShots(GetBinaryArray(CordTargets.ToArray(), false));
                                 }
+
+                                firstTurn = false;
 
                             }
 
@@ -417,11 +418,11 @@ namespace Battleship2pMP.MDI_Forms
 
                             if (Networking.IsServer)
                             {
-                                Networking.NetworkServer.StaticgameLogic.FireShots(new Point[] { Reticle_Cord }, false);
+                                Networking.NetworkServer.StaticgameLogic.FireShots(new Point[] { Reticle_Cord }, true);
                             }
                             else
                             {
-                                Networking.NetworkClient.RemoteServerInterface.FireShots(GetBinaryArray(new Point[] { Reticle_Cord }, true));
+                                Networking.NetworkClient.RemoteServerInterface.FireShots(GetBinaryArray(new Point[] { Reticle_Cord }, false));
                             }
                         }
                     }
@@ -839,6 +840,9 @@ namespace Battleship2pMP.MDI_Forms
             UpdateTimer.Dispose();
         }
 
+        private void bnt_Surrender_Click(object sender, EventArgs e)
+        {
 
+        }
     }
 }
