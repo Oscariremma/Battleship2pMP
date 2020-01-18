@@ -20,6 +20,7 @@ namespace Battleship2pMP
         MDI_Game mdi_Game;
         MDI_Host mdi_Host;
         MDI_Join mdi_Join;
+        MDI_GameSettings mdi_GameSettings;
 
         Form CurrentMDI;
 
@@ -52,7 +53,7 @@ namespace Battleship2pMP
             switch (MDI)
             {
                 case MDI_Form_Enum.MDI_MainMenu:
-                    if (ResetMDI)
+                    if (ResetMDI || staticMdi_Container.mdi_MainMenu == null)
                     {
                         if(staticMdi_Container.mdi_MainMenu != null) staticMdi_Container.mdi_MainMenu.Dispose();
                         staticMdi_Container.mdi_MainMenu = new MDI_MainMenu();
@@ -60,7 +61,7 @@ namespace Battleship2pMP
                     staticMdi_Container.CurrentMDI = staticMdi_Container.mdi_MainMenu;
                     break;
                 case MDI_Form_Enum.MDI_Game:
-                    if (ResetMDI)
+                    if (ResetMDI || staticMdi_Container.mdi_Game == null)
                     {
                         if (staticMdi_Container.mdi_Game != null)
                         {
@@ -73,7 +74,7 @@ namespace Battleship2pMP
                     staticMdi_Container.CurrentMDI = staticMdi_Container.mdi_Game;
                     break;
                 case MDI_Form_Enum.MDI_Host:
-                    if (ResetMDI)
+                    if (ResetMDI || staticMdi_Container.mdi_Host == null)
                     {
                         if (staticMdi_Container.mdi_Host != null) staticMdi_Container.mdi_Host.Dispose();
                         staticMdi_Container.mdi_Host = new MDI_Host();
@@ -81,12 +82,20 @@ namespace Battleship2pMP
                     staticMdi_Container.CurrentMDI = staticMdi_Container.mdi_Host;
                     break;
                 case MDI_Form_Enum.MDI_Join:
-                    if (ResetMDI)
+                    if (ResetMDI || staticMdi_Container.mdi_Join == null)
                     {
                         if (staticMdi_Container.mdi_Join != null) staticMdi_Container.mdi_Join.Dispose();
                         staticMdi_Container.mdi_Join = new MDI_Join();
                     }
                     staticMdi_Container.CurrentMDI = staticMdi_Container.mdi_Join;
+                    break;
+                case MDI_Form_Enum.MDI_GameSettings:
+                    if (ResetMDI || staticMdi_Container.mdi_GameSettings == null)
+                    {
+                        if (staticMdi_Container.mdi_GameSettings != null) staticMdi_Container.mdi_GameSettings.Dispose();
+                        staticMdi_Container.mdi_GameSettings = new MDI_GameSettings();
+                    }
+                    staticMdi_Container.CurrentMDI = staticMdi_Container.mdi_GameSettings;
                     break;
 
             }
@@ -129,7 +138,8 @@ namespace Battleship2pMP
         MDI_MainMenu,
         MDI_Game,
         MDI_Host,
-        MDI_Join
+        MDI_Join,
+        MDI_GameSettings
 
     }
 }

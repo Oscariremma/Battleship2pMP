@@ -50,42 +50,45 @@
             this.lbl_cord2 = new System.Windows.Forms.Label();
             this.lbl_cord1 = new System.Windows.Forms.Label();
             this.lbl_cord9 = new System.Windows.Forms.Label();
-            this.panel2 = new System.Windows.Forms.Panel();
+            this.pnl_ScoreBoard = new System.Windows.Forms.Panel();
+            this.lbl_Total_Op = new System.Windows.Forms.Label();
+            this.lbl_Total_You = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
+            this.lbl_Submarine_You = new System.Windows.Forms.Label();
+            this.lbl_Submarine_Op = new System.Windows.Forms.Label();
+            this.lbl_Destroyer_Op = new System.Windows.Forms.Label();
+            this.lbl_Destroyer_You = new System.Windows.Forms.Label();
+            this.lbl_Cruiser_Op = new System.Windows.Forms.Label();
+            this.lbl_Battleship_Op = new System.Windows.Forms.Label();
+            this.lbl_Cruiser_You = new System.Windows.Forms.Label();
+            this.lbl_Battleship_You = new System.Windows.Forms.Label();
+            this.lbl_Carrier_Op = new System.Windows.Forms.Label();
+            this.lbl_Carrier_You = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.lbl_OpponentsTurn = new System.Windows.Forms.Label();
             this.lbl_YourTurn = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.pnl_PlaceShips = new System.Windows.Forms.Panel();
             this.lbl_Waiting_For_Opponent = new System.Windows.Forms.Label();
-            this.btn_Ship_Placement_Done = new System.Windows.Forms.Button();
+            this.Btn_Ship_Placement_Done = new System.Windows.Forms.Button();
             this.Rbtn_Remove = new System.Windows.Forms.RadioButton();
             this.Rbtn_Submarine = new System.Windows.Forms.RadioButton();
             this.Rbtn_Destroyer = new System.Windows.Forms.RadioButton();
             this.Rbtn_Cruiser = new System.Windows.Forms.RadioButton();
             this.Rbtn_Battleship = new System.Windows.Forms.RadioButton();
             this.Rbtn_Carrier = new System.Windows.Forms.RadioButton();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
-            this.label18 = new System.Windows.Forms.Label();
-            this.bnt_Surrender = new System.Windows.Forms.Button();
+            this.Bnt_Surrender = new System.Windows.Forms.Button();
             this.pnlGameBoard.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbx_Reticle)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbx_Selected_Ship)).BeginInit();
-            this.panel2.SuspendLayout();
-            this.panel1.SuspendLayout();
+            this.pnl_ScoreBoard.SuspendLayout();
+            this.pnl_PlaceShips.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlGameBoard
@@ -353,36 +356,250 @@
             this.lbl_cord9.Text = "9";
             this.lbl_cord9.UseCompatibleTextRendering = true;
             // 
-            // panel2
+            // pnl_ScoreBoard
             // 
-            this.panel2.BackColor = System.Drawing.Color.Transparent;
-            this.panel2.BackgroundImage = global::Battleship2pMP.Properties.Resources.Menu_Board;
-            this.panel2.Controls.Add(this.label18);
-            this.panel2.Controls.Add(this.label17);
-            this.panel2.Controls.Add(this.label16);
-            this.panel2.Controls.Add(this.label15);
-            this.panel2.Controls.Add(this.label14);
-            this.panel2.Controls.Add(this.label13);
-            this.panel2.Controls.Add(this.label12);
-            this.panel2.Controls.Add(this.label11);
-            this.panel2.Controls.Add(this.label10);
-            this.panel2.Controls.Add(this.label9);
-            this.panel2.Controls.Add(this.label8);
-            this.panel2.Controls.Add(this.label7);
-            this.panel2.Controls.Add(this.label6);
-            this.panel2.Controls.Add(this.label5);
-            this.panel2.Controls.Add(this.label4);
-            this.panel2.Controls.Add(this.label3);
-            this.panel2.Controls.Add(this.label2);
-            this.panel2.Controls.Add(this.label1);
-            this.panel2.Controls.Add(this.lbl_OpponentsTurn);
-            this.panel2.Controls.Add(this.lbl_YourTurn);
-            this.panel2.Enabled = false;
-            this.panel2.Location = new System.Drawing.Point(197, 55);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(246, 312);
-            this.panel2.TabIndex = 8;
-            this.panel2.Visible = false;
+            this.pnl_ScoreBoard.BackColor = System.Drawing.Color.Transparent;
+            this.pnl_ScoreBoard.BackgroundImage = global::Battleship2pMP.Properties.Resources.Menu_Board;
+            this.pnl_ScoreBoard.Controls.Add(this.lbl_Total_Op);
+            this.pnl_ScoreBoard.Controls.Add(this.lbl_Total_You);
+            this.pnl_ScoreBoard.Controls.Add(this.label19);
+            this.pnl_ScoreBoard.Controls.Add(this.lbl_Submarine_You);
+            this.pnl_ScoreBoard.Controls.Add(this.lbl_Submarine_Op);
+            this.pnl_ScoreBoard.Controls.Add(this.lbl_Destroyer_Op);
+            this.pnl_ScoreBoard.Controls.Add(this.lbl_Destroyer_You);
+            this.pnl_ScoreBoard.Controls.Add(this.lbl_Cruiser_Op);
+            this.pnl_ScoreBoard.Controls.Add(this.lbl_Battleship_Op);
+            this.pnl_ScoreBoard.Controls.Add(this.lbl_Cruiser_You);
+            this.pnl_ScoreBoard.Controls.Add(this.lbl_Battleship_You);
+            this.pnl_ScoreBoard.Controls.Add(this.lbl_Carrier_Op);
+            this.pnl_ScoreBoard.Controls.Add(this.lbl_Carrier_You);
+            this.pnl_ScoreBoard.Controls.Add(this.label8);
+            this.pnl_ScoreBoard.Controls.Add(this.label7);
+            this.pnl_ScoreBoard.Controls.Add(this.label6);
+            this.pnl_ScoreBoard.Controls.Add(this.label5);
+            this.pnl_ScoreBoard.Controls.Add(this.label4);
+            this.pnl_ScoreBoard.Controls.Add(this.label3);
+            this.pnl_ScoreBoard.Controls.Add(this.label2);
+            this.pnl_ScoreBoard.Controls.Add(this.label1);
+            this.pnl_ScoreBoard.Controls.Add(this.lbl_OpponentsTurn);
+            this.pnl_ScoreBoard.Controls.Add(this.lbl_YourTurn);
+            this.pnl_ScoreBoard.Enabled = false;
+            this.pnl_ScoreBoard.Location = new System.Drawing.Point(78, 167);
+            this.pnl_ScoreBoard.Name = "pnl_ScoreBoard";
+            this.pnl_ScoreBoard.Size = new System.Drawing.Size(246, 312);
+            this.pnl_ScoreBoard.TabIndex = 8;
+            this.pnl_ScoreBoard.Visible = false;
+            // 
+            // lbl_Total_Op
+            // 
+            this.lbl_Total_Op.AutoSize = true;
+            this.lbl_Total_Op.ForeColor = System.Drawing.Color.White;
+            this.lbl_Total_Op.Location = new System.Drawing.Point(165, 270);
+            this.lbl_Total_Op.Name = "lbl_Total_Op";
+            this.lbl_Total_Op.Size = new System.Drawing.Size(13, 13);
+            this.lbl_Total_Op.TabIndex = 27;
+            this.lbl_Total_Op.Text = "0";
+            // 
+            // lbl_Total_You
+            // 
+            this.lbl_Total_You.AutoSize = true;
+            this.lbl_Total_You.ForeColor = System.Drawing.Color.White;
+            this.lbl_Total_You.Location = new System.Drawing.Point(110, 270);
+            this.lbl_Total_You.Name = "lbl_Total_You";
+            this.lbl_Total_You.Size = new System.Drawing.Size(13, 13);
+            this.lbl_Total_You.TabIndex = 26;
+            this.lbl_Total_You.Text = "0";
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.ForeColor = System.Drawing.Color.White;
+            this.label19.Location = new System.Drawing.Point(25, 270);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(31, 13);
+            this.label19.TabIndex = 25;
+            this.label19.Text = "Total";
+            // 
+            // lbl_Submarine_You
+            // 
+            this.lbl_Submarine_You.AutoSize = true;
+            this.lbl_Submarine_You.ForeColor = System.Drawing.Color.White;
+            this.lbl_Submarine_You.Location = new System.Drawing.Point(110, 245);
+            this.lbl_Submarine_You.Name = "lbl_Submarine_You";
+            this.lbl_Submarine_You.Size = new System.Drawing.Size(13, 13);
+            this.lbl_Submarine_You.TabIndex = 24;
+            this.lbl_Submarine_You.Text = "0";
+            // 
+            // lbl_Submarine_Op
+            // 
+            this.lbl_Submarine_Op.AutoSize = true;
+            this.lbl_Submarine_Op.ForeColor = System.Drawing.Color.White;
+            this.lbl_Submarine_Op.Location = new System.Drawing.Point(165, 245);
+            this.lbl_Submarine_Op.Name = "lbl_Submarine_Op";
+            this.lbl_Submarine_Op.Size = new System.Drawing.Size(13, 13);
+            this.lbl_Submarine_Op.TabIndex = 24;
+            this.lbl_Submarine_Op.Text = "0";
+            // 
+            // lbl_Destroyer_Op
+            // 
+            this.lbl_Destroyer_Op.AutoSize = true;
+            this.lbl_Destroyer_Op.ForeColor = System.Drawing.Color.White;
+            this.lbl_Destroyer_Op.Location = new System.Drawing.Point(165, 220);
+            this.lbl_Destroyer_Op.Name = "lbl_Destroyer_Op";
+            this.lbl_Destroyer_Op.Size = new System.Drawing.Size(13, 13);
+            this.lbl_Destroyer_Op.TabIndex = 23;
+            this.lbl_Destroyer_Op.Text = "0";
+            // 
+            // lbl_Destroyer_You
+            // 
+            this.lbl_Destroyer_You.AutoSize = true;
+            this.lbl_Destroyer_You.ForeColor = System.Drawing.Color.White;
+            this.lbl_Destroyer_You.Location = new System.Drawing.Point(110, 220);
+            this.lbl_Destroyer_You.Name = "lbl_Destroyer_You";
+            this.lbl_Destroyer_You.Size = new System.Drawing.Size(13, 13);
+            this.lbl_Destroyer_You.TabIndex = 22;
+            this.lbl_Destroyer_You.Text = "0";
+            // 
+            // lbl_Cruiser_Op
+            // 
+            this.lbl_Cruiser_Op.AutoSize = true;
+            this.lbl_Cruiser_Op.ForeColor = System.Drawing.Color.White;
+            this.lbl_Cruiser_Op.Location = new System.Drawing.Point(165, 195);
+            this.lbl_Cruiser_Op.Name = "lbl_Cruiser_Op";
+            this.lbl_Cruiser_Op.Size = new System.Drawing.Size(13, 13);
+            this.lbl_Cruiser_Op.TabIndex = 21;
+            this.lbl_Cruiser_Op.Text = "0";
+            // 
+            // lbl_Battleship_Op
+            // 
+            this.lbl_Battleship_Op.AutoSize = true;
+            this.lbl_Battleship_Op.ForeColor = System.Drawing.Color.White;
+            this.lbl_Battleship_Op.Location = new System.Drawing.Point(165, 170);
+            this.lbl_Battleship_Op.Name = "lbl_Battleship_Op";
+            this.lbl_Battleship_Op.Size = new System.Drawing.Size(13, 13);
+            this.lbl_Battleship_Op.TabIndex = 20;
+            this.lbl_Battleship_Op.Text = "0";
+            // 
+            // lbl_Cruiser_You
+            // 
+            this.lbl_Cruiser_You.AutoSize = true;
+            this.lbl_Cruiser_You.ForeColor = System.Drawing.Color.White;
+            this.lbl_Cruiser_You.Location = new System.Drawing.Point(110, 195);
+            this.lbl_Cruiser_You.Name = "lbl_Cruiser_You";
+            this.lbl_Cruiser_You.Size = new System.Drawing.Size(13, 13);
+            this.lbl_Cruiser_You.TabIndex = 20;
+            this.lbl_Cruiser_You.Text = "0";
+            // 
+            // lbl_Battleship_You
+            // 
+            this.lbl_Battleship_You.AutoSize = true;
+            this.lbl_Battleship_You.ForeColor = System.Drawing.Color.White;
+            this.lbl_Battleship_You.Location = new System.Drawing.Point(110, 170);
+            this.lbl_Battleship_You.Name = "lbl_Battleship_You";
+            this.lbl_Battleship_You.Size = new System.Drawing.Size(13, 13);
+            this.lbl_Battleship_You.TabIndex = 19;
+            this.lbl_Battleship_You.Text = "0";
+            // 
+            // lbl_Carrier_Op
+            // 
+            this.lbl_Carrier_Op.AutoSize = true;
+            this.lbl_Carrier_Op.ForeColor = System.Drawing.Color.White;
+            this.lbl_Carrier_Op.Location = new System.Drawing.Point(165, 145);
+            this.lbl_Carrier_Op.Name = "lbl_Carrier_Op";
+            this.lbl_Carrier_Op.Size = new System.Drawing.Size(13, 13);
+            this.lbl_Carrier_Op.TabIndex = 18;
+            this.lbl_Carrier_Op.Text = "0";
+            // 
+            // lbl_Carrier_You
+            // 
+            this.lbl_Carrier_You.AutoSize = true;
+            this.lbl_Carrier_You.ForeColor = System.Drawing.Color.White;
+            this.lbl_Carrier_You.Location = new System.Drawing.Point(110, 145);
+            this.lbl_Carrier_You.Name = "lbl_Carrier_You";
+            this.lbl_Carrier_You.Size = new System.Drawing.Size(13, 13);
+            this.lbl_Carrier_You.TabIndex = 17;
+            this.lbl_Carrier_You.Text = "0";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.ForeColor = System.Drawing.Color.White;
+            this.label8.Location = new System.Drawing.Point(25, 220);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(52, 13);
+            this.label8.TabIndex = 16;
+            this.label8.Text = "Destroyer";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.ForeColor = System.Drawing.Color.White;
+            this.label7.Location = new System.Drawing.Point(25, 195);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(39, 13);
+            this.label7.TabIndex = 15;
+            this.label7.Text = "Cruiser";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.ForeColor = System.Drawing.Color.White;
+            this.label6.Location = new System.Drawing.Point(25, 170);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(53, 13);
+            this.label6.TabIndex = 14;
+            this.label6.Text = "Battleship";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.ForeColor = System.Drawing.Color.White;
+            this.label5.Location = new System.Drawing.Point(25, 145);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(37, 13);
+            this.label5.TabIndex = 13;
+            this.label5.Text = "Carrier";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.ForeColor = System.Drawing.Color.White;
+            this.label4.Location = new System.Drawing.Point(25, 245);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(57, 13);
+            this.label4.TabIndex = 12;
+            this.label4.Text = "Submarine";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.ForeColor = System.Drawing.Color.White;
+            this.label3.Location = new System.Drawing.Point(105, 116);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(26, 13);
+            this.label3.TabIndex = 11;
+            this.label3.Text = "You";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.ForeColor = System.Drawing.Color.White;
+            this.label2.Location = new System.Drawing.Point(145, 116);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(54, 13);
+            this.label2.TabIndex = 10;
+            this.label2.Text = "Opponent";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.Color.Gainsboro;
+            this.label1.Location = new System.Drawing.Point(79, 84);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(81, 20);
+            this.label1.TabIndex = 9;
+            this.label1.Text = "Ships Left";
             // 
             // lbl_OpponentsTurn
             // 
@@ -408,22 +625,22 @@
             this.lbl_YourTurn.Text = "Your Turn";
             this.lbl_YourTurn.Visible = false;
             // 
-            // panel1
+            // pnl_PlaceShips
             // 
-            this.panel1.BackColor = System.Drawing.Color.Transparent;
-            this.panel1.BackgroundImage = global::Battleship2pMP.Properties.Resources.Menu_Board;
-            this.panel1.Controls.Add(this.lbl_Waiting_For_Opponent);
-            this.panel1.Controls.Add(this.btn_Ship_Placement_Done);
-            this.panel1.Controls.Add(this.Rbtn_Remove);
-            this.panel1.Controls.Add(this.Rbtn_Submarine);
-            this.panel1.Controls.Add(this.Rbtn_Destroyer);
-            this.panel1.Controls.Add(this.Rbtn_Cruiser);
-            this.panel1.Controls.Add(this.Rbtn_Battleship);
-            this.panel1.Controls.Add(this.Rbtn_Carrier);
-            this.panel1.Location = new System.Drawing.Point(78, 167);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(246, 312);
-            this.panel1.TabIndex = 2;
+            this.pnl_PlaceShips.BackColor = System.Drawing.Color.Transparent;
+            this.pnl_PlaceShips.BackgroundImage = global::Battleship2pMP.Properties.Resources.Menu_Board;
+            this.pnl_PlaceShips.Controls.Add(this.lbl_Waiting_For_Opponent);
+            this.pnl_PlaceShips.Controls.Add(this.Btn_Ship_Placement_Done);
+            this.pnl_PlaceShips.Controls.Add(this.Rbtn_Remove);
+            this.pnl_PlaceShips.Controls.Add(this.Rbtn_Submarine);
+            this.pnl_PlaceShips.Controls.Add(this.Rbtn_Destroyer);
+            this.pnl_PlaceShips.Controls.Add(this.Rbtn_Cruiser);
+            this.pnl_PlaceShips.Controls.Add(this.Rbtn_Battleship);
+            this.pnl_PlaceShips.Controls.Add(this.Rbtn_Carrier);
+            this.pnl_PlaceShips.Location = new System.Drawing.Point(78, 167);
+            this.pnl_PlaceShips.Name = "pnl_PlaceShips";
+            this.pnl_PlaceShips.Size = new System.Drawing.Size(246, 312);
+            this.pnl_PlaceShips.TabIndex = 2;
             // 
             // lbl_Waiting_For_Opponent
             // 
@@ -437,15 +654,15 @@
             this.lbl_Waiting_For_Opponent.Text = "Waiting for opponent";
             this.lbl_Waiting_For_Opponent.Visible = false;
             // 
-            // btn_Ship_Placement_Done
+            // Btn_Ship_Placement_Done
             // 
-            this.btn_Ship_Placement_Done.Location = new System.Drawing.Point(83, 260);
-            this.btn_Ship_Placement_Done.Name = "btn_Ship_Placement_Done";
-            this.btn_Ship_Placement_Done.Size = new System.Drawing.Size(75, 23);
-            this.btn_Ship_Placement_Done.TabIndex = 6;
-            this.btn_Ship_Placement_Done.Text = "Done";
-            this.btn_Ship_Placement_Done.UseVisualStyleBackColor = true;
-            this.btn_Ship_Placement_Done.Click += new System.EventHandler(this.btn_Ship_Placement_Done_Click);
+            this.Btn_Ship_Placement_Done.Location = new System.Drawing.Point(83, 260);
+            this.Btn_Ship_Placement_Done.Name = "Btn_Ship_Placement_Done";
+            this.Btn_Ship_Placement_Done.Size = new System.Drawing.Size(75, 23);
+            this.Btn_Ship_Placement_Done.TabIndex = 6;
+            this.Btn_Ship_Placement_Done.Text = "Done";
+            this.Btn_Ship_Placement_Done.UseVisualStyleBackColor = true;
+            this.Btn_Ship_Placement_Done.Click += new System.EventHandler(this.Btn_Ship_Placement_Done_Click);
             // 
             // Rbtn_Remove
             // 
@@ -531,196 +748,15 @@
             this.Rbtn_Carrier.UseVisualStyleBackColor = false;
             this.Rbtn_Carrier.CheckedChanged += new System.EventHandler(this.Rbtn_Carrier_CheckedChanged);
             // 
-            // label1
+            // Bnt_Surrender
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.Gainsboro;
-            this.label1.Location = new System.Drawing.Point(79, 84);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(81, 20);
-            this.label1.TabIndex = 9;
-            this.label1.Text = "Ships Left";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.ForeColor = System.Drawing.Color.White;
-            this.label2.Location = new System.Drawing.Point(148, 116);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(54, 13);
-            this.label2.TabIndex = 10;
-            this.label2.Text = "Opponent";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.ForeColor = System.Drawing.Color.White;
-            this.label3.Location = new System.Drawing.Point(98, 116);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(26, 13);
-            this.label3.TabIndex = 11;
-            this.label3.Text = "You";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.ForeColor = System.Drawing.Color.White;
-            this.label4.Location = new System.Drawing.Point(22, 241);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(57, 13);
-            this.label4.TabIndex = 12;
-            this.label4.Text = "Submarine";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.ForeColor = System.Drawing.Color.White;
-            this.label5.Location = new System.Drawing.Point(24, 144);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(37, 13);
-            this.label5.TabIndex = 13;
-            this.label5.Text = "Carrier";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.ForeColor = System.Drawing.Color.White;
-            this.label6.Location = new System.Drawing.Point(21, 173);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(53, 13);
-            this.label6.TabIndex = 14;
-            this.label6.Text = "Battleship";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.ForeColor = System.Drawing.Color.White;
-            this.label7.Location = new System.Drawing.Point(22, 196);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(39, 13);
-            this.label7.TabIndex = 15;
-            this.label7.Text = "Cruiser";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.ForeColor = System.Drawing.Color.White;
-            this.label8.Location = new System.Drawing.Point(22, 215);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(52, 13);
-            this.label8.TabIndex = 16;
-            this.label8.Text = "Destroyer";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.ForeColor = System.Drawing.Color.White;
-            this.label9.Location = new System.Drawing.Point(98, 144);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(13, 13);
-            this.label9.TabIndex = 17;
-            this.label9.Text = "0";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.ForeColor = System.Drawing.Color.White;
-            this.label10.Location = new System.Drawing.Point(164, 144);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(13, 13);
-            this.label10.TabIndex = 18;
-            this.label10.Text = "0";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.ForeColor = System.Drawing.Color.White;
-            this.label11.Location = new System.Drawing.Point(98, 173);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(13, 13);
-            this.label11.TabIndex = 19;
-            this.label11.Text = "0";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.ForeColor = System.Drawing.Color.White;
-            this.label12.Location = new System.Drawing.Point(98, 196);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(13, 13);
-            this.label12.TabIndex = 20;
-            this.label12.Text = "0";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.ForeColor = System.Drawing.Color.White;
-            this.label13.Location = new System.Drawing.Point(164, 173);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(13, 13);
-            this.label13.TabIndex = 20;
-            this.label13.Text = "0";
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.ForeColor = System.Drawing.Color.White;
-            this.label14.Location = new System.Drawing.Point(164, 196);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(13, 13);
-            this.label14.TabIndex = 21;
-            this.label14.Text = "0";
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.ForeColor = System.Drawing.Color.White;
-            this.label15.Location = new System.Drawing.Point(98, 217);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(13, 13);
-            this.label15.TabIndex = 22;
-            this.label15.Text = "0";
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.ForeColor = System.Drawing.Color.White;
-            this.label16.Location = new System.Drawing.Point(164, 217);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(13, 13);
-            this.label16.TabIndex = 23;
-            this.label16.Text = "0";
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.ForeColor = System.Drawing.Color.White;
-            this.label17.Location = new System.Drawing.Point(164, 241);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(13, 13);
-            this.label17.TabIndex = 24;
-            this.label17.Text = "0";
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.ForeColor = System.Drawing.Color.White;
-            this.label18.Location = new System.Drawing.Point(98, 241);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(13, 13);
-            this.label18.TabIndex = 24;
-            this.label18.Text = "0";
-            // 
-            // bnt_Surrender
-            // 
-            this.bnt_Surrender.Location = new System.Drawing.Point(23, 576);
-            this.bnt_Surrender.Name = "bnt_Surrender";
-            this.bnt_Surrender.Size = new System.Drawing.Size(94, 39);
-            this.bnt_Surrender.TabIndex = 9;
-            this.bnt_Surrender.Text = "Surrender";
-            this.bnt_Surrender.UseVisualStyleBackColor = true;
-            this.bnt_Surrender.Click += new System.EventHandler(this.bnt_Surrender_Click);
+            this.Bnt_Surrender.Location = new System.Drawing.Point(23, 576);
+            this.Bnt_Surrender.Name = "Bnt_Surrender";
+            this.Bnt_Surrender.Size = new System.Drawing.Size(94, 39);
+            this.Bnt_Surrender.TabIndex = 9;
+            this.Bnt_Surrender.Text = "Surrender";
+            this.Bnt_Surrender.UseVisualStyleBackColor = true;
+            this.Bnt_Surrender.Click += new System.EventHandler(this.Bnt_Surrender_Click);
             // 
             // MDI_Game
             // 
@@ -728,9 +764,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1060, 660);
-            this.Controls.Add(this.bnt_Surrender);
-            this.Controls.Add(this.panel2);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.Bnt_Surrender);
+            this.Controls.Add(this.pnl_ScoreBoard);
+            this.Controls.Add(this.pnl_PlaceShips);
             this.Controls.Add(this.pnlGameBoard);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -741,10 +777,10 @@
             this.pnlGameBoard.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbx_Reticle)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbx_Selected_Ship)).EndInit();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
+            this.pnl_ScoreBoard.ResumeLayout(false);
+            this.pnl_ScoreBoard.PerformLayout();
+            this.pnl_PlaceShips.ResumeLayout(false);
+            this.pnl_PlaceShips.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -770,8 +806,8 @@
         private System.Windows.Forms.Label lbl_cordG;
         private System.Windows.Forms.Label lbl_cordF;
         private System.Windows.Forms.Label lbl_cordC;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button btn_Ship_Placement_Done;
+        private System.Windows.Forms.Panel pnl_PlaceShips;
+        private System.Windows.Forms.Button Btn_Ship_Placement_Done;
         private System.Windows.Forms.RadioButton Rbtn_Remove;
         private System.Windows.Forms.RadioButton Rbtn_Submarine;
         private System.Windows.Forms.RadioButton Rbtn_Destroyer;
@@ -781,19 +817,19 @@
         private System.Windows.Forms.PictureBox pbx_Selected_Ship;
         private System.Windows.Forms.Label lbl_Waiting_For_Opponent;
         private System.Windows.Forms.PictureBox pbx_Reticle;
-        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel pnl_ScoreBoard;
         private System.Windows.Forms.Label lbl_YourTurn;
         private System.Windows.Forms.Label lbl_OpponentsTurn;
-        private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label lbl_Submarine_You;
+        private System.Windows.Forms.Label lbl_Submarine_Op;
+        private System.Windows.Forms.Label lbl_Destroyer_Op;
+        private System.Windows.Forms.Label lbl_Destroyer_You;
+        private System.Windows.Forms.Label lbl_Cruiser_Op;
+        private System.Windows.Forms.Label lbl_Battleship_Op;
+        private System.Windows.Forms.Label lbl_Cruiser_You;
+        private System.Windows.Forms.Label lbl_Battleship_You;
+        private System.Windows.Forms.Label lbl_Carrier_Op;
+        private System.Windows.Forms.Label lbl_Carrier_You;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
@@ -802,6 +838,9 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button bnt_Surrender;
+        private System.Windows.Forms.Button Bnt_Surrender;
+        private System.Windows.Forms.Label lbl_Total_Op;
+        private System.Windows.Forms.Label lbl_Total_You;
+        private System.Windows.Forms.Label label19;
     }
 }

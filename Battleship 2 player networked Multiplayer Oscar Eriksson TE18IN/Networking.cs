@@ -67,7 +67,7 @@ namespace Battleship2pMP
         // The clients RPC interface with functions called from the server
         public interface IClientInterface
         {
-            void GameStarting(byte[] gameBoardTilesBinary);
+            void GameStarting(byte[] gameBoardTilesBinary, Ships.ShipsLeft ShipsToPlace, int ShotsFirstTurn, int ShotsPerTurn);
 
             /// <summary>
             /// Switches the clients view to their local game board if false and their opponents if true
@@ -84,6 +84,8 @@ namespace Battleship2pMP
             void UpdateClientGameBoard(byte[] HostGameBoardBinaryArray, byte[] HostNetworkSpriteTableBinaryArray);
 
             void InvalidateGameBoard();
+
+            void UpdateScoreboard(Ships.ShipsLeft LocalShipsLeft, Ships.ShipsLeft OpponentShipsLeft);
 
             void LeaveGame();
         }
@@ -102,8 +104,9 @@ namespace Battleship2pMP
                 IsServer = true;
                 MDI_Container.staticMdi_Container.Invoke(MDI_Container.DSwitchMDI, new object[] { MDI_Form_Enum.MDI_Game, true });
                 NetworkServer.StaticgameLogic = new GameLogic();
-                NetworkServer.StaticClientInterface.GameStarting(GetBinaryArray(NetworkServer.StaticgameLogic.ClientGameBoard, true));
+                NetworkServer.StaticClientInterface.GameStarting(GetBinaryArray(NetworkServer.StaticgameLogic.ClientGameBoard, true), NetworkServer.StaticgameLogic.ClientShipsLeft, Properties.Settings.Default.ShotsFirstTurn, Properties.Settings.Default.ShotsPerTurn);
                 MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DUpdateGameBoard, new object[] { NetworkServer.StaticgameLogic.HostGameBoard });
+                MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DSetGameSettings, new object[] { NetworkServer.StaticgameLogic.HostShipsLeft, Properties.Settings.Default.ShotsFirstTurn, Properties.Settings.Default.ShotsPerTurn });
                 return null;
             }
 
@@ -138,10 +141,11 @@ namespace Battleship2pMP
         // Derived class of the client interface containing the actual functions
         private class ClientInterfaceClass : IClientInterface
         {
-            public void GameStarting(byte[] gameBoardTilesBinary)
+            public void GameStarting(byte[] gameBoardTilesBinary, Ships.ShipsLeft ShipsToPlace, int ShotsFirstTurn, int ShotsPerTurn)
             {
                 IsServer = false;
                 MDI_Container.staticMdi_Container.Invoke(MDI_Container.DSwitchMDI, new object[] { MDI_Form_Enum.MDI_Game, true });
+                MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DSetGameSettings, new object[] { ShipsToPlace, ShotsFirstTurn, ShotsPerTurn });
                 MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DUpdateGameBoard, new object[] { GetObjectFromBinaryArray<GameLogic.GameBoardTile[,]>(gameBoardTilesBinary, true) });
             }
 
@@ -184,6 +188,11 @@ namespace Battleship2pMP
             public void InvalidateGameBoard()
             {
                 MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DInvalidate);
+            }
+
+            public void UpdateScoreboard(Ships.ShipsLeft LocalShipsLeft, Ships.ShipsLeft OpponentShipsLeft)
+            {
+                MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DUpdateScoreboard, new object[] { LocalShipsLeft, OpponentShipsLeft });
             }
 
             public void LeaveGame()
@@ -240,7 +249,7 @@ namespace Battleship2pMP
                 //Register a instance of the server interface and make it available to the client via RPC
                 RemoteProcedureCalls.Server.RegisterInstanceForPublicRemoteCall<ServerInterfaceClass, IServerInterface>(new ServerInterfaceClass(), "Server");
                 //Get the clients RPC interface
-                StaticClientInterface = RemoteProcedureCalls.Client.CreateProxyToPublicNamedInstance<IClientInterface>(connection, "Client", out string instanceId, new SendReceiveOptions<ProtobufSerializer>());
+                StaticClientInterface = RemoteProcedureCalls.Client.CreateProxyToPublicNamedInstance<IClientInterface>(connection, "Client", out _, new SendReceiveOptions<ProtobufSerializer>());
                 //Send a command to the client to tell it to connect to the servers RPC
                 connection.SendObject<string>("Initialize-Connection", "");
             }

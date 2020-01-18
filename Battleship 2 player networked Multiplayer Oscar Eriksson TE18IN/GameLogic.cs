@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Battleship2pMP.MDI_Forms;
 using LibOscar;
 using static LibOscar.Methods;
+using ProtoBuf;
 
 namespace Battleship2pMP
 {
@@ -20,12 +21,23 @@ namespace Battleship2pMP
 
         public Networking.NetworkSprite[] ClientSpriteTable;
 
+        public Ships.ShipsLeft HostShipsLeft;
+
+        public Ships.ShipsLeft ClientShipsLeft;
+
         public bool OpponentDonePlacingShips = false;
 
         bool ClientsTurn;
 
+        private int PostTurnDelay;
+
         public GameLogic()
         {
+
+            HostShipsLeft = new Ships.ShipsLeft(Properties.Settings.Default.Carriers, Properties.Settings.Default.Battleships, Properties.Settings.Default.Cruisers, Properties.Settings.Default.Destroyers, Properties.Settings.Default.Submarines);
+            PostTurnDelay = Properties.Settings.Default.PostTurnDelay;
+            ClientShipsLeft = HostShipsLeft;
+
             int x = 61;
             int rowx = 0;
             int rowy = 0;
@@ -55,6 +67,7 @@ namespace Battleship2pMP
         {
 
             PushGameBoardUpdates();
+            UpdateScoreboards();
 
             //Randomly select who starts
             Random random = new Random();
@@ -78,6 +91,8 @@ namespace Battleship2pMP
         public void FireShots(System.Drawing.Point[] Targets, bool TargetClient)
         {
             ref GameBoardTile[,] TargetGameBoard = ref TargetClient ? ref ClientGameBoard : ref HostGameBoard;
+
+            ref Ships.ShipsLeft TargetShipCounter = ref TargetClient ? ref ClientShipsLeft : ref HostShipsLeft;
 
 
             foreach(Point target in Targets)
@@ -107,6 +122,28 @@ namespace Battleship2pMP
                     {
                         HitShipSprite.Enabled = true;
                         HitShipSprite.ShipDestroyed = true;
+
+                        switch (HitShipSprite.ShipType)
+                        {
+                            case Ships.ShipEnum.Carrier:
+                                TargetShipCounter.Carriers--;
+                                break;
+                            case Ships.ShipEnum.Battleship:
+                                TargetShipCounter.Battleships--;
+                                break;
+                            case Ships.ShipEnum.Cruiser:
+                                TargetShipCounter.Cruisers--;
+                                break;
+                            case Ships.ShipEnum.Destroyer:
+                                TargetShipCounter.Destroyers--;
+                                break;
+                            case Ships.ShipEnum.SubMarine:
+                                TargetShipCounter.Submarines--;
+                                break;
+                        }
+
+                        UpdateScoreboards();
+
                     }
 
 
@@ -121,7 +158,7 @@ namespace Battleship2pMP
 
             PushGameBoardUpdates();
 
-            ExecutionTimer.ExecuteAfterDelay((o, ee) => TurnDone(), 3000);
+            ExecutionTimer.ExecuteAfterDelay((o, ee) => TurnDone(), PostTurnDelay);
 
         }
 
@@ -152,6 +189,12 @@ namespace Battleship2pMP
         {
             MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DInvalidate);
             Networking.NetworkServer.StaticClientInterface.InvalidateGameBoard();
+        }
+
+        void UpdateScoreboards()
+        {
+            MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DUpdateScoreboard, new object[] { HostShipsLeft, ClientShipsLeft });
+            Networking.NetworkServer.StaticClientInterface.UpdateScoreboard(ClientShipsLeft, HostShipsLeft);
         }
 
         void TurnDone()
@@ -204,4 +247,7 @@ namespace Battleship2pMP
     {
         Left, Up, Right, Down
     }
+
+
+
 }

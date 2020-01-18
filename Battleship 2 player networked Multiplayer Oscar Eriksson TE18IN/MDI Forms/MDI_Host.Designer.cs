@@ -28,29 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.btn_Back_To_MainMenu = new System.Windows.Forms.Button();
+            this.Btn_Back_To_MainMenu = new System.Windows.Forms.Button();
             this.lbl_Title = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.btn_Host = new System.Windows.Forms.Button();
             this.tbx_IPs = new System.Windows.Forms.TextBox();
             this.lbl_IP = new System.Windows.Forms.Label();
             this.lbl_GameStart = new System.Windows.Forms.Label();
+            this.Btn_GameSettings = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
-            // btn_Back_To_MainMenu
+            // Btn_Back_To_MainMenu
             // 
-            this.btn_Back_To_MainMenu.BackColor = System.Drawing.Color.Aqua;
-            this.btn_Back_To_MainMenu.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btn_Back_To_MainMenu.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Back_To_MainMenu.Location = new System.Drawing.Point(12, 612);
-            this.btn_Back_To_MainMenu.Name = "btn_Back_To_MainMenu";
-            this.btn_Back_To_MainMenu.Size = new System.Drawing.Size(159, 36);
-            this.btn_Back_To_MainMenu.TabIndex = 5;
-            this.btn_Back_To_MainMenu.Text = "Main Menu";
-            this.btn_Back_To_MainMenu.UseCompatibleTextRendering = true;
-            this.btn_Back_To_MainMenu.UseVisualStyleBackColor = false;
-            this.btn_Back_To_MainMenu.Click += new System.EventHandler(this.Btn_Back_To_MainMenu_Click);
+            this.Btn_Back_To_MainMenu.BackColor = System.Drawing.Color.Aqua;
+            this.Btn_Back_To_MainMenu.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.Btn_Back_To_MainMenu.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Btn_Back_To_MainMenu.Location = new System.Drawing.Point(12, 612);
+            this.Btn_Back_To_MainMenu.Name = "Btn_Back_To_MainMenu";
+            this.Btn_Back_To_MainMenu.Size = new System.Drawing.Size(159, 36);
+            this.Btn_Back_To_MainMenu.TabIndex = 5;
+            this.Btn_Back_To_MainMenu.Text = "Main Menu";
+            this.Btn_Back_To_MainMenu.UseCompatibleTextRendering = true;
+            this.Btn_Back_To_MainMenu.UseVisualStyleBackColor = false;
+            this.Btn_Back_To_MainMenu.Click += new System.EventHandler(this.Btn_Back_To_MainMenu_Click);
             // 
             // lbl_Title
             // 
@@ -121,18 +122,33 @@
             this.lbl_GameStart.Text = "The game will start ones a client connects";
             this.lbl_GameStart.Visible = false;
             // 
+            // Btn_GameSettings
+            // 
+            this.Btn_GameSettings.BackColor = System.Drawing.Color.Aqua;
+            this.Btn_GameSettings.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.Btn_GameSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Btn_GameSettings.Location = new System.Drawing.Point(161, 504);
+            this.Btn_GameSettings.Name = "Btn_GameSettings";
+            this.Btn_GameSettings.Size = new System.Drawing.Size(159, 36);
+            this.Btn_GameSettings.TabIndex = 11;
+            this.Btn_GameSettings.Text = "Game Settings";
+            this.Btn_GameSettings.UseCompatibleTextRendering = true;
+            this.Btn_GameSettings.UseVisualStyleBackColor = false;
+            this.Btn_GameSettings.Click += new System.EventHandler(this.Btn_GameSettings_Click);
+            // 
             // MDI_Host
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Highlight;
             this.ClientSize = new System.Drawing.Size(1060, 660);
+            this.Controls.Add(this.Btn_GameSettings);
             this.Controls.Add(this.lbl_GameStart);
             this.Controls.Add(this.lbl_IP);
             this.Controls.Add(this.tbx_IPs);
             this.Controls.Add(this.btn_Host);
             this.Controls.Add(this.lbl_Title);
-            this.Controls.Add(this.btn_Back_To_MainMenu);
+            this.Controls.Add(this.Btn_Back_To_MainMenu);
             this.Controls.Add(this.pictureBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "MDI_Host";
@@ -146,11 +162,12 @@
         #endregion
 
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Button btn_Back_To_MainMenu;
+        private System.Windows.Forms.Button Btn_Back_To_MainMenu;
         private System.Windows.Forms.Label lbl_Title;
         private System.Windows.Forms.Button btn_Host;
         private System.Windows.Forms.TextBox tbx_IPs;
         private System.Windows.Forms.Label lbl_IP;
         private System.Windows.Forms.Label lbl_GameStart;
+        private System.Windows.Forms.Button Btn_GameSettings;
     }
 }

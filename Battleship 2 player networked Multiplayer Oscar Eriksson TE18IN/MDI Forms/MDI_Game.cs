@@ -23,6 +23,8 @@ namespace Battleship2pMP.MDI_Forms
         public delegate void DelSwitchGameBoardView(bool ShowOpponentsGameBoard);
         public delegate void DelInvalidate();
         public delegate void DelStopUpdateTimer();
+        public delegate void DelUpdateScoreboard(Ships.ShipsLeft LocalShipsLeft, Ships.ShipsLeft OpponentShipsLeft);
+        public delegate void DelSetGameSettings(Ships.ShipsLeft ShipsToPlace, int FirstTurnShots, int ShotsPerGameTurn);
 
         public DelUpdateGameBoard DUpdateGameBoard;
         /// <summary>
@@ -31,6 +33,8 @@ namespace Battleship2pMP.MDI_Forms
         public DelSwitchGameBoardView DSwitchGameBoardView;
         public DelInvalidate DInvalidate;
         public DelStopUpdateTimer DStopUpdateTimer;
+        public DelUpdateScoreboard DUpdateScoreboard;
+        public DelSetGameSettings DSetGameSettings;
 
         private ShipOrientation orientation = ShipOrientation.Down;
 
@@ -42,8 +46,9 @@ namespace Battleship2pMP.MDI_Forms
         private bool drawTargets = false;
 
         private List<Point> Targets;
-        private bool firstTurn = true;
-        private int shotsFirstTurn = 4;
+        private bool FirstTurn = true;
+        private int ShotsFirstTurn;
+        private int ShotsPerTurn;
 
         public GameLogic.GameBoardTile[,] localGameBoardTiles = new GameLogic.GameBoardTile[0, 0];
         public GameLogic.GameBoardTile[,] remoteGameBoardTiles = new GameLogic.GameBoardTile[0, 0];
@@ -56,14 +61,9 @@ namespace Battleship2pMP.MDI_Forms
         private bool DeleteMode = false;
 
         //Ships left to place counters
-        private byte CarriersLeft = 1;
-        private byte BattleshipsLeft = 1;
-        private byte CruisersLeft = 1;
-        private byte DestroyersLeft = 2;
-        private byte SubmarinesLeft = 3;
+        Ships.ShipsLeft ShipsLeftToPlace;
 
         public Timer UpdateTimer;
-        EventHandler UpdateEventHandler;
 
         public MDI_Game()
         {
@@ -93,11 +93,12 @@ namespace Battleship2pMP.MDI_Forms
 
             UpdateTimer = new Timer();
             UpdateTimer.Interval = 10;
-            UpdateEventHandler = new EventHandler(Update);
-            UpdateTimer.Tick += UpdateEventHandler;
+            UpdateTimer.Tick += new EventHandler(Update);
             UpdateTimer.Start();
 
             DStopUpdateTimer = new DelStopUpdateTimer(StopUpdateTimer);
+            DUpdateScoreboard = new DelUpdateScoreboard(UpdateScoreboard);
+            DSetGameSettings = new DelSetGameSettings(SetGameSettings);
 
             pbx_Selected_Ship.Image = (Image)Ships.Ship.Carrier.ShipSprite.Clone();
             SelectedShipType = Ships.ShipEnum.Carrier;
@@ -323,7 +324,7 @@ namespace Battleship2pMP.MDI_Forms
 
                             localSpriteTable.Add(new Sprite(SelectedShipType, orientation, pbx_Selected_Ship.Location, TilesCovered.ToArray()));
 
-                            ref byte ShipsLeft = ref ShipsLeftToBePlaced(SelectedShipType);
+                            ref int ShipsLeft = ref ShipsLeftToBePlaced(SelectedShipType);
                             ShipsLeft--;
                             UpdateRadioButtonText(SelectedShipType);
                             if (ShipsLeft <= 0)
@@ -380,51 +381,36 @@ namespace Battleship2pMP.MDI_Forms
                     if (remoteGameBoardTiles[Reticle_Cord.X,Reticle_Cord.Y].TileType == GameLogic.TileType.Ship || remoteGameBoardTiles[Reticle_Cord.X, Reticle_Cord.Y].TileType == GameLogic.TileType.Water)
                     {
 
-                        if (firstTurn)
-                        {
-                            Targets.Add(pbx_Reticle.Location);
+                        ref int ShotsThisTurn = ref FirstTurn ? ref ShotsFirstTurn : ref ShotsPerTurn;
 
-                            if (Targets.Count >= shotsFirstTurn)
+
+                        Targets.Add(pbx_Reticle.Location);
+
+                        if (Targets.Count >= ShotsThisTurn)
+                        {
+                            List<Point> CordTargets = new List<Point>();
+
+                            foreach (Point currentTaget in Targets)
                             {
-                                List<Point> CordTargets = new List<Point>();
-
-                                foreach (Point currentTaget in Targets)
-                                {
-                                    CordTargets.Add(new Point(((currentTaget.X + 10) / 61) - 1, (currentTaget.Y + 10) / 61));
-                                }
-
-                                showReticle = false;
-                                pbx_Reticle.Visible = false;
-
-                                if (Networking.IsServer)
-                                {
-                                    Networking.NetworkServer.StaticgameLogic.FireShots(CordTargets.ToArray(), true);
-                                }
-                                else
-                                {
-                                    Networking.NetworkClient.RemoteServerInterface.FireShots(GetBinaryArray(CordTargets.ToArray(), false));
-                                }
-
-                                firstTurn = false;
-
+                                CordTargets.Add(new Point(((currentTaget.X + 10) / 61) - 1, (currentTaget.Y + 10) / 61));
                             }
-
-                        }
-                        else
-                        {
 
                             showReticle = false;
                             pbx_Reticle.Visible = false;
 
                             if (Networking.IsServer)
                             {
-                                Networking.NetworkServer.StaticgameLogic.FireShots(new Point[] { Reticle_Cord }, true);
+                                Networking.NetworkServer.StaticgameLogic.FireShots(CordTargets.ToArray(), true);
                             }
                             else
                             {
-                                Networking.NetworkClient.RemoteServerInterface.FireShots(GetBinaryArray(new Point[] { Reticle_Cord }, false));
+                                Networking.NetworkClient.RemoteServerInterface.FireShots(GetBinaryArray(CordTargets.ToArray(), false));
                             }
+
+                            FirstTurn = false;
+
                         }
+
                     }
 
                 }
@@ -595,6 +581,7 @@ namespace Battleship2pMP.MDI_Forms
                 if (disposing)
                 {
                     SpriteImage.Dispose();
+                    Desposed = true;
                 }
             }
 
@@ -602,6 +589,7 @@ namespace Battleship2pMP.MDI_Forms
             {
                 // Dispose of unmanaged resources.
                 Dispose(true);
+                SpriteImage.Dispose();
                 // Suppress finalization.
                 GC.SuppressFinalize(this);
             }
@@ -656,24 +644,24 @@ namespace Battleship2pMP.MDI_Forms
             DeleteMode = true;
         }
 
-        private ref byte ShipsLeftToBePlaced(Ships.ShipEnum ShipType)
+        private ref int ShipsLeftToBePlaced(Ships.ShipEnum ShipType)
         {
             switch (ShipType)
             {
                 case Ships.ShipEnum.Carrier:
-                    return ref CarriersLeft;
+                    return ref ShipsLeftToPlace.Carriers;
 
                 case Ships.ShipEnum.Battleship:
-                    return ref BattleshipsLeft;
+                    return ref ShipsLeftToPlace.Battleships;
 
                 case Ships.ShipEnum.Cruiser:
-                    return ref CruisersLeft;
+                    return ref ShipsLeftToPlace.Cruisers;
 
                 case Ships.ShipEnum.Destroyer:
-                    return ref DestroyersLeft;
+                    return ref ShipsLeftToPlace.Destroyers;
 
                 case Ships.ShipEnum.SubMarine:
-                    return ref SubmarinesLeft;
+                    return ref ShipsLeftToPlace.Submarines;
 
                 default:
                     throw new Exception("Invalid Ship type");
@@ -727,7 +715,7 @@ namespace Battleship2pMP.MDI_Forms
                     break;
 
                 case Ships.ShipEnum.Battleship:
-                    RadioButtonFromShipType(ShipType).Text = "Battleship          " + ShipsLeftToBePlaced(ShipType).ToString() + " Left";
+                    RadioButtonFromShipType(ShipType).Text = "Battleship        " + ShipsLeftToBePlaced(ShipType).ToString() + " Left";
                     break;
 
                 case Ships.ShipEnum.Cruiser:
@@ -735,11 +723,11 @@ namespace Battleship2pMP.MDI_Forms
                     break;
 
                 case Ships.ShipEnum.Destroyer:
-                    RadioButtonFromShipType(ShipType).Text = "Destroyer           " + ShipsLeftToBePlaced(ShipType).ToString() + " Left";
+                    RadioButtonFromShipType(ShipType).Text = "Destroyer         " + ShipsLeftToBePlaced(ShipType).ToString() + " Left";
                     break;
 
                 case Ships.ShipEnum.SubMarine:
-                    RadioButtonFromShipType(ShipType).Text = "Submarine           " + ShipsLeftToBePlaced(ShipType).ToString() + " Left";
+                    RadioButtonFromShipType(ShipType).Text = "Submarine       " + ShipsLeftToBePlaced(ShipType).ToString() + " Left";
                     break;
 
                 default:
@@ -756,10 +744,10 @@ namespace Battleship2pMP.MDI_Forms
             }
         }
 
-        private void btn_Ship_Placement_Done_Click(object sender, EventArgs e)
+        private void Btn_Ship_Placement_Done_Click(object sender, EventArgs e)
         {
 
-            if(CarriersLeft+BattleshipsLeft+CruisersLeft+DestroyersLeft+SubmarinesLeft != 0)
+            if(ShipsLeftToPlace.Total != 0)
             {
                 MessageBox.Show("Please place all ships before continuing", "You have ships left to be placed!",MessageBoxButtons.OK,MessageBoxIcon.Information);
                 return;
@@ -768,7 +756,7 @@ namespace Battleship2pMP.MDI_Forms
             DeleteMode = false;
 
             Rbtn_Remove.Enabled = false;
-            btn_Ship_Placement_Done.Enabled = false;
+            Btn_Ship_Placement_Done.Enabled = false;
 
             if (Networking.IsServer)
             {
@@ -822,6 +810,8 @@ namespace Battleship2pMP.MDI_Forms
                 drawTargets = true;
                 pbx_Reticle.Visible = true;
                 Targets = new List<Point>();
+                lbl_YourTurn.Visible = true;
+                lbl_OpponentsTurn.Visible = false;
             }
             else
             {
@@ -830,17 +820,63 @@ namespace Battleship2pMP.MDI_Forms
                 showReticle = false;
                 drawTargets = false;
                 pbx_Reticle.Visible = false;
+                lbl_YourTurn.Visible = false;
+                lbl_OpponentsTurn.Visible = true;
             }
         }
 
         void StopUpdateTimer()
         {
             UpdateTimer.Stop();
-            UpdateTimer.Tick -= UpdateEventHandler;
             UpdateTimer.Dispose();
         }
 
-        private void bnt_Surrender_Click(object sender, EventArgs e)
+        void UpdateScoreboard(Ships.ShipsLeft LocalShipsLeft, Ships.ShipsLeft OpponentShipsLeft)
+        {
+
+            if(pnl_PlaceShips.Visible == true)
+            {
+                pnl_PlaceShips.Visible = false;
+                pnl_PlaceShips.Enabled = false;
+                pnl_ScoreBoard.Visible = true;
+                pnl_ScoreBoard.Enabled = true;
+            }
+
+            lbl_Carrier_You.Text = LocalShipsLeft.Carriers.ToString();
+            lbl_Carrier_Op.Text = OpponentShipsLeft.Carriers.ToString();
+
+            lbl_Battleship_You.Text = LocalShipsLeft.Battleships.ToString();
+            lbl_Battleship_Op.Text = OpponentShipsLeft.Battleships.ToString();
+
+            lbl_Cruiser_You.Text = LocalShipsLeft.Cruisers.ToString();
+            lbl_Cruiser_Op.Text = OpponentShipsLeft.Cruisers.ToString();
+
+            lbl_Destroyer_You.Text = LocalShipsLeft.Destroyers.ToString();
+            lbl_Destroyer_Op.Text = OpponentShipsLeft.Destroyers.ToString();
+
+            lbl_Submarine_You.Text = LocalShipsLeft.Submarines.ToString();
+            lbl_Submarine_Op.Text = OpponentShipsLeft.Submarines.ToString();
+
+            lbl_Total_You.Text = LocalShipsLeft.Total.ToString();
+            lbl_Total_Op.Text = OpponentShipsLeft.Total.ToString();
+
+        }
+
+        public void SetGameSettings(Ships.ShipsLeft ShipsToPlace, int FirstTurnShots, int ShotsPerGameTurn)
+        {
+            ShipsLeftToPlace = ShipsToPlace;
+            foreach(Ships.ShipEnum ShipType in (Ships.ShipEnum[])Enum.GetValues(typeof(Ships.ShipEnum)))
+            {
+                UpdateRadioButtonText(ShipType);
+            }
+
+            ShotsFirstTurn = FirstTurnShots;
+            ShotsPerTurn = ShotsPerGameTurn;
+
+
+        }
+
+        private void Bnt_Surrender_Click(object sender, EventArgs e)
         {
 
         }

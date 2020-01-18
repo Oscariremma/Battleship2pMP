@@ -17,7 +17,7 @@ namespace Battleship2pMP.MDI_Forms
             InitializeComponent();
             //Set fonts to memory font loaded in main
             lbl_Title.Font = new Font(Program.pfc.Families[0], lbl_Title.Font.Size);
-            btn_Back_To_MainMenu.Font = new Font(Program.pfc.Families[0], btn_Back_To_MainMenu.Font.Size);
+            Btn_Back_To_MainMenu.Font = new Font(Program.pfc.Families[0], Btn_Back_To_MainMenu.Font.Size);
 
             pictureBox1.BackgroundImage = Program.MainMenuImg;
 
@@ -33,12 +33,6 @@ namespace Battleship2pMP.MDI_Forms
         }
 
 
-
-        private void Button4_Click(object sender, EventArgs e)
-        {
-            MDI_Container.SwitchMDI(MDI_Form_Enum.MDI_Game, true);
-        }
-
         private void Btn_Host_Click(object sender, EventArgs e)
         {
             if (!Networking.NetworkServer.ServerListening)
@@ -48,7 +42,6 @@ namespace Battleship2pMP.MDI_Forms
                 lbl_IP.Visible = true;
                 tbx_IPs.Visible = true;
                 lbl_GameStart.Visible = true;
-                
             }
             else
             {
@@ -65,9 +58,9 @@ namespace Battleship2pMP.MDI_Forms
 
         }
 
-        private void Button1_Click(object sender, EventArgs e)
+        private void Btn_GameSettings_Click(object sender, EventArgs e)
         {
-            MDI_Container.SwitchMDI(MDI_Form_Enum.MDI_Game, true);
+            MDI_Container.SwitchMDI(MDI_Form_Enum.MDI_GameSettings);
         }
     }
 }

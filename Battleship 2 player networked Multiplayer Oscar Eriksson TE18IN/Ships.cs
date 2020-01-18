@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ProtoBuf;
 
 namespace Battleship2pMP.Ships
 {
@@ -107,4 +108,36 @@ namespace Battleship2pMP.Ships
     }
 
     #endregion Ship Declarations
+
+    [ProtoContract]
+    public struct ShipsLeft
+    {
+        [ProtoMember(1)]
+        public int Carriers;
+        [ProtoMember(2)]
+        public int Battleships;
+        [ProtoMember(3)]
+        public int Cruisers;
+        [ProtoMember(4)]
+        public int Destroyers;
+        [ProtoMember(5)]
+        public int Submarines;
+
+        public int Total
+        {
+            get { return Carriers + Battleships + Cruisers + Destroyers + Submarines; }
+        }
+
+        public ShipsLeft(int Carrier, int Battleship, int Cruiser, int Destroyer, int Submarine)
+        {
+            Carriers = Carrier;
+            Battleships = Battleship;
+            Cruisers = Cruiser;
+            Destroyers = Destroyer;
+            Submarines = Submarine;
+        }
+
+
+    }
+
 }
