@@ -50,6 +50,30 @@
             this.lbl_cord2 = new System.Windows.Forms.Label();
             this.lbl_cord1 = new System.Windows.Forms.Label();
             this.lbl_cord9 = new System.Windows.Forms.Label();
+            this.Btn_Surrender = new System.Windows.Forms.Button();
+            this.pnl_GameOver = new System.Windows.Forms.Panel();
+            this.lbl_OpSurrenderd = new System.Windows.Forms.Label();
+            this.lbl_YouSurrenderd = new System.Windows.Forms.Label();
+            this.lbl_OpLeftGame = new System.Windows.Forms.Label();
+            this.lbl_WaitingForRematch = new System.Windows.Forms.Label();
+            this.lbl_OpWantsRematch = new System.Windows.Forms.Label();
+            this.Btn_SwitchGameBoard = new System.Windows.Forms.Button();
+            this.Btn_Rematch = new System.Windows.Forms.Button();
+            this.Btn_LeaveGame = new System.Windows.Forms.Button();
+            this.label22 = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
+            this.label20 = new System.Windows.Forms.Label();
+            this.lbl_Turns = new System.Windows.Forms.Label();
+            this.lbl_Opponent_Accuracy = new System.Windows.Forms.Label();
+            this.lbl_You_Accuracy = new System.Windows.Forms.Label();
+            this.lbl_Opponent_Hits = new System.Windows.Forms.Label();
+            this.lbl_You_Hits = new System.Windows.Forms.Label();
+            this.lbl_Opponent_ShotsFired = new System.Windows.Forms.Label();
+            this.lbl_You_ShotsFired = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.lbl_Defeat = new System.Windows.Forms.Label();
+            this.lbl_Victory = new System.Windows.Forms.Label();
             this.pnl_ScoreBoard = new System.Windows.Forms.Panel();
             this.lbl_Total_Op = new System.Windows.Forms.Label();
             this.lbl_Total_You = new System.Windows.Forms.Label();
@@ -83,10 +107,11 @@
             this.Rbtn_Cruiser = new System.Windows.Forms.RadioButton();
             this.Rbtn_Battleship = new System.Windows.Forms.RadioButton();
             this.Rbtn_Carrier = new System.Windows.Forms.RadioButton();
-            this.Bnt_Surrender = new System.Windows.Forms.Button();
+            this.lbl_WhosGameBoard = new System.Windows.Forms.Label();
             this.pnlGameBoard.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbx_Reticle)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbx_Selected_Ship)).BeginInit();
+            this.pnl_GameOver.SuspendLayout();
             this.pnl_ScoreBoard.SuspendLayout();
             this.pnl_PlaceShips.SuspendLayout();
             this.SuspendLayout();
@@ -355,6 +380,312 @@
             this.lbl_cord9.TabIndex = 0;
             this.lbl_cord9.Text = "9";
             this.lbl_cord9.UseCompatibleTextRendering = true;
+            // 
+            // Btn_Surrender
+            // 
+            this.Btn_Surrender.BackColor = System.Drawing.SystemColors.Highlight;
+            this.Btn_Surrender.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.Btn_Surrender.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Btn_Surrender.Location = new System.Drawing.Point(12, 605);
+            this.Btn_Surrender.Name = "Btn_Surrender";
+            this.Btn_Surrender.Size = new System.Drawing.Size(122, 43);
+            this.Btn_Surrender.TabIndex = 9;
+            this.Btn_Surrender.Text = "Surrender";
+            this.Btn_Surrender.UseCompatibleTextRendering = true;
+            this.Btn_Surrender.UseVisualStyleBackColor = false;
+            this.Btn_Surrender.Click += new System.EventHandler(this.Btn_Surrender_Click);
+            // 
+            // pnl_GameOver
+            // 
+            this.pnl_GameOver.BackColor = System.Drawing.Color.Transparent;
+            this.pnl_GameOver.BackgroundImage = global::Battleship2pMP.Properties.Resources.Large_Menu_Board;
+            this.pnl_GameOver.Controls.Add(this.lbl_OpSurrenderd);
+            this.pnl_GameOver.Controls.Add(this.lbl_YouSurrenderd);
+            this.pnl_GameOver.Controls.Add(this.lbl_OpLeftGame);
+            this.pnl_GameOver.Controls.Add(this.lbl_WaitingForRematch);
+            this.pnl_GameOver.Controls.Add(this.lbl_OpWantsRematch);
+            this.pnl_GameOver.Controls.Add(this.Btn_SwitchGameBoard);
+            this.pnl_GameOver.Controls.Add(this.Btn_Rematch);
+            this.pnl_GameOver.Controls.Add(this.Btn_LeaveGame);
+            this.pnl_GameOver.Controls.Add(this.label22);
+            this.pnl_GameOver.Controls.Add(this.label21);
+            this.pnl_GameOver.Controls.Add(this.label20);
+            this.pnl_GameOver.Controls.Add(this.lbl_Turns);
+            this.pnl_GameOver.Controls.Add(this.lbl_Opponent_Accuracy);
+            this.pnl_GameOver.Controls.Add(this.lbl_You_Accuracy);
+            this.pnl_GameOver.Controls.Add(this.lbl_Opponent_Hits);
+            this.pnl_GameOver.Controls.Add(this.lbl_You_Hits);
+            this.pnl_GameOver.Controls.Add(this.lbl_Opponent_ShotsFired);
+            this.pnl_GameOver.Controls.Add(this.lbl_You_ShotsFired);
+            this.pnl_GameOver.Controls.Add(this.label10);
+            this.pnl_GameOver.Controls.Add(this.label9);
+            this.pnl_GameOver.Controls.Add(this.lbl_Defeat);
+            this.pnl_GameOver.Controls.Add(this.lbl_Victory);
+            this.pnl_GameOver.Location = new System.Drawing.Point(12, 22);
+            this.pnl_GameOver.Name = "pnl_GameOver";
+            this.pnl_GameOver.Size = new System.Drawing.Size(370, 556);
+            this.pnl_GameOver.TabIndex = 10;
+            this.pnl_GameOver.Visible = false;
+            // 
+            // lbl_OpSurrenderd
+            // 
+            this.lbl_OpSurrenderd.AutoSize = true;
+            this.lbl_OpSurrenderd.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_OpSurrenderd.ForeColor = System.Drawing.Color.White;
+            this.lbl_OpSurrenderd.Location = new System.Drawing.Point(94, 109);
+            this.lbl_OpSurrenderd.Name = "lbl_OpSurrenderd";
+            this.lbl_OpSurrenderd.Size = new System.Drawing.Size(161, 20);
+            this.lbl_OpSurrenderd.TabIndex = 49;
+            this.lbl_OpSurrenderd.Text = "Opponent surrenderd";
+            this.lbl_OpSurrenderd.Visible = false;
+            // 
+            // lbl_YouSurrenderd
+            // 
+            this.lbl_YouSurrenderd.AutoSize = true;
+            this.lbl_YouSurrenderd.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_YouSurrenderd.ForeColor = System.Drawing.Color.White;
+            this.lbl_YouSurrenderd.Location = new System.Drawing.Point(123, 109);
+            this.lbl_YouSurrenderd.Name = "lbl_YouSurrenderd";
+            this.lbl_YouSurrenderd.Size = new System.Drawing.Size(119, 20);
+            this.lbl_YouSurrenderd.TabIndex = 48;
+            this.lbl_YouSurrenderd.Text = "You surrenderd";
+            this.lbl_YouSurrenderd.Visible = false;
+            // 
+            // lbl_OpLeftGame
+            // 
+            this.lbl_OpLeftGame.AutoSize = true;
+            this.lbl_OpLeftGame.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_OpLeftGame.ForeColor = System.Drawing.Color.White;
+            this.lbl_OpLeftGame.Location = new System.Drawing.Point(62, 406);
+            this.lbl_OpLeftGame.Name = "lbl_OpLeftGame";
+            this.lbl_OpLeftGame.Size = new System.Drawing.Size(242, 20);
+            this.lbl_OpLeftGame.TabIndex = 47;
+            this.lbl_OpLeftGame.Text = "Your opponent has left the game";
+            this.lbl_OpLeftGame.Visible = false;
+            // 
+            // lbl_WaitingForRematch
+            // 
+            this.lbl_WaitingForRematch.AutoSize = true;
+            this.lbl_WaitingForRematch.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_WaitingForRematch.ForeColor = System.Drawing.Color.White;
+            this.lbl_WaitingForRematch.Location = new System.Drawing.Point(39, 406);
+            this.lbl_WaitingForRematch.Name = "lbl_WaitingForRematch";
+            this.lbl_WaitingForRematch.Size = new System.Drawing.Size(289, 20);
+            this.lbl_WaitingForRematch.TabIndex = 46;
+            this.lbl_WaitingForRematch.Text = "Waiting for opponent to accept rematch";
+            this.lbl_WaitingForRematch.Visible = false;
+            // 
+            // lbl_OpWantsRematch
+            // 
+            this.lbl_OpWantsRematch.AutoSize = true;
+            this.lbl_OpWantsRematch.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_OpWantsRematch.ForeColor = System.Drawing.Color.White;
+            this.lbl_OpWantsRematch.Location = new System.Drawing.Point(69, 403);
+            this.lbl_OpWantsRematch.Name = "lbl_OpWantsRematch";
+            this.lbl_OpWantsRematch.Size = new System.Drawing.Size(236, 20);
+            this.lbl_OpWantsRematch.TabIndex = 45;
+            this.lbl_OpWantsRematch.Text = "Your opponent wants a rematch";
+            this.lbl_OpWantsRematch.Visible = false;
+            // 
+            // Btn_SwitchGameBoard
+            // 
+            this.Btn_SwitchGameBoard.BackColor = System.Drawing.SystemColors.Highlight;
+            this.Btn_SwitchGameBoard.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.Btn_SwitchGameBoard.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Btn_SwitchGameBoard.Location = new System.Drawing.Point(24, 434);
+            this.Btn_SwitchGameBoard.Name = "Btn_SwitchGameBoard";
+            this.Btn_SwitchGameBoard.Size = new System.Drawing.Size(313, 43);
+            this.Btn_SwitchGameBoard.TabIndex = 44;
+            this.Btn_SwitchGameBoard.Text = "View Opponents Game Board";
+            this.Btn_SwitchGameBoard.UseCompatibleTextRendering = true;
+            this.Btn_SwitchGameBoard.UseVisualStyleBackColor = false;
+            this.Btn_SwitchGameBoard.Click += new System.EventHandler(this.Btn_SwitchGameBoard_Click);
+            // 
+            // Btn_Rematch
+            // 
+            this.Btn_Rematch.BackColor = System.Drawing.SystemColors.Highlight;
+            this.Btn_Rematch.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.Btn_Rematch.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Btn_Rematch.Location = new System.Drawing.Point(215, 490);
+            this.Btn_Rematch.Name = "Btn_Rematch";
+            this.Btn_Rematch.Size = new System.Drawing.Size(122, 43);
+            this.Btn_Rematch.TabIndex = 43;
+            this.Btn_Rematch.Text = "Rematch";
+            this.Btn_Rematch.UseCompatibleTextRendering = true;
+            this.Btn_Rematch.UseVisualStyleBackColor = false;
+            this.Btn_Rematch.Click += new System.EventHandler(this.Btn_Rematch_Click);
+            // 
+            // Btn_LeaveGame
+            // 
+            this.Btn_LeaveGame.BackColor = System.Drawing.SystemColors.Highlight;
+            this.Btn_LeaveGame.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.Btn_LeaveGame.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Btn_LeaveGame.Location = new System.Drawing.Point(24, 490);
+            this.Btn_LeaveGame.Name = "Btn_LeaveGame";
+            this.Btn_LeaveGame.Size = new System.Drawing.Size(122, 43);
+            this.Btn_LeaveGame.TabIndex = 11;
+            this.Btn_LeaveGame.Text = "Leave Game";
+            this.Btn_LeaveGame.UseCompatibleTextRendering = true;
+            this.Btn_LeaveGame.UseVisualStyleBackColor = false;
+            this.Btn_LeaveGame.Click += new System.EventHandler(this.Btn_LeaveGame_Click);
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F);
+            this.label22.ForeColor = System.Drawing.Color.White;
+            this.label22.Location = new System.Drawing.Point(20, 290);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(84, 22);
+            this.label22.TabIndex = 42;
+            this.label22.Text = "Accuracy";
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F);
+            this.label21.ForeColor = System.Drawing.Color.White;
+            this.label21.Location = new System.Drawing.Point(20, 240);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(41, 22);
+            this.label21.TabIndex = 41;
+            this.label21.Text = "Hits";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F);
+            this.label20.ForeColor = System.Drawing.Color.White;
+            this.label20.Location = new System.Drawing.Point(20, 190);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(102, 22);
+            this.label20.TabIndex = 40;
+            this.label20.Text = "Shots Fired";
+            // 
+            // lbl_Turns
+            // 
+            this.lbl_Turns.AutoSize = true;
+            this.lbl_Turns.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_Turns.ForeColor = System.Drawing.Color.White;
+            this.lbl_Turns.Location = new System.Drawing.Point(122, 353);
+            this.lbl_Turns.Name = "lbl_Turns";
+            this.lbl_Turns.Size = new System.Drawing.Size(130, 20);
+            this.lbl_Turns.TabIndex = 39;
+            this.lbl_Turns.Text = "20,5 turns played";
+            // 
+            // lbl_Opponent_Accuracy
+            // 
+            this.lbl_Opponent_Accuracy.AutoSize = true;
+            this.lbl_Opponent_Accuracy.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_Opponent_Accuracy.ForeColor = System.Drawing.Color.White;
+            this.lbl_Opponent_Accuracy.Location = new System.Drawing.Point(278, 290);
+            this.lbl_Opponent_Accuracy.Name = "lbl_Opponent_Accuracy";
+            this.lbl_Opponent_Accuracy.Size = new System.Drawing.Size(41, 20);
+            this.lbl_Opponent_Accuracy.TabIndex = 37;
+            this.lbl_Opponent_Accuracy.Text = "50%";
+            // 
+            // lbl_You_Accuracy
+            // 
+            this.lbl_You_Accuracy.AutoSize = true;
+            this.lbl_You_Accuracy.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_You_Accuracy.ForeColor = System.Drawing.Color.White;
+            this.lbl_You_Accuracy.Location = new System.Drawing.Point(152, 290);
+            this.lbl_You_Accuracy.Name = "lbl_You_Accuracy";
+            this.lbl_You_Accuracy.Size = new System.Drawing.Size(41, 20);
+            this.lbl_You_Accuracy.TabIndex = 36;
+            this.lbl_You_Accuracy.Text = "50%";
+            // 
+            // lbl_Opponent_Hits
+            // 
+            this.lbl_Opponent_Hits.AutoSize = true;
+            this.lbl_Opponent_Hits.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_Opponent_Hits.ForeColor = System.Drawing.Color.White;
+            this.lbl_Opponent_Hits.Location = new System.Drawing.Point(278, 240);
+            this.lbl_Opponent_Hits.Name = "lbl_Opponent_Hits";
+            this.lbl_Opponent_Hits.Size = new System.Drawing.Size(27, 20);
+            this.lbl_Opponent_Hits.TabIndex = 35;
+            this.lbl_Opponent_Hits.Text = "20";
+            // 
+            // lbl_You_Hits
+            // 
+            this.lbl_You_Hits.AutoSize = true;
+            this.lbl_You_Hits.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_You_Hits.ForeColor = System.Drawing.Color.White;
+            this.lbl_You_Hits.Location = new System.Drawing.Point(152, 240);
+            this.lbl_You_Hits.Name = "lbl_You_Hits";
+            this.lbl_You_Hits.Size = new System.Drawing.Size(27, 20);
+            this.lbl_You_Hits.TabIndex = 34;
+            this.lbl_You_Hits.Text = "20";
+            // 
+            // lbl_Opponent_ShotsFired
+            // 
+            this.lbl_Opponent_ShotsFired.AutoSize = true;
+            this.lbl_Opponent_ShotsFired.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_Opponent_ShotsFired.ForeColor = System.Drawing.Color.White;
+            this.lbl_Opponent_ShotsFired.Location = new System.Drawing.Point(278, 190);
+            this.lbl_Opponent_ShotsFired.Name = "lbl_Opponent_ShotsFired";
+            this.lbl_Opponent_ShotsFired.Size = new System.Drawing.Size(27, 20);
+            this.lbl_Opponent_ShotsFired.TabIndex = 33;
+            this.lbl_Opponent_ShotsFired.Text = "20";
+            // 
+            // lbl_You_ShotsFired
+            // 
+            this.lbl_You_ShotsFired.AutoSize = true;
+            this.lbl_You_ShotsFired.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_You_ShotsFired.ForeColor = System.Drawing.Color.White;
+            this.lbl_You_ShotsFired.Location = new System.Drawing.Point(152, 190);
+            this.lbl_You_ShotsFired.Name = "lbl_You_ShotsFired";
+            this.lbl_You_ShotsFired.Size = new System.Drawing.Size(27, 20);
+            this.lbl_You_ShotsFired.TabIndex = 32;
+            this.lbl_You_ShotsFired.Text = "20";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.ForeColor = System.Drawing.Color.White;
+            this.label10.Location = new System.Drawing.Point(242, 146);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(95, 24);
+            this.label10.TabIndex = 31;
+            this.label10.Text = "Opponent";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.ForeColor = System.Drawing.Color.White;
+            this.label9.Location = new System.Drawing.Point(143, 147);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(44, 24);
+            this.label9.TabIndex = 30;
+            this.label9.Text = "You";
+            // 
+            // lbl_Defeat
+            // 
+            this.lbl_Defeat.AutoSize = true;
+            this.lbl_Defeat.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_Defeat.ForeColor = System.Drawing.Color.White;
+            this.lbl_Defeat.Location = new System.Drawing.Point(79, 40);
+            this.lbl_Defeat.Name = "lbl_Defeat";
+            this.lbl_Defeat.Size = new System.Drawing.Size(176, 64);
+            this.lbl_Defeat.TabIndex = 29;
+            this.lbl_Defeat.Text = "Defeat!";
+            this.lbl_Defeat.UseCompatibleTextRendering = true;
+            this.lbl_Defeat.Visible = false;
+            // 
+            // lbl_Victory
+            // 
+            this.lbl_Victory.AutoSize = true;
+            this.lbl_Victory.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_Victory.ForeColor = System.Drawing.Color.White;
+            this.lbl_Victory.Location = new System.Drawing.Point(63, 40);
+            this.lbl_Victory.Name = "lbl_Victory";
+            this.lbl_Victory.Size = new System.Drawing.Size(182, 64);
+            this.lbl_Victory.TabIndex = 28;
+            this.lbl_Victory.Text = "Victory!";
+            this.lbl_Victory.UseCompatibleTextRendering = true;
+            this.lbl_Victory.Visible = false;
             // 
             // pnl_ScoreBoard
             // 
@@ -656,12 +987,16 @@
             // 
             // Btn_Ship_Placement_Done
             // 
-            this.Btn_Ship_Placement_Done.Location = new System.Drawing.Point(83, 260);
+            this.Btn_Ship_Placement_Done.BackColor = System.Drawing.SystemColors.Highlight;
+            this.Btn_Ship_Placement_Done.DialogResult = System.Windows.Forms.DialogResult.No;
+            this.Btn_Ship_Placement_Done.Font = new System.Drawing.Font("Microsoft Sans Serif", 13F);
+            this.Btn_Ship_Placement_Done.Location = new System.Drawing.Point(82, 253);
             this.Btn_Ship_Placement_Done.Name = "Btn_Ship_Placement_Done";
-            this.Btn_Ship_Placement_Done.Size = new System.Drawing.Size(75, 23);
+            this.Btn_Ship_Placement_Done.Size = new System.Drawing.Size(79, 36);
             this.Btn_Ship_Placement_Done.TabIndex = 6;
             this.Btn_Ship_Placement_Done.Text = "Done";
-            this.Btn_Ship_Placement_Done.UseVisualStyleBackColor = true;
+            this.Btn_Ship_Placement_Done.UseCompatibleTextRendering = true;
+            this.Btn_Ship_Placement_Done.UseVisualStyleBackColor = false;
             this.Btn_Ship_Placement_Done.Click += new System.EventHandler(this.Btn_Ship_Placement_Done_Click);
             // 
             // Rbtn_Remove
@@ -748,15 +1083,16 @@
             this.Rbtn_Carrier.UseVisualStyleBackColor = false;
             this.Rbtn_Carrier.CheckedChanged += new System.EventHandler(this.Rbtn_Carrier_CheckedChanged);
             // 
-            // Bnt_Surrender
+            // lbl_WhosGameBoard
             // 
-            this.Bnt_Surrender.Location = new System.Drawing.Point(23, 576);
-            this.Bnt_Surrender.Name = "Bnt_Surrender";
-            this.Bnt_Surrender.Size = new System.Drawing.Size(94, 39);
-            this.Bnt_Surrender.TabIndex = 9;
-            this.Bnt_Surrender.Text = "Surrender";
-            this.Bnt_Surrender.UseVisualStyleBackColor = true;
-            this.Bnt_Surrender.Click += new System.EventHandler(this.Bnt_Surrender_Click);
+            this.lbl_WhosGameBoard.AutoSize = true;
+            this.lbl_WhosGameBoard.BackColor = System.Drawing.SystemColors.Highlight;
+            this.lbl_WhosGameBoard.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lbl_WhosGameBoard.Location = new System.Drawing.Point(681, 4);
+            this.lbl_WhosGameBoard.Name = "lbl_WhosGameBoard";
+            this.lbl_WhosGameBoard.Size = new System.Drawing.Size(93, 15);
+            this.lbl_WhosGameBoard.TabIndex = 11;
+            this.lbl_WhosGameBoard.Text = "Your Game Board";
             // 
             // MDI_Game
             // 
@@ -764,7 +1100,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1060, 660);
-            this.Controls.Add(this.Bnt_Surrender);
+            this.Controls.Add(this.lbl_WhosGameBoard);
+            this.Controls.Add(this.pnl_GameOver);
+            this.Controls.Add(this.Btn_Surrender);
             this.Controls.Add(this.pnl_ScoreBoard);
             this.Controls.Add(this.pnl_PlaceShips);
             this.Controls.Add(this.pnlGameBoard);
@@ -777,11 +1115,14 @@
             this.pnlGameBoard.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbx_Reticle)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbx_Selected_Ship)).EndInit();
+            this.pnl_GameOver.ResumeLayout(false);
+            this.pnl_GameOver.PerformLayout();
             this.pnl_ScoreBoard.ResumeLayout(false);
             this.pnl_ScoreBoard.PerformLayout();
             this.pnl_PlaceShips.ResumeLayout(false);
             this.pnl_PlaceShips.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -838,9 +1179,33 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button Bnt_Surrender;
+        private System.Windows.Forms.Button Btn_Surrender;
         private System.Windows.Forms.Label lbl_Total_Op;
         private System.Windows.Forms.Label lbl_Total_You;
         private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Panel pnl_GameOver;
+        private System.Windows.Forms.Label lbl_Defeat;
+        private System.Windows.Forms.Label lbl_Victory;
+        private System.Windows.Forms.Label lbl_Opponent_Accuracy;
+        private System.Windows.Forms.Label lbl_You_Accuracy;
+        private System.Windows.Forms.Label lbl_Opponent_Hits;
+        private System.Windows.Forms.Label lbl_You_Hits;
+        private System.Windows.Forms.Label lbl_Opponent_ShotsFired;
+        private System.Windows.Forms.Label lbl_You_ShotsFired;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Button Btn_LeaveGame;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.Label lbl_Turns;
+        private System.Windows.Forms.Button Btn_SwitchGameBoard;
+        private System.Windows.Forms.Button Btn_Rematch;
+        private System.Windows.Forms.Label lbl_OpLeftGame;
+        private System.Windows.Forms.Label lbl_WaitingForRematch;
+        private System.Windows.Forms.Label lbl_OpWantsRematch;
+        private System.Windows.Forms.Label lbl_WhosGameBoard;
+        private System.Windows.Forms.Label lbl_YouSurrenderd;
+        private System.Windows.Forms.Label lbl_OpSurrenderd;
     }
 }

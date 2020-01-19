@@ -15,11 +15,13 @@ namespace Battleship2pMP
     {
         public static MDI_Container staticMdi_Container;
         public delegate void DelLostConnection();
+        public delegate void DelLeaveGame();
         public DelLostConnection DLostConnection;
+        public DelLeaveGame DLeaveGame;
         MDI_MainMenu mdi_MainMenu;
         MDI_Game mdi_Game;
         MDI_Host mdi_Host;
-        MDI_Join mdi_Join;
+        public MDI_Join mdi_Join;
         MDI_GameSettings mdi_GameSettings;
 
         Form CurrentMDI;
@@ -27,12 +29,16 @@ namespace Battleship2pMP
         public delegate void DelSwitchMDI(MDI_Form_Enum MDI, bool ResetMDI = false);
         public static DelSwitchMDI DSwitchMDI;
 
+        public static bool OpponentHasLeftGame;
+        public static bool GameIsFinished;
+
         public MDI_Container()
         {
             InitializeComponent();
             staticMdi_Container = this;
             DSwitchMDI = new DelSwitchMDI(SwitchMDI);
             DLostConnection = new DelLostConnection(LostConnection);
+            DLeaveGame = new DelLeaveGame(LeaveGame);
         }
 
         private void MDI_Container_Load(object sender, EventArgs e)
@@ -109,7 +115,29 @@ namespace Battleship2pMP
         public void LostConnection()
         {
 
-            SwitchMDI(MDI_Form_Enum.MDI_MainMenu, true);
+            if (staticMdi_Container.mdi_Game != null && GameIsFinished && !OpponentHasLeftGame)
+            {
+                MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DOpponentHasLeftGame);
+                OpponentHasLeftGame = true;
+            }
+
+            if (staticMdi_Container.mdi_Game != null && !OpponentHasLeftGame)
+            {
+                SwitchMDI(MDI_Form_Enum.MDI_MainMenu, false);
+
+                staticMdi_Container.mdi_Game.Invoke(staticMdi_Container.mdi_Game.DStopUpdateTimer);
+                staticMdi_Container.mdi_Game.Close();
+                staticMdi_Container.mdi_Game.Dispose();
+                staticMdi_Container.mdi_Game = null;
+                Networking.ShutdownAllNetworking();
+                MessageBox.Show("The Game has lost the connection to your opponent. Returning to the Main Menu", "Network Communication Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
+
+        public void LeaveGame()
+        {
+            SwitchMDI(MDI_Form_Enum.MDI_MainMenu, false);
             if (staticMdi_Container.mdi_Game != null)
             {
                 staticMdi_Container.mdi_Game.Invoke(staticMdi_Container.mdi_Game.DStopUpdateTimer);
@@ -117,21 +145,11 @@ namespace Battleship2pMP
                 staticMdi_Container.mdi_Game.Dispose();
             }
             staticMdi_Container.mdi_Game = null;
-            RemoteProcedureCalls.Server.ShutdownAllRPC();
-            try
-            {
-                RemoteProcedureCalls.Server.serverConnection.CloseConnection(true);
-            }
-            catch
-            {
-
-            }
-            RemoteProcedureCalls.Server.serverConnection = null;
-            MessageBox.Show("The Game has lost the connection to your opponent. Returning to the Main Menu", "Network Communication Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Networking.ShutdownAllNetworking();
         }
 
-    }
 
+    }
 
     public enum MDI_Form_Enum
     {

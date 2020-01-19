@@ -15,9 +15,9 @@ namespace Battleship2pMP.MDI_Forms
         public MDI_GameSettings()
         {
             InitializeComponent();
-            Btn_Back.Font = new Font(Program.pfc.Families[0], Btn_Back.Font.Size);
-            Btn_Reset.Font = new Font(Program.pfc.Families[0], Btn_Reset.Font.Size);
-
+            Btn_Back.SetMilitaryFont();
+            Btn_Reset.SetMilitaryFont();
+            lbl_Title.SetMilitaryFont();
 
             pictureBox1.BackgroundImage = Program.MainMenuImg;
 

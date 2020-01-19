@@ -77,11 +77,11 @@
             // lbl_Title
             // 
             this.lbl_Title.AutoSize = true;
-            this.lbl_Title.Font = new System.Drawing.Font("Calibri", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_Title.Font = new System.Drawing.Font("Calibri", 45F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_Title.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lbl_Title.Location = new System.Drawing.Point(66, 37);
+            this.lbl_Title.Location = new System.Drawing.Point(25, 39);
             this.lbl_Title.Name = "lbl_Title";
-            this.lbl_Title.Size = new System.Drawing.Size(409, 90);
+            this.lbl_Title.Size = new System.Drawing.Size(384, 84);
             this.lbl_Title.TabIndex = 6;
             this.lbl_Title.Text = "Game Settings";
             this.lbl_Title.UseCompatibleTextRendering = true;
@@ -257,9 +257,9 @@
             this.Btn_Reset.BackColor = System.Drawing.Color.Aqua;
             this.Btn_Reset.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.Btn_Reset.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Btn_Reset.Location = new System.Drawing.Point(446, 622);
+            this.Btn_Reset.Location = new System.Drawing.Point(439, 612);
             this.Btn_Reset.Name = "Btn_Reset";
-            this.Btn_Reset.Size = new System.Drawing.Size(80, 26);
+            this.Btn_Reset.Size = new System.Drawing.Size(87, 36);
             this.Btn_Reset.TabIndex = 23;
             this.Btn_Reset.Text = "Reset";
             this.Btn_Reset.UseCompatibleTextRendering = true;

@@ -19,22 +19,30 @@ namespace Battleship2pMP.MDI_Forms
 
         public static MDI_Game staticGame;
 
-        public delegate void DelUpdateGameBoard(GameLogic.GameBoardTile[,] gameBoard);
-        public delegate void DelSwitchGameBoardView(bool ShowOpponentsGameBoard);
+        public delegate void DelUpdateGameBoard(GameLogic.GameBoardTile[,] localgameBoard, GameLogic.GameBoardTile[,] remotegameBoard);
+        public delegate void DelBeginTurn(bool ShowOpponentsGameBoard);
         public delegate void DelInvalidate();
         public delegate void DelStopUpdateTimer();
         public delegate void DelUpdateScoreboard(Ships.ShipsLeft LocalShipsLeft, Ships.ShipsLeft OpponentShipsLeft);
         public delegate void DelSetGameSettings(Ships.ShipsLeft ShipsToPlace, int FirstTurnShots, int ShotsPerGameTurn);
+        public delegate void DelSetTargetsToDisplay(Point[] ScreenCordTargets);
+        public delegate void DelVictory(bool YouWon, int YourShots, int YourHits, int OpponentsShots, int OpponentsHits, double Turns, bool OpponentSurrenderd = false);
+        public delegate void DelOpponentWantsRematch();
+        public delegate void DelOpponentHasLeftGame();
 
         public DelUpdateGameBoard DUpdateGameBoard;
         /// <summary>
-        /// Switches the players view to the local game board if false and the opponents if true
+        /// Switches the players view to the local game board if false and the opponents if true. Also sets Targeting and reticle visibility
         /// </summary>
-        public DelSwitchGameBoardView DSwitchGameBoardView;
+        public DelBeginTurn DBeginTurn;
         public DelInvalidate DInvalidate;
         public DelStopUpdateTimer DStopUpdateTimer;
         public DelUpdateScoreboard DUpdateScoreboard;
         public DelSetGameSettings DSetGameSettings;
+        public DelSetTargetsToDisplay DSetTargetsToDisplay;
+        public DelVictory DVictory;
+        public DelOpponentWantsRematch DOpponentWantsRematch;
+        public DelOpponentHasLeftGame DOpponentHasLeftGame;
 
         private ShipOrientation orientation = ShipOrientation.Down;
 
@@ -59,6 +67,10 @@ namespace Battleship2pMP.MDI_Forms
         private Ships.ShipEnum SelectedShipType;
 
         private bool DeleteMode = false;
+        private bool OpponentHasSurrenderd = false;
+        private bool HasSurrenderd = false;
+        private bool Won = false;
+        private bool DrawAllShipsOveride = false;
 
         //Ships left to place counters
         Ships.ShipsLeft ShipsLeftToPlace;
@@ -83,10 +95,21 @@ namespace Battleship2pMP.MDI_Forms
 
             foreach (Label lbl in CordLables)
             {
-                lbl.Font = new Font(Program.pfc.Families[0], lbl.Font.Size);
+                lbl.SetMilitaryFont();
             }
+            Btn_Surrender.SetMilitaryFont();
+            Btn_Ship_Placement_Done.SetMilitaryFont();
+            Btn_SwitchGameBoard.SetMilitaryFont();
+            Btn_Surrender.SetMilitaryFont();
+            Btn_Rematch.SetMilitaryFont();
+            Btn_LeaveGame.SetMilitaryFont();
+            lbl_Victory.SetMilitaryFont();
+            lbl_Defeat.SetMilitaryFont();
+
+
+
             DUpdateGameBoard = new DelUpdateGameBoard(UpdateGameBoard);
-            DSwitchGameBoardView = new DelSwitchGameBoardView(SwitchGameBoard);
+            DBeginTurn = new DelBeginTurn(BeginTurn);
             DInvalidate = new DelInvalidate(pnlGameBoard.Invalidate);
             staticGame = this;
             Invalidate();
@@ -99,6 +122,10 @@ namespace Battleship2pMP.MDI_Forms
             DStopUpdateTimer = new DelStopUpdateTimer(StopUpdateTimer);
             DUpdateScoreboard = new DelUpdateScoreboard(UpdateScoreboard);
             DSetGameSettings = new DelSetGameSettings(SetGameSettings);
+            DVictory = new DelVictory(Victory);
+            DSetTargetsToDisplay = new DelSetTargetsToDisplay(SetTargetsToDisplay);
+            DOpponentWantsRematch = new DelOpponentWantsRematch(OpponentWantsRematch);
+            DOpponentHasLeftGame = new DelOpponentHasLeftGame(OpponentHasLeftGame);
 
             pbx_Selected_Ship.Image = (Image)Ships.Ship.Carrier.ShipSprite.Clone();
             SelectedShipType = Ships.ShipEnum.Carrier;
@@ -185,9 +212,10 @@ namespace Battleship2pMP.MDI_Forms
 
         }
 
-        public void UpdateGameBoard(GameLogic.GameBoardTile[,] gameBoard)
+        public void UpdateGameBoard(GameLogic.GameBoardTile[,] localgameBoard, GameLogic.GameBoardTile[,] remotegameBoard)
         {
-            localGameBoardTiles = gameBoard;
+            localGameBoardTiles = localgameBoard;
+            remoteGameBoardTiles = remotegameBoard;
             pnlGameBoard.Invalidate();
         }
 
@@ -228,7 +256,7 @@ namespace Battleship2pMP.MDI_Forms
 
             foreach (Sprite sprite in spriteTableDrawRef)
             {
-                if (sprite.Enabled)
+                if (sprite.Enabled || DrawAllShipsOveride)
                 {
                     e.Graphics.DrawImage(sprite.SpriteImage, sprite.Location);
                 }
@@ -257,7 +285,7 @@ namespace Battleship2pMP.MDI_Forms
 
         private void MouseClickEvent(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
+            if (e.Button == MouseButtons.Left && !DrawAllShipsOveride)
             {
                 if (!showReticle)
                 {
@@ -400,11 +428,11 @@ namespace Battleship2pMP.MDI_Forms
 
                             if (Networking.IsServer)
                             {
-                                Networking.NetworkServer.StaticgameLogic.FireShots(CordTargets.ToArray(), true);
+                                Networking.NetworkServer.StaticgameLogic.FireShots(CordTargets.ToArray(), Targets.ToArray() , true);
                             }
                             else
                             {
-                                Networking.NetworkClient.RemoteServerInterface.FireShots(GetBinaryArray(CordTargets.ToArray(), false));
+                                Networking.NetworkClient.RemoteServerInterface.FireShots(GetBinaryArray(CordTargets.ToArray(), false), GetBinaryArray(Targets.ToArray()));
                             }
 
                             FirstTurn = false;
@@ -798,13 +826,17 @@ namespace Battleship2pMP.MDI_Forms
         }
 
         /// <summary>
-        /// Switches the players view to the local game board if false and the opponents if true
+        /// Switches the players view to the local game board if false and the opponents if true. Also sets Targeting and reticle visibility
         /// </summary>
-        public void SwitchGameBoard(bool ShowOpponentsGameBoard)
+        public void BeginTurn(bool ShowOpponentsGameBoard)
         {
+
+            if (MDI_Container.GameIsFinished) return;
+
             if (ShowOpponentsGameBoard)
             {
                 drawLocalGameBoard = false;
+                lbl_WhosGameBoard.Text = "Opponents Game Board";
                 pnlGameBoard.Invalidate();
                 showReticle = true;
                 drawTargets = true;
@@ -816,12 +848,34 @@ namespace Battleship2pMP.MDI_Forms
             else
             {
                 drawLocalGameBoard = true;
+                lbl_WhosGameBoard.Text = "Your Game Board";
                 pnlGameBoard.Invalidate();
                 showReticle = false;
                 drawTargets = false;
                 pbx_Reticle.Visible = false;
                 lbl_YourTurn.Visible = false;
                 lbl_OpponentsTurn.Visible = true;
+            }
+        }
+
+        /// <summary>
+        /// Switches the players view to the local game board if false and the opponents if true.
+        /// </summary>
+        public void SwitchGameBoardView(bool ShowOpponentsGameBoard, bool ShowTargets)
+        {
+            if (ShowOpponentsGameBoard)
+            {
+                drawLocalGameBoard = false;
+                lbl_WhosGameBoard.Text = "Opponents Game Board";
+                pnlGameBoard.Invalidate();
+                drawTargets = ShowTargets;
+            }
+            else
+            {
+                drawLocalGameBoard = true;
+                lbl_WhosGameBoard.Text = "Your Game Board";
+                pnlGameBoard.Invalidate();
+                drawTargets = ShowTargets;
             }
         }
 
@@ -869,6 +923,7 @@ namespace Battleship2pMP.MDI_Forms
             {
                 UpdateRadioButtonText(ShipType);
             }
+            OutOfCurrentShipType();
 
             ShotsFirstTurn = FirstTurnShots;
             ShotsPerTurn = ShotsPerGameTurn;
@@ -876,9 +931,134 @@ namespace Battleship2pMP.MDI_Forms
 
         }
 
-        private void Bnt_Surrender_Click(object sender, EventArgs e)
+        public void SetTargetsToDisplay(Point[] ScreenCordTargets)
+        {
+            Targets = new List<Point>();
+            Targets.AddRange(ScreenCordTargets);
+            drawTargets = true;
+        }
+
+        public void Victory(bool YouWon, int YourShots, int YourHits, int OpponentsShots, int OpponentsHits, double Turns , bool OpponentSurrenderd = false)
         {
 
+            Won = YouWon;
+            OpponentHasSurrenderd = OpponentSurrenderd;
+            DrawAllShipsOveride = true;
+            pbx_Selected_Ship.Visible = false;
+            showReticle = false;
+            pbx_Reticle.Visible = false;
+            MDI_Container.GameIsFinished = true;
+
+            if (YouWon)
+            {
+                lbl_Victory.Visible = true;
+            }
+            else
+            {
+                lbl_Defeat.Visible = true;
+            }
+
+            if (OpponentSurrenderd || HasSurrenderd) drawTargets = false;
+
+            lbl_OpSurrenderd.Visible = OpponentSurrenderd;
+            lbl_YouSurrenderd.Visible = HasSurrenderd;
+
+            lbl_You_ShotsFired.Text = YourShots.ToString();
+            lbl_You_Hits.Text = YourHits.ToString();
+            lbl_You_Accuracy.Text = YourShots == 0 ? "N/A" : Math.Round((double)(YourHits * 100) / YourShots).ToString() + "%";
+
+            lbl_Opponent_ShotsFired.Text = OpponentsShots.ToString();
+            lbl_Opponent_Hits.Text = OpponentsHits.ToString();
+            lbl_Opponent_Accuracy.Text = OpponentsShots == 0 ? "N/A" : Math.Round((double)(OpponentsHits * 100) / OpponentsShots).ToString() + "%";
+
+            lbl_Turns.Text = Turns.ToString("N1") + " turns played";
+
+            Btn_Surrender.Visible = false;
+
+            pnl_ScoreBoard.Visible = false;
+            pnl_GameOver.Visible = true;
+
+            pnlGameBoard.Invalidate();
+
+        }
+
+        public void OpponentHasLeftGame()
+        {
+            lbl_OpLeftGame.Visible = true;
+            Btn_Rematch.Enabled = false;
+            lbl_OpWantsRematch.Visible = false;
+        }
+
+        public void OpponentWantsRematch()
+        {
+            lbl_OpWantsRematch.Visible = true;
+        }
+
+
+        private void Btn_Surrender_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want to surrender?", "Surrender?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+
+            HasSurrenderd = true;
+            if (Networking.IsServer)
+            {
+                Networking.NetworkServer.StaticgameLogic.Surrender(true);
+            }
+            else
+            {
+                Networking.NetworkClient.RemoteServerInterface.Surrender();
+            }
+        }
+
+        private void Btn_LeaveGame_Click(object sender, EventArgs e)
+        {
+
+            if (MessageBox.Show("Are you sure you want to leave the game?", "Leave Game?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+
+            if (!MDI_Container.OpponentHasLeftGame)
+            {
+                if (Networking.IsServer)
+                {
+                    Networking.NetworkServer.StaticgameLogic.LeaveGame(true);
+                }
+                else
+                {
+                    Networking.NetworkClient.RemoteServerInterface.LeaveGame();
+
+                }
+            }
+
+            MDI_Container.staticMdi_Container.BeginInvoke(MDI_Container.staticMdi_Container.DLeaveGame);
+
+        }
+
+        private void Btn_Rematch_Click(object sender, EventArgs e)
+        {
+            lbl_WaitingForRematch.Visible = true;
+
+            if (Networking.IsServer)
+            {
+                Networking.NetworkServer.StaticgameLogic.Rematch(true);
+            }
+            else
+            {
+                Networking.NetworkClient.RemoteServerInterface.Rematch();
+            }
+
+        }
+
+        private void Btn_SwitchGameBoard_Click(object sender, EventArgs e)
+        {
+            if (drawLocalGameBoard)
+            {
+                SwitchGameBoardView(true, !(OpponentHasSurrenderd || HasSurrenderd) && Won);
+                Btn_SwitchGameBoard.Text = "View Your Game Board";
+            }
+            else
+            {
+                SwitchGameBoardView(false, !(OpponentHasSurrenderd || HasSurrenderd) && !Won);
+                Btn_SwitchGameBoard.Text = "View Opponents Game Board";
+            }
         }
     }
 }

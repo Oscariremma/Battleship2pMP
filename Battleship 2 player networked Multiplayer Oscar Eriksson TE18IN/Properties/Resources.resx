@@ -127,6 +127,9 @@
   <data name="HitFire" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Img\HitFire.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Large_Menu_Board" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Img\Large Menu Board.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Menu_Board" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Img\Menu Board.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>

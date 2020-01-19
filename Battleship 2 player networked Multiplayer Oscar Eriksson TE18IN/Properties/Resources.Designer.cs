@@ -93,6 +93,16 @@ namespace Battleship2pMP.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap Large_Menu_Board {
+            get {
+                object obj = ResourceManager.GetObject("Large_Menu_Board", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap Menu_Board {
             get {
                 object obj = ResourceManager.GetObject("Menu_Board", resourceCulture);

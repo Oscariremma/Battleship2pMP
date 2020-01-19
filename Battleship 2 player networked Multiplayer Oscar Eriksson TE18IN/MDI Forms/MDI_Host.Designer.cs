@@ -80,7 +80,7 @@
             // 
             this.btn_Host.BackColor = System.Drawing.Color.Aqua;
             this.btn_Host.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btn_Host.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_Host.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btn_Host.Location = new System.Drawing.Point(138, 444);
             this.btn_Host.Name = "btn_Host";
             this.btn_Host.Size = new System.Drawing.Size(203, 54);

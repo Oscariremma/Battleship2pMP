@@ -12,17 +12,14 @@ namespace Battleship2pMP.MDI_Forms
 {
     public partial class MDI_MainMenu : Form
     {
-
-        
-
         public MDI_MainMenu()
         {
             InitializeComponent();
             //Set fonts to memory font loaded in main
-            lbl_Title.Font = new Font(Program.pfc.Families[0], lbl_Title.Font.Size);
-            btn_Host.Font = new Font(Program.pfc.Families[0], btn_Host.Font.Size);
-            btn_Join.Font = new Font(Program.pfc.Families[0], btn_Join.Font.Size);
-            btn_Quit.Font = new Font(Program.pfc.Families[0], btn_Quit.Font.Size);
+            lbl_Title.SetMilitaryFont();
+            btn_Host.SetMilitaryFont();
+            btn_Join.SetMilitaryFont();
+            btn_Quit.SetMilitaryFont();
 
             pictureBox1.BackgroundImage = Program.MainMenuImg;
 

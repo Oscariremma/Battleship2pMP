@@ -16,8 +16,10 @@ namespace Battleship2pMP.MDI_Forms
         {
             InitializeComponent();
             //Set fonts to memory font loaded in main
-            lbl_Title.Font = new Font(Program.pfc.Families[0], lbl_Title.Font.Size);
-            Btn_Back_To_MainMenu.Font = new Font(Program.pfc.Families[0], Btn_Back_To_MainMenu.Font.Size);
+            lbl_Title.SetMilitaryFont();
+            Btn_Back_To_MainMenu.SetMilitaryFont();
+            btn_Host.SetMilitaryFont();
+            Btn_GameSettings.SetMilitaryFont();
 
             pictureBox1.BackgroundImage = Program.MainMenuImg;
 
@@ -42,6 +44,7 @@ namespace Battleship2pMP.MDI_Forms
                 lbl_IP.Visible = true;
                 tbx_IPs.Visible = true;
                 lbl_GameStart.Visible = true;
+                Btn_GameSettings.Enabled = false;
             }
             else
             {
@@ -50,6 +53,7 @@ namespace Battleship2pMP.MDI_Forms
                 lbl_IP.Visible = false;
                 tbx_IPs.Visible = false;
                 lbl_GameStart.Visible = false;
+                Btn_GameSettings.Enabled = true;
 
             }
 

@@ -27,9 +27,20 @@ namespace Battleship2pMP
 
         public bool OpponentDonePlacingShips = false;
 
-        bool ClientsTurn;
+        private bool ClientsTurn;
+        private bool RematchRequested = false;
 
         private int PostTurnDelay;
+
+        private double CompleteTurns;
+
+        private int HostShots;
+        private int HostHits;
+
+        private int ClientShots;
+        private int ClientHits;
+
+
 
         public GameLogic()
         {
@@ -60,6 +71,7 @@ namespace Battleship2pMP
                     rowx++;
                 }
             }
+
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "SecurityIntelliSenseCS:MS Security rules violation", Justification = "<Pending>")]
@@ -74,36 +86,44 @@ namespace Battleship2pMP
             if(random.Next(100) < 50)
             {
                 //Host starts
-                MDI_Game.staticGame.Invoke(MDI_Game.staticGame.DSwitchGameBoardView, new object[] { true });
-                Networking.NetworkServer.StaticClientInterface.SwitchGameBoard(false);
+                MDI_Game.staticGame.Invoke(MDI_Game.staticGame.DBeginTurn, new object[] { true });
+                Networking.NetworkServer.StaticClientInterface.BeginTurn(false);
                 ClientsTurn = false;
             }
             else
             {
                 //Client Starts
-                MDI_Game.staticGame.Invoke(MDI_Game.staticGame.DSwitchGameBoardView, new object[] { false });
-                Networking.NetworkServer.StaticClientInterface.SwitchGameBoard(true);
+                MDI_Game.staticGame.Invoke(MDI_Game.staticGame.DBeginTurn, new object[] { false });
+                Networking.NetworkServer.StaticClientInterface.BeginTurn(true);
                 ClientsTurn = true;
             }
 
         }
 
-        public void FireShots(System.Drawing.Point[] Targets, bool TargetClient)
+        public void FireShots(System.Drawing.Point[] Targets, Point[] ScreenCordTargets , bool TargetClient)
         {
             ref GameBoardTile[,] TargetGameBoard = ref TargetClient ? ref ClientGameBoard : ref HostGameBoard;
 
             ref Ships.ShipsLeft TargetShipCounter = ref TargetClient ? ref ClientShipsLeft : ref HostShipsLeft;
+
+            ref int StatisticsShots = ref TargetClient ? ref HostShots : ref ClientShots;
+
+            ref int StatisticsHits = ref TargetClient ? ref HostHits : ref ClientHits;
 
 
             foreach(Point target in Targets)
             {
                 bool ShipDestroyed = true;
 
+                StatisticsShots++;
+
                 ref GameBoardTile targetTile = ref TargetGameBoard[target.X, target.Y];
 
                 if (targetTile.TileType == TileType.Ship)
                 {
                     targetTile.TileType = TileType.Hit;
+
+                    StatisticsHits++;
 
                     ref Networking.NetworkSprite HitShipSprite = ref TargetClient ? ref ClientSpriteTable[targetTile.SpriteID] : ref HostSpriteTable[targetTile.SpriteID];
 
@@ -156,9 +176,27 @@ namespace Battleship2pMP
 
             }
 
+            if (TargetClient)
+            {
+                Networking.NetworkServer.StaticClientInterface.SetTargetsToDisplay(GetBinaryArray(ScreenCordTargets));
+            }
+            else
+            {
+                MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DSetTargetsToDisplay, new object[] { ScreenCordTargets });
+            }
+
             PushGameBoardUpdates();
 
-            ExecutionTimer.ExecuteAfterDelay((o, ee) => TurnDone(), PostTurnDelay);
+            if(TargetShipCounter.Total == 0)
+            {
+                Victory(TargetClient);
+            }
+            else
+            {
+                ExecutionTimer.ExecuteAfterDelay((o, ee) => TurnDone(), PostTurnDelay);
+            }
+
+            CompleteTurns += 0.5d;
 
         }
 
@@ -202,20 +240,63 @@ namespace Battleship2pMP
             if (ClientsTurn)
             {
                 //Hosts Turn
-                MDI_Game.staticGame.Invoke(MDI_Game.staticGame.DSwitchGameBoardView, new object[] { true });
-                Networking.NetworkServer.StaticClientInterface.SwitchGameBoard(false);
+                MDI_Game.staticGame.Invoke(MDI_Game.staticGame.DBeginTurn, new object[] { true });
+                Networking.NetworkServer.StaticClientInterface.BeginTurn(false);
                 ClientsTurn = false;
             }
             else
             {
                 //Clients Turn
-                MDI_Game.staticGame.Invoke(MDI_Game.staticGame.DSwitchGameBoardView, new object[] { false });
-                Networking.NetworkServer.StaticClientInterface.SwitchGameBoard(true);
+                MDI_Game.staticGame.Invoke(MDI_Game.staticGame.DBeginTurn, new object[] { false });
+                Networking.NetworkServer.StaticClientInterface.BeginTurn(true);
                 ClientsTurn = true;
             }
         }
 
+        void Victory(bool HostWon)
+        {
+            MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DVictory, new object[] { HostWon, HostShots, HostHits, ClientShots, ClientHits, CompleteTurns , false } );
+            Networking.NetworkServer.StaticClientInterface.Victory(!HostWon, ClientShots, ClientHits, HostShots, HostHits, CompleteTurns);
+        }
 
+        public void Surrender(bool HostSurrenderd)
+        {
+            MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DVictory, new object[] { !HostSurrenderd, HostShots, HostHits, ClientShots, ClientHits, CompleteTurns, !HostSurrenderd });
+            Networking.NetworkServer.StaticClientInterface.Victory(HostSurrenderd, ClientShots, ClientHits, HostShots, HostHits, CompleteTurns, HostSurrenderd );
+        }
+
+        public void Rematch(bool HostWantsRematch)
+        {
+            if (!RematchRequested)
+            {
+                RematchRequested = true;
+                if (HostWantsRematch)
+                {
+                    Networking.NetworkServer.StaticClientInterface.OpponentWantsRematch();
+                }
+                else
+                {
+                    MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DOpponentWantsRematch);
+                }
+            }
+            else
+            {
+                Task.Run(Networking.NetworkServer.InitializeGame);
+            }
+        }
+
+        public void LeaveGame(bool HostLeftGame)
+        {
+            if (HostLeftGame)
+            {
+                Networking.NetworkServer.StaticClientInterface.HostLeftGame();
+            }
+            else
+            {
+                MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DOpponentHasLeftGame);
+                MDI_Container.OpponentHasLeftGame = true;
+            }
+        }
 
         [Serializable]
         public struct GameBoardTile

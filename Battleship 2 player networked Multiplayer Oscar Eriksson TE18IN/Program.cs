@@ -62,6 +62,24 @@ namespace Battleship2pMP
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MDI_Container());
+
+            Networking.ShutdownAllNetworking();
+
         }
+
     }
+
+    public static class Extensions
+    {
+        public static void SetMilitaryFont(this Button button)
+        {
+            button.Font = new Font(Program.pfc.Families[0], button.Font.Size);
+        }
+        public static void SetMilitaryFont(this Label button)
+        {
+            button.Font = new Font(Program.pfc.Families[0], button.Font.Size);
+        }
+
+    }
+
 }

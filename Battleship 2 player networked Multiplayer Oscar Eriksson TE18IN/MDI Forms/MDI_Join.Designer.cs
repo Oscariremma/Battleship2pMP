@@ -79,13 +79,13 @@
             this.tbx_IP.Name = "tbx_IP";
             this.tbx_IP.Size = new System.Drawing.Size(169, 23);
             this.tbx_IP.TabIndex = 9;
-            this.tbx_IP.Text = "127.0.0.1";
+            this.tbx_IP.Text = "0";
             // 
             // btn_Join
             // 
             this.btn_Join.BackColor = System.Drawing.Color.Aqua;
             this.btn_Join.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btn_Join.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_Join.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btn_Join.Location = new System.Drawing.Point(127, 368);
             this.btn_Join.Name = "btn_Join";
             this.btn_Join.Size = new System.Drawing.Size(203, 54);
