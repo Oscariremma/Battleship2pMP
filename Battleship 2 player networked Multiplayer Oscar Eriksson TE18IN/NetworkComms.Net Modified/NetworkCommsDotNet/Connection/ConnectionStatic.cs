@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,56 +6,53 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Net;
-using System.Threading;
-using NetworkCommsDotNet.DPSBase;
-using NetworkCommsDotNet.Tools;
 using NetworkCommsDotNet.Connections.TCP;
 using NetworkCommsDotNet.Connections.UDP;
+using NetworkCommsDotNet.Tools;
+using System;
+using System.Collections.Generic;
+using System.Threading;
 
 #if NETFX_CORE
 using NetworkCommsDotNet.Tools.XPlatformHelper;
 using System.Threading.Tasks;
 #else
-using System.Net.Sockets;
 #endif
 
 namespace NetworkCommsDotNet.Connections
 {
-    #if !NET2 && !WINDOWS_PHONE
+#if !NET2 && !WINDOWS_PHONE
     /// <summary>
-    /// Global connection base class for NetworkComms.Net. Most user interactions happen using a connection object. 
+    /// Global connection base class for NetworkComms.Net. Most user interactions happen using a connection object.
     /// Extended by <see cref="TCPConnection"/>, <see cref="UDPConnection"/> and <see cref="NetworkCommsDotNet.Connections.Bluetooth.BluetoothConnection"/>.
     /// </summary>
-    #else
+#else
     /// <summary>
-    /// Global connection base class for NetworkComms.Net. Most user interactions happen using a connection object. 
+    /// Global connection base class for NetworkComms.Net. Most user interactions happen using a connection object.
     /// Extended by <see cref="TCPConnection"/> and <see cref="UDPConnection"/>.
     /// </summary>
-    #endif
+#endif
+
     public abstract partial class Connection
     {
-        static ManualResetEvent workedThreadSignal = new ManualResetEvent(false);
-        static volatile bool shutdownWorkerThreads = false;
-        static object staticConnectionLocker = new object();
+        private static ManualResetEvent workedThreadSignal = new ManualResetEvent(false);
+        private static volatile bool shutdownWorkerThreads = false;
+        private static object staticConnectionLocker = new object();
 #if NETFX_CORE
         static Task connectionKeepAliveWorker;
 #else
-        static Thread connectionKeepAliveWorker;
+        private static Thread connectionKeepAliveWorker;
 #endif
 
         /// <summary>
@@ -176,7 +173,7 @@ namespace NetworkCommsDotNet.Connections
         }
 
         /// <summary>
-        /// Polls all existing connections based on ConnectionKeepAlivePollIntervalSecs value. Server side connections are polled 
+        /// Polls all existing connections based on ConnectionKeepAlivePollIntervalSecs value. Server side connections are polled
         /// slightly earlier than client side to help reduce potential congestion.
         /// </summary>
         /// <param name="returnImmediately">If true runs as task and returns immediately.</param>
@@ -189,7 +186,7 @@ namespace NetworkCommsDotNet.Connections
             int remainingConnectionCount = allConnections.Count;
 
             QueueItemPriority nullSendPriority = QueueItemPriority.AboveNormal;
-            
+
             ManualResetEvent allConnectionsComplete = new ManualResetEvent(false);
             for (int i = 0; i < allConnections.Count; i++)
             {

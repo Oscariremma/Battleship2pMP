@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,24 +6,22 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
+using NetworkCommsDotNet.DPSBase;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
-using NetworkCommsDotNet.DPSBase;
-
-using Serializer = NetworkCommsDotNet.DPSBase.DataSerializer;
+using System.Text;
 
 #if ANDROID
 using PreserveAttribute = Android.Runtime.PreserveAttribute;
@@ -95,7 +93,7 @@ namespace NetworkCommsDotNet
         PacketIdentifier,
 
         /// <summary>
-        /// The data section should be interpreted as a null 
+        /// The data section should be interpreted as a null
         /// </summary>
         NullDataSection,
     }
@@ -106,16 +104,19 @@ namespace NetworkCommsDotNet
     /// </summary>
     public sealed class PacketHeader : IExplicitlySerialize
     {
-        Dictionary<PacketHeaderLongItems, long> longItems;
-        Dictionary<PacketHeaderStringItems, string> stringItems;
-        
+        private Dictionary<PacketHeaderLongItems, long> longItems;
+        private Dictionary<PacketHeaderStringItems, string> stringItems;
+
         /// <summary>
         /// Blank constructor required for deserialisation
         /// </summary>
 #if ANDROID || iOS
         [Preserve]
 #endif
-        private PacketHeader() { }
+
+        private PacketHeader()
+        {
+        }
 
         /// <summary>
         /// Creates a new packetHeader
@@ -178,7 +179,7 @@ namespace NetworkCommsDotNet
                     stringItems = new Dictionary<PacketHeaderStringItems, string>();
                     foreach (var pair in tempObject.stringItems)
                         stringItems.Add(pair.Key, pair.Value);
-                    
+
                     longItems = new Dictionary<PacketHeaderLongItems, long>();
                     foreach (var pair in tempObject.longItems)
                         longItems.Add(pair.Key, pair.Value);
@@ -186,12 +187,13 @@ namespace NetworkCommsDotNet
             }
             catch (Exception ex)
             {
-                NetworkCommsDotNet.Tools.LogTools.LogException(ex, "PacketHeaderDeserialisationError", "The header data follows:" + BitConverter.ToString(packetHeaderStream.ToArray())); 
+                NetworkCommsDotNet.Tools.LogTools.LogException(ex, "PacketHeaderDeserialisationError", "The header data follows:" + BitConverter.ToString(packetHeaderStream.ToArray()));
                 throw new SerialisationException("Error deserializing packetHeader. " + ex.ToString());
             }
         }
 
         #region Get & Set
+
         /// <summary>
         /// The total size in bytes of the payload.
         /// </summary>
@@ -245,7 +247,7 @@ namespace NetworkCommsDotNet
         }
 
         /// <summary>
-        /// The network identifier of the packets source peer. If no source network identifier is set returns null. 
+        /// The network identifier of the packets source peer. If no source network identifier is set returns null.
         /// Also see <see cref="ConnectionInfo.NetworkIdentifier"/>.
         /// </summary>
         public string SourceNetworkIdentifier
@@ -332,7 +334,8 @@ namespace NetworkCommsDotNet
         {
             stringItems[option] = Value;
         }
-        #endregion
+
+        #endregion Get & Set
 
         #region IExplicitlySerialize Members
 
@@ -375,10 +378,10 @@ namespace NetworkCommsDotNet
             int longItemsLength = BitConverter.ToInt32(longItemsLengthData, 0);
 
             if (longItemsLength * (sizeof(int) + sizeof(long)) > inputStream.Length)
-                throw new SerialisationException("Error deserializing packet header. Number of long items was too large to be present in the input stream."+
+                throw new SerialisationException("Error deserializing packet header. Number of long items was too large to be present in the input stream." +
                     " This error is typically thrown because a non NetworkComms.Net peer attempted to communicate. If this is desirable please consider using an unmanaged connection.");
 
-            for(int i = 0; i < longItemsLength; i++)
+            for (int i = 0; i < longItemsLength; i++)
             {
                 byte[] keyData = new byte[sizeof(int)]; inputStream.Read(keyData, 0, sizeof(int));
                 PacketHeaderLongItems key = (PacketHeaderLongItems)BitConverter.ToInt32(keyData, 0);
@@ -393,9 +396,9 @@ namespace NetworkCommsDotNet
             int stringItemsLength = BitConverter.ToInt32(stringItemsLengthData, 0);
 
             if (stringItemsLength * (2 * sizeof(int)) > inputStream.Length)
-                throw new SerialisationException("Error deserializing packet header. Number of string items was too large to be present in the input stream."+
+                throw new SerialisationException("Error deserializing packet header. Number of string items was too large to be present in the input stream." +
                     " This error is typically thrown because a non NetworkComms.Net peer attempted to communicate. If this is desirable please consider using an unmanaged connection.");
-            
+
             for (int i = 0; i < stringItemsLength; i++)
             {
                 byte[] keyData = new byte[sizeof(int)]; inputStream.Read(keyData, 0, sizeof(int));
@@ -405,7 +408,7 @@ namespace NetworkCommsDotNet
                 int valLength = BitConverter.ToInt32(valLengthData, 0);
 
                 if (valLength > inputStream.Length)
-                    throw new SerialisationException("Error deserializing packet header. Length string item was too large to be present in the input stream."+
+                    throw new SerialisationException("Error deserializing packet header. Length string item was too large to be present in the input stream." +
                         " This error is typically thrown because a non NetworkComms.Net peer attempted to communicate. If this is desirable please consider using an unmanaged connection.");
 
                 byte[] valData = new byte[valLength]; inputStream.Read(valData, 0, valData.Length);
@@ -415,7 +418,7 @@ namespace NetworkCommsDotNet
             }
         }
 
-        #endregion
+        #endregion IExplicitlySerialize Members
 
         /// <summary>
         /// Deserializes from a memory stream to a <see cref="PacketHeader"/> object

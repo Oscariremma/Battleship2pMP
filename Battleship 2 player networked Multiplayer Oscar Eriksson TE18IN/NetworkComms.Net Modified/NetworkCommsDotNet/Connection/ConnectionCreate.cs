@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,20 +6,19 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Net;
 using System.Threading;
 using System.IO;
@@ -33,7 +32,9 @@ using NetworkCommsDotNet.Connections.Bluetooth;
 #if NETFX_CORE
 using NetworkCommsDotNet.Tools.XPlatformHelper;
 #else
+
 using System.Net.Sockets;
+
 #endif
 
 namespace NetworkCommsDotNet.Connections
@@ -49,6 +50,7 @@ namespace NetworkCommsDotNet.Connections
         /// A manual reset event which can be used to handle connection setup and establish.
         /// </summary>
         protected ManualResetEvent connectionSetupWait = new ManualResetEvent(false);
+
         /// <summary>
         /// A manual reset event which can be used to handle connection setup and establish.
         /// </summary>
@@ -58,6 +60,7 @@ namespace NetworkCommsDotNet.Connections
         /// A boolean used to signal a connection setup exception.
         /// </summary>
         protected bool connectionSetupException = false;
+
         /// <summary>
         /// If <see cref="connectionSetupException"/> is true provides additional exception information.
         /// </summary>
@@ -90,7 +93,7 @@ namespace NetworkCommsDotNet.Connections
                         " Please provide compatible send receive options in order to successfully instantiate this unmanaged connection.", "defaultSendReceiveOptions");
             }
 
-            SendTimesMSPerKBCache = new CommsMath();            
+            SendTimesMSPerKBCache = new CommsMath();
             packetBuilder = new PacketBuilder();
 
             //Initialise the sequence counter using the global value
@@ -218,7 +221,7 @@ namespace NetworkCommsDotNet.Connections
                     throw new ConnectionSetupException("ServerSide. " + connectionSetupExceptionStr);
                 }
 
-                //Trigger the connection establish delegates before replying to the connection establish 
+                //Trigger the connection establish delegates before replying to the connection establish
                 TriggerConnectionEstablishDelegates();
             }
             else
@@ -426,7 +429,7 @@ namespace NetworkCommsDotNet.Connections
                     //    connectionSetupException = true;
                     //    connectionSetupExceptionStr = "Remote peer has same network identifier to local, " + remoteConnectionInfo.NetworkIdentifier + ". A real duplication is vanishingly improbable so this exception has probably been thrown because the local and remote application are the same.";
                     //}
-                    //else 
+                    //else
                     if (connectionByEndPoint[0] != this)
                     {
                         possibleClashWithExistingConnection = true;
@@ -435,12 +438,14 @@ namespace NetworkCommsDotNet.Connections
                     else if (connectionByEndPoint[0].ConnectionInfo.NetworkIdentifier != ShortGuid.Empty &&
                         connectionByEndPoint[0].ConnectionInfo.NetworkIdentifier != remoteConnectionInfo.NetworkIdentifier)
                     {
-                        //We are in the same connection, so don't need to throw and exception but the remote network identifier 
+                        //We are in the same connection, so don't need to throw and exception but the remote network identifier
                         //has changed.
                         //This can happen for connection types where the local connection (this) may not have been closed
                         //when the remote peer closed. We need to trigger the connection close delegates with the old info, update
                         //the connection info and then call the establish delegates
+
                         #region Reset Connection without closing
+
                         //Call the connection close delegates
                         try
                         {
@@ -484,7 +489,8 @@ namespace NetworkCommsDotNet.Connections
 
                         //Trigger the establish delegates
                         TriggerConnectionEstablishDelegates();
-                        #endregion
+
+                        #endregion Reset Connection without closing
 
                         return true;
                     }

@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,27 +6,26 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Net;
-using NetworkCommsDotNet.DPSBase;
 
 #if NETFX_CORE
 using NetworkCommsDotNet.Tools.XPlatformHelper;
 #else
+
 using System.Net.Sockets;
+
 #endif
 
 namespace NetworkCommsDotNet.Connections.UDP
@@ -34,19 +33,20 @@ namespace NetworkCommsDotNet.Connections.UDP
 #if WINDOWS_PHONE || NETFX_CORE
     //UdpClientThreadSafe not yet required for WP8
 #else
+
     /// <summary>
     /// Internal wrapper around a udpClient object so that we can easily manage usage.
     /// </summary>
-    class UdpClientWrapper
+    internal class UdpClientWrapper
     {
-        UdpClient udpClient;
-        bool isConnected;
-        object locker = new object();
+        private UdpClient udpClient;
+        private bool isConnected;
+        private object locker = new object();
 
         /// <summary>
         /// IOControl value used to ignore ICMP destination unreachable packets which result in the socket closing
         /// </summary>
-        const int SIO_UDP_CONNRESET = -1744830452;
+        private const int SIO_UDP_CONNRESET = -1744830452;
 
         public UdpClientWrapper(UdpClient udpClient)
         {
@@ -66,15 +66,15 @@ namespace NetworkCommsDotNet.Connections.UDP
         {
             //lock (locker)
             //{
-                if (isConnected)
-                {
-                    if (!endPoint.Equals(udpClient.Client.RemoteEndPoint))
-                        throw new CommunicationException("Attempted to send UDP packet to an endPoint other than that to which this UDP client is specifically connected.");
-                    else
-                        udpClient.Send(dgram, bytes);
-                }
+            if (isConnected)
+            {
+                if (!endPoint.Equals(udpClient.Client.RemoteEndPoint))
+                    throw new CommunicationException("Attempted to send UDP packet to an endPoint other than that to which this UDP client is specifically connected.");
                 else
-                    udpClient.Send(dgram, bytes, endPoint);
+                    udpClient.Send(dgram, bytes);
+            }
+            else
+                udpClient.Send(dgram, bytes, endPoint);
             //}
         }
 
@@ -82,8 +82,8 @@ namespace NetworkCommsDotNet.Connections.UDP
         {
             //lock (locker)
             //{
-                isConnected = true;
-                udpClient.Connect(endPoint);
+            isConnected = true;
+            udpClient.Connect(endPoint);
             //}
         }
 
@@ -91,23 +91,23 @@ namespace NetworkCommsDotNet.Connections.UDP
         {
             //lock (locker)
             //{
-                try
-                {
-                    udpClient.Client.Disconnect(false);
-                    udpClient.Client.Close();                    
-                }
-                catch (Exception)
-                {
-                }
+            try
+            {
+                udpClient.Client.Disconnect(false);
+                udpClient.Client.Close();
+            }
+            catch (Exception)
+            {
+            }
 
-                //Try to close the udpClient
-                try
-                {
-                    udpClient.Close();
-                }
-                catch (Exception)
-                {
-                }
+            //Try to close the udpClient
+            try
+            {
+                udpClient.Close();
+            }
+            catch (Exception)
+            {
+            }
             //}
         }
 
@@ -120,13 +120,13 @@ namespace NetworkCommsDotNet.Connections.UDP
         public IAsyncResult BeginReceive(AsyncCallback requestCallback, object state)
         {
             //lock (locker)
-                return udpClient.BeginReceive(requestCallback, state);
+            return udpClient.BeginReceive(requestCallback, state);
         }
 
         public byte[] EndReceive(IAsyncResult asyncResult, ref IPEndPoint remoteEP)
         {
             //lock (locker)
-                return udpClient.EndReceive(asyncResult, ref remoteEP);
+            return udpClient.EndReceive(asyncResult, ref remoteEP);
         }
 
         public AddressFamily ClientAddressFamily
@@ -134,7 +134,7 @@ namespace NetworkCommsDotNet.Connections.UDP
             get
             {
                 //lock (locker)
-                    return udpClient.Client.AddressFamily;
+                return udpClient.Client.AddressFamily;
             }
         }
 
@@ -143,7 +143,7 @@ namespace NetworkCommsDotNet.Connections.UDP
             get
             {
                 //lock (locker)
-                    return (IPEndPoint)udpClient.Client.RemoteEndPoint;
+                return (IPEndPoint)udpClient.Client.RemoteEndPoint;
             }
         }
 
@@ -152,7 +152,7 @@ namespace NetworkCommsDotNet.Connections.UDP
             get
             {
                 //lock (locker)
-                    return (IPEndPoint)udpClient.Client.LocalEndPoint;
+                return (IPEndPoint)udpClient.Client.LocalEndPoint;
             }
         }
 
@@ -161,9 +161,10 @@ namespace NetworkCommsDotNet.Connections.UDP
             get
             {
                 //lock (locker)
-                    return udpClient.Available > 0;
+                return udpClient.Available > 0;
             }
         }
     }
+
 #endif
 }

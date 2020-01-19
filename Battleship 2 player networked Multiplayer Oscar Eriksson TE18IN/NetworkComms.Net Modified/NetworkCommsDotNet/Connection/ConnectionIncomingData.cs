@@ -17,19 +17,15 @@
 // under the License.
 //
 
+using NetworkCommsDotNet.Tools;
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.IO;
 using System.Net;
 using System.Threading;
-using NetworkCommsDotNet.DPSBase;
-using NetworkCommsDotNet.Tools;
-using System.IO;
 
 #if NETFX_CORE
 using NetworkCommsDotNet.Tools.XPlatformHelper;
 #else
-using System.Net.Sockets;
 #endif
 
 namespace NetworkCommsDotNet.Connections
@@ -45,12 +41,16 @@ namespace NetworkCommsDotNet.Connections
         /// The total bytes read so far within dataBuffer
         /// </summary>
         protected int totalBytesRead;
+
 #if !NETFX_CORE
+
         /// <summary>
         /// The thread listening for incoming data should we be using synchronous methods.
         /// </summary>
         protected Thread incomingDataListenThread = null;
+
 #endif
+
         /// <summary>
         /// True if async listen has started
         /// </summary>
@@ -91,6 +91,7 @@ namespace NetworkCommsDotNet.Connections
                     if (ConnectionInfo.ApplicationLayerProtocol == ApplicationLayerProtocolStatus.Enabled && packetBuilder.FirstByte() == 0)
                     {
                         #region Ignore Null Packet
+
                         if (NetworkComms.LoggingEnabled) NetworkComms.Logger.Trace(" ... null packet removed in IncomingPacketHandleHandOff() from " + ConnectionInfo + ", loop index - " + loopCounter.ToString());
 
                         packetBuilder.ClearNTopBytes(1);
@@ -100,7 +101,8 @@ namespace NetworkCommsDotNet.Connections
 
                         //If we have run out of data completely then we can return immediately
                         if (packetBuilder.TotalBytesCached == 0) return;
-                        #endregion
+
+                        #endregion Ignore Null Packet
                     }
                     else
                     {
@@ -108,6 +110,7 @@ namespace NetworkCommsDotNet.Connections
                         PacketHeader topPacketHeader;
 
                         #region Set topPacketHeader
+
                         if (ConnectionInfo.ApplicationLayerProtocol == ApplicationLayerProtocolStatus.Enabled)
                         {
                             //First determine the expected size of a header packet
@@ -131,7 +134,8 @@ namespace NetworkCommsDotNet.Connections
                         }
                         else
                             topPacketHeader = new PacketHeader(Enum.GetName(typeof(ReservedPacketType), ReservedPacketType.Unmanaged), packetBuilder.TotalBytesCached);
-                        #endregion
+
+                        #endregion Set topPacketHeader
 
                         //Idiot test
                         if (topPacketHeader.PacketType == null)
@@ -151,6 +155,7 @@ namespace NetworkCommsDotNet.Connections
                         else if (packetBuilder.TotalBytesCached >= packetHeaderSize + topPacketHeader.TotalPayloadSize)
                         {
                             #region Handle Packet
+
                             //We can either have exactly the right amount or even more than we were expecting
                             //We may have too much data if we are sending high quantities and the packets have been concatenated
                             SendReceiveOptions incomingPacketSendReceiveOptions = IncomingPacketSendReceiveOptions(topPacketHeader);
@@ -200,7 +205,7 @@ namespace NetworkCommsDotNet.Connections
                             }
 
                             //We clear the bytes we have just handed off
-                            if (NetworkComms.LoggingEnabled) NetworkComms.Logger.Trace("Removing " + (packetHeaderSize + topPacketHeader.TotalPayloadSize).ToString() + " bytes from incoming packet builder from connection with " + ConnectionInfo +".");
+                            if (NetworkComms.LoggingEnabled) NetworkComms.Logger.Trace("Removing " + (packetHeaderSize + topPacketHeader.TotalPayloadSize).ToString() + " bytes from incoming packet builder from connection with " + ConnectionInfo + ".");
                             packetBuilder.ClearNTopBytes(packetHeaderSize + topPacketHeader.TotalPayloadSize);
 
                             //Reset the expected bytes to 0 so that the next check starts from scratch
@@ -208,7 +213,8 @@ namespace NetworkCommsDotNet.Connections
 
                             //If we have run out of data completely then we can return immediately
                             if (packetBuilder.TotalBytesCached == 0) return;
-                            #endregion
+
+                            #endregion Handle Packet
                         }
                         else
                             throw new CommunicationException("This should be impossible!");

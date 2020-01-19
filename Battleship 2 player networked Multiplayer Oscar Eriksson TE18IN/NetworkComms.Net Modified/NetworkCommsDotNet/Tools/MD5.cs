@@ -3,7 +3,6 @@
 //Copyright (c) Microsoft Corporation.  All rights reserved.
 using System;
 using System.Text;
-using System.Security.Cryptography;
 
 // **************************************************************
 // * Raw implementation of the MD5 hash algorithm
@@ -15,8 +14,8 @@ using System.Security.Cryptography;
 
 namespace NetworkCommsDotNet.Tools
 {
-    // Simple struct for the (a,b,c,d) which is used to compute the mesage digest.    
-    struct ABCDStruct
+    // Simple struct for the (a,b,c,d) which is used to compute the mesage digest.
+    internal struct ABCDStruct
     {
         public uint A;
         public uint B;
@@ -27,7 +26,7 @@ namespace NetworkCommsDotNet.Tools
     /// <summary>
     /// Part of the managed MD5 calculator
     /// </summary>
-    sealed class MD5Core
+    internal sealed class MD5Core
     {
         //Prevent CSC from adding a default public constructor
         private MD5Core() { }
@@ -128,7 +127,7 @@ namespace NetworkCommsDotNet.Tools
                 MD5Core.GetHashBlock(input, ref abcd, startIndex);
                 startIndex += 64;
             }
-            // The final data block. 
+            // The final data block.
             return MD5Core.GetHashFinalBlock(input, startIndex, input.Length - startIndex, abcd, (Int64)input.Length * 8);
         }
 
@@ -137,7 +136,7 @@ namespace NetworkCommsDotNet.Tools
             byte[] working = new byte[64];
             byte[] length = BitConverter.GetBytes(len);
 
-            //Padding is a single bit 1, followed by the number of 0s required to make size congruent to 448 modulo 512. Step 1 of RFC 1321  
+            //Padding is a single bit 1, followed by the number of 0s required to make size congruent to 448 modulo 512. Step 1 of RFC 1321
             //The CLR ensures that our buffer is 0-assigned, we don't need to explicitly set it. This is why it ends up being quicker to just
             //use a temporary array rather then doing in-place assignment (5% for small inputs)
             Array.Copy(input, ibStart, working, 0, cbSize);
@@ -172,6 +171,7 @@ namespace NetworkCommsDotNet.Tools
         //    C = 0x98badcfe;
         //    D = 0x10325476;
         */
+
         internal static void GetHashBlock(byte[] input, ref ABCDStruct ABCDValue, int ibStart)
         {
             uint[] temp = Converter(input, ibStart);
@@ -285,7 +285,7 @@ namespace NetworkCommsDotNet.Tools
         }
 
         // Implementation of left rotate
-        // s is an int instead of a uint because the CLR requires the argument passed to >>/<< is of 
+        // s is an int instead of a uint because the CLR requires the argument passed to >>/<< is of
         // type int. Doing the demoting inside this function would add overhead.
         private static uint LSR(uint i, int s)
         {
@@ -318,6 +318,7 @@ namespace NetworkCommsDotNet.Tools
     /// </summary>
     public class MD5Managed : HashAlgorithm
 #else
+
     /// <summary>
     /// Create a managed MD5 hash calculator
     /// </summary>

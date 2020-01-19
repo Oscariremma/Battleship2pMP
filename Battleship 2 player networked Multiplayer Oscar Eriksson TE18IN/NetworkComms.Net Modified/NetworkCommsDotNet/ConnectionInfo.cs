@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,16 +6,16 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
 using System;
 using System.Collections.Generic;
@@ -29,7 +29,9 @@ using NetworkCommsDotNet.Connections;
 #if NETFX_CORE
 using NetworkCommsDotNet.Tools.XPlatformHelper;
 #else
+
 using System.Net.Sockets;
+
 #endif
 
 #if NET4 || NET35
@@ -84,13 +86,13 @@ namespace NetworkCommsDotNet
         /// <summary>
         /// We store our unique peer identifier as a string so that it can be easily serialised.
         /// </summary>
-        string NetworkIdentifierStr;
+        private string NetworkIdentifierStr;
 
-        string localEndPointAddressStr; //Only set on serialise
-        int localEndPointPort; //Only set on serialise
+        private string localEndPointAddressStr; //Only set on serialise
+        private int localEndPointPort; //Only set on serialise
 
-        bool hashCodeCacheSet = false;
-        int hashCodeCache;
+        private bool hashCodeCacheSet = false;
+        private int hashCodeCache;
 
         /// <summary>
         /// True if the <see cref="RemoteEndPoint"/> is connectable.
@@ -137,15 +139,15 @@ namespace NetworkCommsDotNet
         /// </summary>
         public ShortGuid NetworkIdentifier
         {
-            get 
+            get
             {
                 if (NetworkIdentifierStr == null || NetworkIdentifierStr == "") return ShortGuid.Empty;
                 else return new ShortGuid(NetworkIdentifierStr);
             }
         }
 
-        DateTime lastTrafficTime;
-        object internalLocker = new object();
+        private DateTime lastTrafficTime;
+        private object internalLocker = new object();
 
         /// <summary>
         /// The DateTime corresponding to the time data was sent or received
@@ -165,13 +167,14 @@ namespace NetworkCommsDotNet
         }
 
         /// <summary>
-        /// If enabled NetworkComms.Net uses a custom application layer protocol to provide 
-        /// useful features such as inline serialisation, transparent packet transmission, 
+        /// If enabled NetworkComms.Net uses a custom application layer protocol to provide
+        /// useful features such as inline serialisation, transparent packet transmission,
         /// remote peer information etc. Default: ApplicationLayerProtocolStatus.Enabled
         /// </summary>
         public ApplicationLayerProtocolStatus ApplicationLayerProtocol { get; private set; }
 
         #region Internal Usages
+
         /// <summary>
         /// The localEndPoint cast as <see cref="IPEndPoint"/>.
         /// </summary>
@@ -247,7 +250,7 @@ namespace NetworkCommsDotNet
         }
 #endif
 
-        #endregion
+        #endregion Internal Usages
 
         /// <summary>
         /// Private constructor required for deserialisation.
@@ -255,7 +258,10 @@ namespace NetworkCommsDotNet
 #if ANDROID || iOS
         [Preserve]
 #endif
-        private ConnectionInfo() { }
+
+        private ConnectionInfo()
+        {
+        }
 
         /// <summary>
         /// Create a new ConnectionInfo object pointing at the provided remote <see cref="IPEndPoint"/>.
@@ -265,12 +271,13 @@ namespace NetworkCommsDotNet
         public ConnectionInfo(EndPoint remoteEndPoint)
         {
             this.RemoteEndPoint = remoteEndPoint;
-            
+
             switch (remoteEndPoint.AddressFamily)
             {
                 case AddressFamily.InterNetwork:
                     this.LocalEndPoint = new IPEndPoint(IPAddress.Any, 0);
                     break;
+
                 case AddressFamily.InterNetworkV6:
                     this.LocalEndPoint = new IPEndPoint(IPAddress.IPv6Any, 0);
                     break;
@@ -280,7 +287,7 @@ namespace NetworkCommsDotNet
                     break;
 #endif
             }
-            
+
             this.ConnectionCreationTime = DateTime.Now;
             this.ApplicationLayerProtocol = ApplicationLayerProtocolStatus.Enabled;
         }
@@ -289,9 +296,9 @@ namespace NetworkCommsDotNet
         /// Create a new ConnectionInfo object pointing at the provided remote <see cref="IPEndPoint"/>
         /// </summary>
         /// <param name="remoteEndPoint">The end point corresponding with the remote target</param>
-        /// <param name="applicationLayerProtocol">If enabled NetworkComms.Net uses a custom 
-        /// application layer protocol to provide useful features such as inline serialisation, 
-        /// transparent packet transmission, remote peer handshake and information etc. We strongly 
+        /// <param name="applicationLayerProtocol">If enabled NetworkComms.Net uses a custom
+        /// application layer protocol to provide useful features such as inline serialisation,
+        /// transparent packet transmission, remote peer handshake and information etc. We strongly
         /// recommend you enable the NetworkComms.Net application layer protocol.</param>
         public ConnectionInfo(EndPoint remoteEndPoint, ApplicationLayerProtocolStatus applicationLayerProtocol)
         {
@@ -299,12 +306,13 @@ namespace NetworkCommsDotNet
                 throw new ArgumentException("A value of ApplicationLayerProtocolStatus.Undefined is invalid when creating instance of ConnectionInfo.", "applicationLayerProtocol");
 
             this.RemoteEndPoint = remoteEndPoint;
-            
+
             switch (remoteEndPoint.AddressFamily)
             {
                 case AddressFamily.InterNetwork:
                     this.LocalEndPoint = new IPEndPoint(IPAddress.Any, 0);
                     break;
+
                 case AddressFamily.InterNetworkV6:
                     this.LocalEndPoint = new IPEndPoint(IPAddress.IPv6Any, 0);
                     break;
@@ -320,12 +328,12 @@ namespace NetworkCommsDotNet
         }
 
         /// <summary>
-        /// Create a new ConnectionInfo object pointing at the provided remote ipAddress and port. 
-        /// Provided ipAddress and port are parsed in to <see cref="RemoteEndPoint"/>. Uses the 
+        /// Create a new ConnectionInfo object pointing at the provided remote ipAddress and port.
+        /// Provided ipAddress and port are parsed in to <see cref="RemoteEndPoint"/>. Uses the
         /// custom NetworkComms.Net application layer protocol.
         /// </summary>
         /// <param name="remoteIPAddress">IP address of the remote target in string format, e.g. "192.168.0.1"</param>
-        /// <param name="remotePort">The available port of the remote target. 
+        /// <param name="remotePort">The available port of the remote target.
         /// Valid ports are 1 through 65535. Port numbers less than 256 are reserved for well-known services (like HTTP on port 80) and port numbers less than 1024 generally require admin access</param>
         public ConnectionInfo(string remoteIPAddress, int remotePort)
         {
@@ -334,12 +342,13 @@ namespace NetworkCommsDotNet
                 throw new ArgumentException("Provided remoteIPAddress string was not successfully parsed.", "remoteIPAddress");
 
             this.RemoteEndPoint = new IPEndPoint(ipAddress, remotePort);
-            
+
             switch (this.RemoteEndPoint.AddressFamily)
             {
                 case AddressFamily.InterNetwork:
                     this.LocalEndPoint = new IPEndPoint(IPAddress.Any, 0);
                     break;
+
                 case AddressFamily.InterNetworkV6:
                     this.LocalEndPoint = new IPEndPoint(IPAddress.IPv6Any, 0);
                     break;
@@ -355,15 +364,15 @@ namespace NetworkCommsDotNet
         }
 
         /// <summary>
-        /// Create a new ConnectionInfo object pointing at the provided remote ipAddress and port. 
+        /// Create a new ConnectionInfo object pointing at the provided remote ipAddress and port.
         /// Provided ipAddress and port are parsed in to <see cref="RemoteEndPoint"/>.
         /// </summary>
         /// <param name="remoteIPAddress">IP address of the remote target in string format, e.g. "192.168.0.1"</param>
-        /// <param name="remotePort">The available port of the remote target. 
+        /// <param name="remotePort">The available port of the remote target.
         /// Valid ports are 1 through 65535. Port numbers less than 256 are reserved for well-known services (like HTTP on port 80) and port numbers less than 1024 generally require admin access</param>
-        /// <param name="applicationLayerProtocol">If enabled NetworkComms.Net uses a custom 
-        /// application layer protocol to provide useful features such as inline serialisation, 
-        /// transparent packet transmission, remote peer handshake and information etc. We strongly 
+        /// <param name="applicationLayerProtocol">If enabled NetworkComms.Net uses a custom
+        /// application layer protocol to provide useful features such as inline serialisation,
+        /// transparent packet transmission, remote peer handshake and information etc. We strongly
         /// recommend you enable the NetworkComms.Net application layer protocol.</param>
         public ConnectionInfo(string remoteIPAddress, int remotePort, ApplicationLayerProtocolStatus applicationLayerProtocol)
         {
@@ -375,12 +384,13 @@ namespace NetworkCommsDotNet
                 throw new ArgumentException("Provided remoteIPAddress string was not successfully parsed.", "remoteIPAddress");
 
             this.RemoteEndPoint = new IPEndPoint(ipAddress, remotePort);
-            
+
             switch (this.RemoteEndPoint.AddressFamily)
             {
                 case AddressFamily.InterNetwork:
                     this.LocalEndPoint = new IPEndPoint(IPAddress.Any, 0);
                     break;
+
                 case AddressFamily.InterNetworkV6:
                     this.LocalEndPoint = new IPEndPoint(IPAddress.IPv6Any, 0);
                     break;
@@ -416,6 +426,7 @@ namespace NetworkCommsDotNet
                 case AddressFamily.InterNetwork:
                     this.RemoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
                     break;
+
                 case AddressFamily.InterNetworkV6:
                     this.RemoteEndPoint = new IPEndPoint(IPAddress.IPv6Any, 0);
                     break;
@@ -438,9 +449,9 @@ namespace NetworkCommsDotNet
         /// <param name="localNetworkIdentifier">The local network identifier</param>
         /// <param name="localEndPoint">The localEndPoint which should be referenced remotely</param>
         /// <param name="isConnectable">True if connectable on provided localEndPoint</param>
-        /// <param name="applicationLayerProtocol">If enabled NetworkComms.Net uses a custom 
-        /// application layer protocol to provide useful features such as inline serialisation, 
-        /// transparent packet transmission, remote peer handshake and information etc. We strongly 
+        /// <param name="applicationLayerProtocol">If enabled NetworkComms.Net uses a custom
+        /// application layer protocol to provide useful features such as inline serialisation,
+        /// transparent packet transmission, remote peer handshake and information etc. We strongly
         /// recommend you enable the NetworkComms.Net application layer protocol.</param>
         public ConnectionInfo(ConnectionType connectionType, ShortGuid localNetworkIdentifier, EndPoint localEndPoint, bool isConnectable, ApplicationLayerProtocolStatus applicationLayerProtocol)
         {
@@ -459,6 +470,7 @@ namespace NetworkCommsDotNet
                 case AddressFamily.InterNetwork:
                     this.RemoteEndPoint = new IPEndPoint(IPAddress.Any, 0);
                     break;
+
                 case AddressFamily.InterNetworkV6:
                     this.RemoteEndPoint = new IPEndPoint(IPAddress.IPv6Any, 0);
                     break;
@@ -479,13 +491,13 @@ namespace NetworkCommsDotNet
         /// <param name="connectionType">The type of connection</param>
         /// <param name="remoteEndPoint">The remoteEndPoint of this connection</param>
         /// <param name="localEndPoint">The localEndpoint of this connection</param>
-        /// <param name="applicationLayerProtocol">If enabled NetworkComms.Net uses a custom 
-        /// application layer protocol to provide useful features such as inline serialisation, 
-        /// transparent packet transmission, remote peer handshake and information etc. We strongly 
+        /// <param name="applicationLayerProtocol">If enabled NetworkComms.Net uses a custom
+        /// application layer protocol to provide useful features such as inline serialisation,
+        /// transparent packet transmission, remote peer handshake and information etc. We strongly
         /// recommend you enable the NetworkComms.Net application layer protocol.</param>
         /// <param name="connectionListener">The listener associated with this connection if server side</param>
-        internal ConnectionInfo(ConnectionType connectionType, EndPoint remoteEndPoint, EndPoint localEndPoint, 
-            ApplicationLayerProtocolStatus applicationLayerProtocol = ApplicationLayerProtocolStatus.Enabled, 
+        internal ConnectionInfo(ConnectionType connectionType, EndPoint remoteEndPoint, EndPoint localEndPoint,
+            ApplicationLayerProtocolStatus applicationLayerProtocol = ApplicationLayerProtocolStatus.Enabled,
             ConnectionListenerBase connectionListener = null)
         {
             if (localEndPoint == null)
@@ -497,7 +509,7 @@ namespace NetworkCommsDotNet
             if (applicationLayerProtocol == ApplicationLayerProtocolStatus.Undefined)
                 throw new ArgumentException("A value of ApplicationLayerProtocolStatus.Undefined is invalid when creating instance of ConnectionInfo.", "applicationLayerProtocol");
 
-            this.ServerSide = (connectionListener!=null);
+            this.ServerSide = (connectionListener != null);
             this.ConnectionListener = connectionListener;
             this.ConnectionType = connectionType;
             this.RemoteEndPoint = remoteEndPoint;
@@ -505,13 +517,13 @@ namespace NetworkCommsDotNet
             this.ConnectionCreationTime = DateTime.Now;
             this.ApplicationLayerProtocol = applicationLayerProtocol;
         }
-        
+
         /// <summary>
         /// Marks the connection as establishing
         /// </summary>
         internal void NoteStartConnectionEstablish()
         {
-            lock(internalLocker)
+            lock (internalLocker)
             {
                 if (ConnectionState == ConnectionState.Shutdown) throw new ConnectionSetupException("Unable to mark as establishing as connection has already shutdown.");
 
@@ -611,7 +623,7 @@ namespace NetworkCommsDotNet
         }
 
         /// <summary>
-        /// A connectionInfo object may be used across multiple connection sessions, i.e. due to a possible timeout. 
+        /// A connectionInfo object may be used across multiple connection sessions, i.e. due to a possible timeout.
         /// This method resets the state of the connectionInfo object so that it may be reused.
         /// </summary>
         internal void ResetConnectionInfo()
@@ -623,7 +635,7 @@ namespace NetworkCommsDotNet
         }
 
         /// <summary>
-        /// Compares this <see cref="ConnectionInfo"/> object with obj and returns true if obj is ConnectionInfo and both 
+        /// Compares this <see cref="ConnectionInfo"/> object with obj and returns true if obj is ConnectionInfo and both
         /// the <see cref="NetworkIdentifier"/> and <see cref="RemoteEndPoint"/> match.
         /// </summary>
         /// <param name="obj">The object to test of equality</param>
@@ -641,7 +653,7 @@ namespace NetworkCommsDotNet
         }
 
         /// <summary>
-        /// Compares this <see cref="ConnectionInfo"/> object with other and returns true if both the <see cref="NetworkIdentifier"/> 
+        /// Compares this <see cref="ConnectionInfo"/> object with other and returns true if both the <see cref="NetworkIdentifier"/>
         /// and <see cref="RemoteEndPoint"/> match.
         /// </summary>
         /// <param name="other"></param>
@@ -671,7 +683,7 @@ namespace NetworkCommsDotNet
                 else if (left.LocalEndPoint != null && right.LocalEndPoint != null)
                     return (left.NetworkIdentifier.ToString() == right.NetworkIdentifier.ToString() && left.LocalEndPoint.Equals(right.LocalEndPoint) && left.ApplicationLayerProtocol == right.ApplicationLayerProtocol);
                 else
-                    return (left.NetworkIdentifier.ToString() == right.NetworkIdentifier.ToString() && left.ApplicationLayerProtocol==right.ApplicationLayerProtocol);
+                    return (left.NetworkIdentifier.ToString() == right.NetworkIdentifier.ToString() && left.ApplicationLayerProtocol == right.ApplicationLayerProtocol);
             }
         }
 
@@ -725,15 +737,19 @@ namespace NetworkCommsDotNet
                 case ConnectionState.Undefined:
                     connectionStateIdentifier = "U";
                     break;
+
                 case ConnectionState.Establishing:
                     connectionStateIdentifier = "I";
                     break;
+
                 case ConnectionState.Established:
                     connectionStateIdentifier = "E";
                     break;
+
                 case ConnectionState.Shutdown:
                     connectionStateIdentifier = "S";
                     break;
+
                 default:
                     throw new Exception("Unexpected connection state.");
             }
@@ -805,24 +821,24 @@ namespace NetworkCommsDotNet
             }
 
             foreach (byte[] datum in data)
-                outputStream.Write(datum, 0, datum.Length);            
+                outputStream.Write(datum, 0, datum.Length);
         }
 
         /// <inheritdoc />
         public void Deserialize(System.IO.Stream inputStream)
         {
-            byte[] conTypeData = new byte[sizeof(int)]; inputStream.Read(conTypeData, 0, conTypeData.Length); 
-            
+            byte[] conTypeData = new byte[sizeof(int)]; inputStream.Read(conTypeData, 0, conTypeData.Length);
+
             ConnectionType = (ConnectionType)BitConverter.ToInt32(conTypeData, 0);
-            
+
             byte[] netIDLengthData = new byte[sizeof(int)]; inputStream.Read(netIDLengthData, 0, netIDLengthData.Length);
-            byte[] netIDData = new byte[BitConverter.ToInt32(netIDLengthData, 0)]; inputStream.Read(netIDData, 0, netIDData.Length); 
-            
+            byte[] netIDData = new byte[BitConverter.ToInt32(netIDLengthData, 0)]; inputStream.Read(netIDData, 0, netIDData.Length);
+
             NetworkIdentifierStr = new String(Encoding.UTF8.GetChars(netIDData));
 
             byte[] localEPAddreessLengthData = new byte[sizeof(int)]; inputStream.Read(localEPAddreessLengthData, 0, sizeof(int));
-            byte[] localEPAddreessData = new byte[BitConverter.ToInt32(localEPAddreessLengthData, 0)]; inputStream.Read(localEPAddreessData, 0, localEPAddreessData.Length); 
-            
+            byte[] localEPAddreessData = new byte[BitConverter.ToInt32(localEPAddreessLengthData, 0)]; inputStream.Read(localEPAddreessData, 0, localEPAddreessData.Length);
+
             localEndPointAddressStr = new String(Encoding.UTF8.GetChars(localEPAddreessData));
 
             byte[] localPortData = new byte[sizeof(int)]; inputStream.Read(localPortData, 0, sizeof(int));
@@ -830,13 +846,13 @@ namespace NetworkCommsDotNet
             localEndPointPort = BitConverter.ToInt32(localPortData, 0);
 
             byte[] isConnectableData = new byte[sizeof(int)]; inputStream.Read(isConnectableData, 0, sizeof(bool));
-            
+
             IsConnectable = BitConverter.ToBoolean(isConnectableData, 0);
 
             byte[] AppLayerEnabledData = new byte[sizeof(int)]; inputStream.Read(AppLayerEnabledData, 0, sizeof(int));
 
             ApplicationLayerProtocol = (ApplicationLayerProtocolStatus)BitConverter.ToInt32(AppLayerEnabledData, 0);
-            
+
 #if NET4 || NET35
             if (ConnectionType == ConnectionType.Bluetooth)
             {
@@ -863,9 +879,9 @@ namespace NetworkCommsDotNet
         public static void Deserialize(MemoryStream ms, out ConnectionInfo result)
         {
             result = new ConnectionInfo();
-            result.Deserialize(ms);            
+            result.Deserialize(ms);
         }
 
-        #endregion
+        #endregion IExplicitlySerialize Members
     }
 }

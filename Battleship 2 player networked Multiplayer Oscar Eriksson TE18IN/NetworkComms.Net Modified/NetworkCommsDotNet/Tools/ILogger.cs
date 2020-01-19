@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,20 +6,18 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NetworkCommsDotNet.Tools
 {
@@ -117,7 +115,7 @@ namespace NetworkCommsDotNet.Tools
         /// Initialise an instance of the core logger. If logging to a file also set LogFileLocationName.
         /// </summary>
         /// <param name="logMode">The log mode to use</param>
-        public LiteLogger(LogMode logMode) 
+        public LiteLogger(LogMode logMode)
         {
             _currentLogMode = logMode;
         }
@@ -185,7 +183,6 @@ namespace NetworkCommsDotNet.Tools
                 {
                     lock (_locker)
                     {
-
 #if NETFX_CORE
                         System.Threading.Tasks.Task writeTask = new System.Threading.Tasks.Task(async () =>
                             {
@@ -204,11 +201,11 @@ namespace NetworkCommsDotNet.Tools
 
                         writeTask.ConfigureAwait(false);
                         writeTask.Start();
-                        writeTask.Wait(); 
+                        writeTask.Wait();
 #else
                         using (var sw = new System.IO.StreamWriter(LogFileLocationName, true))
                             sw.WriteLine(logStringToWrite);
-#endif                        
+#endif
                     }
                 }
                 catch (Exception) { }

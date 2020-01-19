@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Drawing;
-using System.IO;
 using System.Drawing.Text;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace Battleship2pMP
 {
@@ -20,7 +16,6 @@ namespace Battleship2pMP
         static public Image HitFire;
         static public Image MissWaterFoam;
         static public Image Water;
-
 
         /// <summary>
         /// The main entry point for the application.
@@ -64,9 +59,7 @@ namespace Battleship2pMP
             Application.Run(new MDI_Container());
 
             Networking.ShutdownAllNetworking();
-
         }
-
     }
 
     public static class Extensions
@@ -75,11 +68,10 @@ namespace Battleship2pMP
         {
             button.Font = new Font(Program.pfc.Families[0], button.Font.Size);
         }
+
         public static void SetMilitaryFont(this Label button)
         {
             button.Font = new Font(Program.pfc.Families[0], button.Font.Size);
         }
-
     }
-
 }

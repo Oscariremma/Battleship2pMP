@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,24 +6,21 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using NetworkCommsDotNet.DPSBase;
-using System.IO;
-using System.Reflection;
 using NetworkCommsDotNet.Tools;
+using System;
+using System.IO;
 
 namespace NetworkCommsDotNet
 {
@@ -43,7 +40,7 @@ namespace NetworkCommsDotNet
         StreamTools.StreamSendWrapper PacketData { get; }
 
         /// <summary>
-        /// Returns the serialised bytes of the packet header appended by the serialised header size. This is required to 
+        /// Returns the serialised bytes of the packet header appended by the serialised header size. This is required to
         /// rebuild the header on receive.
         /// </summary>
         /// <returns>The serialised header as byte[]</returns>
@@ -63,16 +60,17 @@ namespace NetworkCommsDotNet
         /// <summary>
         /// If we serialise a whole packet we include the packet header
         /// </summary>
-        PacketHeader _packetHeader;
+        private PacketHeader _packetHeader;
 
         /// <summary>
         /// And the payload object as byte[]. We cannot use type T here because we do not know the type of T
         /// on deserialisation until we have the nested packet header.
         /// </summary>
         internal byte[] _payloadObjectBytes;
+
         internal int _payloadSize;
 
-        StreamTools.StreamSendWrapper payloadStream;
+        private StreamTools.StreamSendWrapper payloadStream;
 
         /// <summary>
         /// Parameterless constructor for deserialisation
@@ -145,8 +143,8 @@ namespace NetworkCommsDotNet
 
             //We only replace the null with an empty stream if this is either in the nested packet
             //or we will not be nesting
-            if (objectToSerialise == null && 
-                ((!options.Options.ContainsKey("UseNestedPacketType") && 
+            if (objectToSerialise == null &&
+                ((!options.Options.ContainsKey("UseNestedPacketType") &&
                 !containsSecurityCritialDataProcessors) || isNested))
             {
 #if NETFX_CORE
@@ -229,7 +227,7 @@ namespace NetworkCommsDotNet
             }
 
             //Set the null data header section if required
-            if (objectToSerialiseIsNull && 
+            if (objectToSerialiseIsNull &&
                 ((!containsSecurityCritialDataProcessors && !options.Options.ContainsKey("UseNestedPacketType")) || isNested))
                 this._packetHeader.SetOption(PacketHeaderStringItems.NullDataSection, "");
 
@@ -305,7 +303,7 @@ namespace NetworkCommsDotNet
             inputStream.Read(_payloadObjectBytes, 0, _payloadSize);
         }
 
-        #endregion
+        #endregion IExplicitlySerialize Members
 
         /// <summary>
         /// Deserializes from a memory stream to a <see cref="Packet"/> object

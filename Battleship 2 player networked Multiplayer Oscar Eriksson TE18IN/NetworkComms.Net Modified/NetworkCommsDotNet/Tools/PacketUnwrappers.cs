@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,30 +6,24 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Net;
-using System.Threading;
-using NetworkCommsDotNet.DPSBase;
 using NetworkCommsDotNet.Connections;
+using System;
 using System.IO;
 
 #if NETFX_CORE
 using NetworkCommsDotNet.Tools.XPlatformHelper;
 #else
-using System.Net.Sockets;
 #endif
 
 namespace NetworkCommsDotNet.Tools
@@ -37,9 +31,9 @@ namespace NetworkCommsDotNet.Tools
     /// <summary>
     /// Wrapper used to track the SendReceiveOptions for different packet types.
     /// </summary>
-    class PacketTypeUnwrapper
+    internal class PacketTypeUnwrapper
     {
-        string packetTypeStr;
+        private string packetTypeStr;
 
         /// <summary>
         /// The SendReceiveOptions associated with this unwrapper.
@@ -62,17 +56,18 @@ namespace NetworkCommsDotNet.Tools
     /// The following packetTypeHandlerDelegateWrappers are required so that we can do the totally general and awesome object cast on deserialise.
     /// If there is a way of achieving the same without these wrappers please let us know.
     /// </summary>
-    interface IPacketTypeHandlerDelegateWrapper : IEquatable<IPacketTypeHandlerDelegateWrapper>
+    internal interface IPacketTypeHandlerDelegateWrapper : IEquatable<IPacketTypeHandlerDelegateWrapper>
     {
         object DeSerialize(MemoryStream incomingBytes, SendReceiveOptions options);
 
         void Process(PacketHeader packetHeader, Connection connection, object obj);
+
         bool EqualsDelegate(Delegate other);
     }
 
-    class PacketTypeHandlerDelegateWrapper<incomingObjectType> : IPacketTypeHandlerDelegateWrapper
+    internal class PacketTypeHandlerDelegateWrapper<incomingObjectType> : IPacketTypeHandlerDelegateWrapper
     {
-        NetworkComms.PacketHandlerCallBackDelegate<incomingObjectType> innerDelegate;
+        private NetworkComms.PacketHandlerCallBackDelegate<incomingObjectType> innerDelegate;
 
         public PacketTypeHandlerDelegateWrapper(NetworkComms.PacketHandlerCallBackDelegate<incomingObjectType> packetHandlerDelegate)
         {
@@ -84,7 +79,7 @@ namespace NetworkCommsDotNet.Tools
             if (incomingBytes == null) return null;
             //if (incomingBytes == null || incomingBytes.Length == 0) return null;
             else
-            //{
+                //{
                 //if (options.DataSerializer == null)
                 //    throw new ArgumentNullException("options", "The provided options.DataSerializer was null. Cannot continue with deserialise.");
 

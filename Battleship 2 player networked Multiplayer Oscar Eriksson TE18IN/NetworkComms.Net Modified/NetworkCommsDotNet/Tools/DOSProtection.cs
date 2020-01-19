@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,21 +6,20 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Text;
 
 #if NETFX_CORE
 using NetworkCommsDotNet.Tools.XPlatformHelper;
@@ -29,7 +28,7 @@ using NetworkCommsDotNet.Tools.XPlatformHelper;
 namespace NetworkCommsDotNet.Tools
 {
     /// <summary>
-    /// NetworkComms.Net class used for providing Denial Of Service (DOS) protection features. 
+    /// NetworkComms.Net class used for providing Denial Of Service (DOS) protection features.
     /// If enabled, malformed data events and connection initialises are tracked. If above
     /// set thresholds IPAddresses are banned.
     /// </summary>
@@ -38,22 +37,22 @@ namespace NetworkCommsDotNet.Tools
         /// <summary>
         /// A local thread safety locker
         /// </summary>
-        object _syncRoot = new object();
+        private object _syncRoot = new object();
 
         /// <summary>
         /// Addresses that are currently banned. Key is remote IPAddress, value is time banned.
         /// </summary>
-        Dictionary<IPAddress, DateTime> _bannedAddresses = new Dictionary<IPAddress, DateTime>();
+        private Dictionary<IPAddress, DateTime> _bannedAddresses = new Dictionary<IPAddress, DateTime>();
 
         /// <summary>
         /// First key is remote IPAddress, second key is DateTime.Ticks, value is the malformed count for that DateTime.ticks
         /// </summary>
-        Dictionary<IPAddress, Dictionary<long, int>> _malformedCountDict = new Dictionary<IPAddress, Dictionary<long, int>>();
+        private Dictionary<IPAddress, Dictionary<long, int>> _malformedCountDict = new Dictionary<IPAddress, Dictionary<long, int>>();
 
         /// <summary>
         /// First key is remote IPAddress, second key is DateTime.Ticks, value is the connection initialisation count for that DateTime.ticks
         /// </summary>
-        Dictionary<IPAddress, Dictionary<long, int>> _connectionInitialiseCountDict = new Dictionary<IPAddress, Dictionary<long, int>>();
+        private Dictionary<IPAddress, Dictionary<long, int>> _connectionInitialiseCountDict = new Dictionary<IPAddress, Dictionary<long, int>>();
 
         /// <summary>
         /// The current state of DOS protection
@@ -67,7 +66,7 @@ namespace NetworkCommsDotNet.Tools
 
         /// <summary>
         /// The time within which if MalformedCountInIntervalBeforeBan or ConnectionInitialiseCountInIntervalBeforeBan
-        /// is reached a peer will be banned. Default is 5 minutes. 
+        /// is reached a peer will be banned. Default is 5 minutes.
         /// </summary>
         public TimeSpan LogInterval { get; set; }
 
@@ -133,7 +132,7 @@ namespace NetworkCommsDotNet.Tools
 
                 //Add up the remaining counts and see if we need to ban this peer
                 int currentMalformedCount = 0;
-                foreach(int count in _malformedCountDict[remoteIPAddress].Values)
+                foreach (int count in _malformedCountDict[remoteIPAddress].Values)
                     currentMalformedCount += count;
 
                 if (currentMalformedCount >= MalformedCountInIntervalBeforeBan)
@@ -156,7 +155,7 @@ namespace NetworkCommsDotNet.Tools
         }
 
         /// <summary>
-        /// Log a connection initialisation for the provided remote IPAddress. 
+        /// Log a connection initialisation for the provided remote IPAddress.
         /// </summary>
         /// <param name="remoteIPAddress"></param>
         /// <returns>True if the remote IPAddress is now banned, otherwise false.</returns>
@@ -225,7 +224,7 @@ namespace NetworkCommsDotNet.Tools
         /// <returns></returns>
         public bool RemoteIPAddressBanned(IPAddress remoteIPAddress)
         {
-            lock(_syncRoot)
+            lock (_syncRoot)
             {
                 if (_bannedAddresses.ContainsKey(remoteIPAddress))
                 {

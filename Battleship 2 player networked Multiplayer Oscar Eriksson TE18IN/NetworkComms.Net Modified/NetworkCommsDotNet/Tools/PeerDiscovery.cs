@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,30 +6,27 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading;
-using System.IO;
-
-using NetworkCommsDotNet;
-using NetworkCommsDotNet.DPSBase;
 using NetworkCommsDotNet.Connections;
 using NetworkCommsDotNet.Connections.TCP;
 using NetworkCommsDotNet.Connections.UDP;
+using NetworkCommsDotNet.DPSBase;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Net.NetworkInformation;
+using System.Threading;
 
 #if NET35 || NET4
 using InTheHand.Net.Sockets;
@@ -88,12 +85,14 @@ namespace NetworkCommsDotNet.Tools
             BluetoothSDP,
 
 #if !NETFX_CORE && !WINDOWS_PHONE
+
             /// <summary>
-            /// Peer discovery using a TCP port scan. Very slow and adversely affects performance on the local network. 
+            /// Peer discovery using a TCP port scan. Very slow and adversely affects performance on the local network.
             /// Should only be used with network configurations where UDP broadcast is unsuccessful. Only IPv4 networks
             /// are included in a TCP Port scan.
             /// </summary>
             TCPPortScan,
+
 #endif
         }
 
@@ -114,7 +113,7 @@ namespace NetworkCommsDotNet.Tools
             public PeerListenerEndPoint(ConnectionType connectionType, EndPoint endPoint)
             {
                 if (connectionType == Connections.ConnectionType.Undefined)
-                    throw new ArgumentException("Cannot create a PeerEndPoint if connectioType is Undefined","connectionType");
+                    throw new ArgumentException("Cannot create a PeerEndPoint if connectioType is Undefined", "connectionType");
 
                 if ((connectionType == Connections.ConnectionType.TCP || connectionType == Connections.ConnectionType.UDP) && !(endPoint is IPEndPoint))
                     throw new ArgumentException("If connection type is of an IP type then the provided endPoint must be an IPEndPoint", "endPoint");
@@ -128,7 +127,9 @@ namespace NetworkCommsDotNet.Tools
                 this.EndPoint = endPoint;
             }
 
-            private PeerListenerEndPoint(){}
+            private PeerListenerEndPoint()
+            {
+            }
 
             public byte[] Serialize()
             {
@@ -202,6 +203,7 @@ namespace NetworkCommsDotNet.Tools
         }
 
         #region Public Properties
+
         /// <summary>
         /// The wait time in milliseconds before all peers discovered are returned for synchronous discovery methods. Default 2000ms.
         /// </summary>
@@ -228,6 +230,7 @@ namespace NetworkCommsDotNet.Tools
         /// Backing field for DefaultIPDiscoveryMethod
         /// </summary>
         private static DiscoveryMethod _defaultIPDiscoveryMethod = DiscoveryMethod.UDPBroadcast;
+
         /// <summary>
         /// The default discovery method to use for IP type connections (UDP and TCP). By default this is DiscoveryMethod.UDPBroadcast.
         /// </summary>
@@ -266,9 +269,11 @@ namespace NetworkCommsDotNet.Tools
         /// Event triggered when a peer is discovered.
         /// </summary>
         public static event PeerDiscoveredHandler OnPeerDiscovered;
-        #endregion
+
+        #endregion Public Properties
 
         #region Private Properties
+
         /// <summary>
         /// A private object to ensure thread safety
         /// </summary>
@@ -295,12 +300,15 @@ namespace NetworkCommsDotNet.Tools
         private static Dictionary<ShortGuid, Dictionary<ConnectionType, Dictionary<EndPoint, DateTime>>> _discoveredPeers = new Dictionary<ShortGuid, Dictionary<ConnectionType, Dictionary<EndPoint, DateTime>>>();
 
 #if !NETFX_CORE && !WINDOWS_PHONE
+
         /// <summary>
         /// A custom thread pool for performing a TCPPortScan
         /// </summary>
         private static CommsThreadPool _tcpPortScanThreadPool = new CommsThreadPool(0, Environment.ProcessorCount * 60, Environment.ProcessorCount * 60, new TimeSpan(0, 0, 5));
+
 #endif
-        #endregion
+
+        #endregion Private Properties
 
         static PeerDiscovery()
         {
@@ -320,8 +328,9 @@ namespace NetworkCommsDotNet.Tools
         }
 
         #region Local Configuration
+
         /// <summary>
-        /// Make this peer discoverable using the provided <see cref="DiscoveryMethod"/>. 
+        /// Make this peer discoverable using the provided <see cref="DiscoveryMethod"/>.
         /// Uses all suitable and allowed adaptors, e.g. for IP networks uses <see cref="HostInfo.IP.FilteredLocalAddresses()"/>.
         /// IMPORTANT NOTE: For IP networks we strongly recommend using the UDP broadcast discovery method.
         /// </summary>
@@ -389,28 +398,27 @@ namespace NetworkCommsDotNet.Tools
                         radio.Mode = RadioMode.Discoverable;
                         listeners.AddRange(Connection.StartListening(ConnectionType.Bluetooth, new BluetoothEndPoint(radio.LocalAddress, BluetoothDiscoveryService), true));
                     }
-                    
+
                     _discoveryListeners.Add(discoveryMethod, listeners);
                 }
 #endif
                 else
                     throw new NotImplementedException("The requested discovery method has not been implemented on the current platform.");
-                
+
                 //Add the packet handlers if required
                 foreach (var byMethodPair in _discoveryListeners)
                 {
-                    foreach(ConnectionListenerBase listener in byMethodPair.Value)
+                    foreach (ConnectionListenerBase listener in byMethodPair.Value)
                     {
                         if (!listener.IncomingPacketHandlerExists(discoveryPacketType, new NetworkComms.PacketHandlerCallBackDelegate<byte[]>(PeerDiscoveryHandler)))
                             listener.AppendIncomingPacketHandler<byte[]>(discoveryPacketType, PeerDiscoveryHandler);
                     }
                 }
-                    
             }
         }
 
         /// <summary>
-        /// Make this peer discoverable using the provided <see cref="DiscoveryMethod"/>. 
+        /// Make this peer discoverable using the provided <see cref="DiscoveryMethod"/>.
         /// IMPORTANT NOTE: For IP networks we strongly recommend using the UDP broadcast discovery method.
         /// </summary>
         /// <param name="discoveryMethod">The discovery method for which this peer should be discoverable</param>
@@ -512,7 +520,7 @@ namespace NetworkCommsDotNet.Tools
         }
 
         /// <summary>
-        /// Disable this peers discoverable status for the provided <see cref="DiscoveryMethod"/>. 
+        /// Disable this peers discoverable status for the provided <see cref="DiscoveryMethod"/>.
         /// </summary>
         /// <param name="discoveryMethod">The <see cref="DiscoveryMethod"/> to disable discovery for.</param>
         public static void DisableDiscoverable(DiscoveryMethod discoveryMethod)
@@ -615,12 +623,14 @@ namespace NetworkCommsDotNet.Tools
 
             return result;
         }
-        #endregion
+
+        #endregion Local Configuration
 
         #region Discover Peer Methods
+
         /// <summary>
         /// Discover local peers using the provided <see cref="DiscoveryMethod"/> and default discover time. Returns
-        /// dictionary keyed on peer network identifier. IMPORTANT NOTE: For IP networks we strongly recommend using the UDP 
+        /// dictionary keyed on peer network identifier. IMPORTANT NOTE: For IP networks we strongly recommend using the UDP
         /// broadcast discovery method.
         /// </summary>
         /// <param name="discoveryMethod">The <see cref="DiscoveryMethod"/> to use for discovering peers.</param>
@@ -632,7 +642,7 @@ namespace NetworkCommsDotNet.Tools
 
         /// <summary>
         /// Discover local peers using the provided <see cref="DiscoveryMethod"/>. Returns
-        /// dictionary keyed on peer network identifier. IMPORTANT NOTE: For IP networks we strongly recommend using the UDP 
+        /// dictionary keyed on peer network identifier. IMPORTANT NOTE: For IP networks we strongly recommend using the UDP
         /// broadcast discovery method.
         /// </summary>
         /// <param name="discoveryMethod">The <see cref="DiscoveryMethod"/> to use for discovering peers.</param>
@@ -668,8 +678,8 @@ namespace NetworkCommsDotNet.Tools
         }
 
         /// <summary>
-        /// Discover local peers using the provided <see cref="DiscoveryMethod"/> asynchronously. Makes a single async request 
-        /// for peers to announce. Ensure that you append to the OnPeerDiscovered event to handle discovered peers. 
+        /// Discover local peers using the provided <see cref="DiscoveryMethod"/> asynchronously. Makes a single async request
+        /// for peers to announce. Ensure that you append to the OnPeerDiscovered event to handle discovered peers.
         /// IMPORTANT NOTE: For IP networks we strongly recommend using the UDP broadcast discovery method.
         /// </summary>
         /// <param name="discoveryMethod"></param>
@@ -719,16 +729,16 @@ namespace NetworkCommsDotNet.Tools
             {
                 foreach (var idPair in _discoveredPeers)
                 {
-                    if(!result.ContainsKey(idPair.Key))
-                        result.Add(idPair.Key, new Dictionary<ConnectionType,List<EndPoint>>());
+                    if (!result.ContainsKey(idPair.Key))
+                        result.Add(idPair.Key, new Dictionary<ConnectionType, List<EndPoint>>());
 
-                    foreach(var typePair in idPair.Value)
+                    foreach (var typePair in idPair.Value)
                     {
-                        if(!result[idPair.Key].ContainsKey(typePair.Key))
+                        if (!result[idPair.Key].ContainsKey(typePair.Key))
                             result[idPair.Key].Add(typePair.Key, new List<EndPoint>());
 
-                        foreach(var endPoint in typePair.Value)
-                            if(!result[idPair.Key][typePair.Key].Contains(endPoint.Key))
+                        foreach (var endPoint in typePair.Value)
+                            if (!result[idPair.Key][typePair.Key].Contains(endPoint.Key))
                                 result[idPair.Key][typePair.Key].Add(endPoint.Key);
                     }
                 }
@@ -738,6 +748,7 @@ namespace NetworkCommsDotNet.Tools
         }
 
 #if !NETFX_CORE && !WINDOWS_PHONE
+
         /// <summary>
         /// Discover peers using TCP port scan
         /// </summary>
@@ -746,6 +757,7 @@ namespace NetworkCommsDotNet.Tools
         private static Dictionary<ShortGuid, Dictionary<ConnectionType, List<EndPoint>>> DiscoverPeersTCP(int discoverTimeMS)
         {
             #region Determine All Possible Peers/Port Combinations
+
             //Get a list of all IPEndPoint that we should try and connect to
             //This requires the network and peer portion of current IP addresses
             List<IPEndPoint> allIPEndPointsToConnect = new List<IPEndPoint>();
@@ -809,9 +821,11 @@ namespace NetworkCommsDotNet.Tools
                     }
                 }
             }
-            #endregion
+
+            #endregion Determine All Possible Peers/Port Combinations
 
             #region Send Discovery Packet & Wait
+
             //For each address send the discovery packet
             SendReceiveOptions nullOptions = new SendReceiveOptions<NullSerializer>();
             StreamTools.StreamSendWrapper sendStream =
@@ -848,8 +862,8 @@ namespace NetworkCommsDotNet.Tools
                         {
                             try
                             {
-								innerConnection.EstablishConnection();
-								innerConnection.SendPacket<byte[]>(sendPacket);
+                                innerConnection.EstablishConnection();
+                                innerConnection.SendPacket<byte[]>(sendPacket);
                             }
                             catch (CommsException)
                             {
@@ -870,7 +884,7 @@ namespace NetworkCommsDotNet.Tools
             }
 
             NetworkComms.ConnectionEstablishTimeoutMS = previousConnectionTimeout;
-            
+
             sendStream.ThreadSafeStream.Dispose(true);
 
             AutoResetEvent sleep = new AutoResetEvent(false);
@@ -891,9 +905,11 @@ namespace NetworkCommsDotNet.Tools
                 }
                 catch (CommsException) { }
             }
-            #endregion
+
+            #endregion Send Discovery Packet & Wait
 
             #region Return Discovered Peers
+
             Dictionary<ShortGuid, Dictionary<ConnectionType, List<EndPoint>>> result = new Dictionary<ShortGuid, Dictionary<ConnectionType, List<EndPoint>>>();
             lock (_syncRoot)
             {
@@ -915,7 +931,8 @@ namespace NetworkCommsDotNet.Tools
             }
 
             return result;
-            #endregion
+
+            #endregion Return Discovered Peers
         }
 
 #endif
@@ -939,7 +956,7 @@ namespace NetworkCommsDotNet.Tools
                         foreach (var serviceRecord in dev.GetServiceRecords(BluetoothService.RFCommProtocol))
                             if (serviceRecord.AttributeIds.Contains(BluetoothConnectionListener.NetworkCommsBTAttributeId.NetworkCommsEndPoint))
                                 endPointsToSendTo.Add(new BluetoothEndPoint(dev.DeviceAddress, serviceRecord.GetAttributeById(UniversalAttributeId.ServiceClassIdList).Value.GetValueAsElementList()[0].GetValueAsUuid()));
-                    
+
                     using (Packet sendPacket = new Packet(discoveryPacketType, new byte[0], NetworkComms.DefaultSendReceiveOptions))
                     {
                         foreach (var remoteEndPoint in endPointsToSendTo)
@@ -953,7 +970,7 @@ namespace NetworkCommsDotNet.Tools
                 };
 
             BluetoothComponent com = new InTheHand.Net.Bluetooth.BluetoothComponent();
-            com.DiscoverDevicesComplete += callBack;            
+            com.DiscoverDevicesComplete += callBack;
             com.DiscoverDevicesAsync(255, false, false, false, true, com);
 
             btDiscoverFinished.WaitOne();
@@ -980,11 +997,13 @@ namespace NetworkCommsDotNet.Tools
             }
 
             return result;
-        }     
+        }
 #endif
-        #endregion
+
+        #endregion Discover Peer Methods
 
         #region Incoming Comms Handlers
+
         /// <summary>
         /// Handle the incoming peer discovery packet
         /// </summary>
@@ -992,7 +1011,7 @@ namespace NetworkCommsDotNet.Tools
         /// <param name="connection"></param>
         /// <param name="data"></param>
         private static void PeerDiscoveryHandler(PacketHeader header, Connection connection, byte[] data)
-        {            
+        {
             DiscoveryMethod discoveryMethod = DiscoveryMethod.UDPBroadcast;
 
 #if !NETFX_CORE && !WINDOWS_PHONE
@@ -1007,10 +1026,10 @@ namespace NetworkCommsDotNet.Tools
             //Ignore discovery packets that came from this peer
             if (!Connection.ExistingLocalListenEndPoints(connection.ConnectionInfo.ConnectionType).Contains(connection.ConnectionInfo.RemoteEndPoint))
             {
-                //If the only thing that was sent was an empty byte array this is a peer discovery request. 
+                //If the only thing that was sent was an empty byte array this is a peer discovery request.
                 if (data.Length == 0 && IsDiscoverable(discoveryMethod))
                 {
-                    //Send back our listener info 
+                    //Send back our listener info
                     byte[] responseData = SerializeLocalListenerList();
                     connection.SendObject(discoveryPacketType, responseData);
                 }
@@ -1084,7 +1103,7 @@ namespace NetworkCommsDotNet.Tools
         private static byte[] SerializeLocalListenerList()
         {
             List<ConnectionListenerBase> allListeners = Connection.AllExistingLocalListeners();
-            
+
             using (MemoryStream ms = new MemoryStream())
             {
                 ms.Write(NetworkComms.NetworkIdentifier.Guid.ToByteArray(), 0, 16);
@@ -1111,7 +1130,7 @@ namespace NetworkCommsDotNet.Tools
                 ms.Flush();
 
                 return ms.ToArray();
-           }            
+            }
         }
 
         /// <summary>
@@ -1123,7 +1142,7 @@ namespace NetworkCommsDotNet.Tools
         private static List<PeerListenerEndPoint> DeserializeRemoteListenerList(byte[] data, out ShortGuid networkIdentifier)
         {
             List<PeerListenerEndPoint> result = new List<PeerListenerEndPoint>();
-            
+
             int offset = 0;
 
             byte[] idData = new byte[16];
@@ -1145,6 +1164,7 @@ namespace NetworkCommsDotNet.Tools
 
             return result;
         }
-        #endregion
+
+        #endregion Incoming Comms Handlers
     }
 }

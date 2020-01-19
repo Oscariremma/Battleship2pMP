@@ -1,13 +1,10 @@
-﻿using System;
-using System.Drawing;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Battleship2pMP.MDI_Forms;
+﻿using Battleship2pMP.MDI_Forms;
 using LibOscar;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Threading.Tasks;
 using static LibOscar.Methods;
-using ProtoBuf;
 
 namespace Battleship2pMP
 {
@@ -40,11 +37,8 @@ namespace Battleship2pMP
         private int ClientShots;
         private int ClientHits;
 
-
-
         public GameLogic()
         {
-
             HostShipsLeft = new Ships.ShipsLeft(Properties.Settings.Default.Carriers, Properties.Settings.Default.Battleships, Properties.Settings.Default.Cruisers, Properties.Settings.Default.Destroyers, Properties.Settings.Default.Submarines);
             PostTurnDelay = Properties.Settings.Default.PostTurnDelay;
             ClientShipsLeft = HostShipsLeft;
@@ -71,19 +65,17 @@ namespace Battleship2pMP
                     rowx++;
                 }
             }
-
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "SecurityIntelliSenseCS:MS Security rules violation", Justification = "<Pending>")]
         public void BothPlayersDonePlacingShips()
         {
-
             PushGameBoardUpdates();
             UpdateScoreboards();
 
             //Randomly select who starts
             Random random = new Random();
-            if(random.Next(100) < 50)
+            if (random.Next(100) < 50)
             {
                 //Host starts
                 MDI_Game.staticGame.Invoke(MDI_Game.staticGame.DBeginTurn, new object[] { true });
@@ -97,10 +89,9 @@ namespace Battleship2pMP
                 Networking.NetworkServer.StaticClientInterface.BeginTurn(true);
                 ClientsTurn = true;
             }
-
         }
 
-        public void FireShots(System.Drawing.Point[] Targets, Point[] ScreenCordTargets , bool TargetClient)
+        public void FireShots(System.Drawing.Point[] Targets, Point[] ScreenCordTargets, bool TargetClient)
         {
             ref GameBoardTile[,] TargetGameBoard = ref TargetClient ? ref ClientGameBoard : ref HostGameBoard;
 
@@ -110,8 +101,7 @@ namespace Battleship2pMP
 
             ref int StatisticsHits = ref TargetClient ? ref HostHits : ref ClientHits;
 
-
-            foreach(Point target in Targets)
+            foreach (Point target in Targets)
             {
                 bool ShipDestroyed = true;
 
@@ -127,16 +117,14 @@ namespace Battleship2pMP
 
                     ref Networking.NetworkSprite HitShipSprite = ref TargetClient ? ref ClientSpriteTable[targetTile.SpriteID] : ref HostSpriteTable[targetTile.SpriteID];
 
-                    foreach(Point Coveredtile in HitShipSprite.CoveredTiles)
+                    foreach (Point Coveredtile in HitShipSprite.CoveredTiles)
                     {
-                        if(TargetGameBoard[Coveredtile.X,Coveredtile.Y].TileType != TileType.Hit)
+                        if (TargetGameBoard[Coveredtile.X, Coveredtile.Y].TileType != TileType.Hit)
                         {
                             ShipDestroyed = false;
                             break;
                         }
                     }
-
-
 
                     if (ShipDestroyed)
                     {
@@ -148,32 +136,31 @@ namespace Battleship2pMP
                             case Ships.ShipEnum.Carrier:
                                 TargetShipCounter.Carriers--;
                                 break;
+
                             case Ships.ShipEnum.Battleship:
                                 TargetShipCounter.Battleships--;
                                 break;
+
                             case Ships.ShipEnum.Cruiser:
                                 TargetShipCounter.Cruisers--;
                                 break;
+
                             case Ships.ShipEnum.Destroyer:
                                 TargetShipCounter.Destroyers--;
                                 break;
+
                             case Ships.ShipEnum.SubMarine:
                                 TargetShipCounter.Submarines--;
                                 break;
                         }
 
                         UpdateScoreboards();
-
                     }
-
-
                 }
                 else
                 {
                     targetTile.TileType = TileType.Miss;
                 }
-
-
             }
 
             if (TargetClient)
@@ -187,7 +174,7 @@ namespace Battleship2pMP
 
             PushGameBoardUpdates();
 
-            if(TargetShipCounter.Total == 0)
+            if (TargetShipCounter.Total == 0)
             {
                 Victory(TargetClient);
             }
@@ -197,10 +184,9 @@ namespace Battleship2pMP
             }
 
             CompleteTurns += 0.5d;
-
         }
 
-        void PushGameBoardUpdates()
+        private void PushGameBoardUpdates()
         {
             MDI_Game.staticGame.remoteGameBoardTiles = ClientGameBoard;
             List<MDI_Game.Sprite> clientSpriteTable = new List<MDI_Game.Sprite>();
@@ -223,19 +209,19 @@ namespace Battleship2pMP
             ReDrawGameBoards();
         }
 
-        void ReDrawGameBoards()
+        private void ReDrawGameBoards()
         {
             MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DInvalidate);
             Networking.NetworkServer.StaticClientInterface.InvalidateGameBoard();
         }
 
-        void UpdateScoreboards()
+        private void UpdateScoreboards()
         {
             MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DUpdateScoreboard, new object[] { HostShipsLeft, ClientShipsLeft });
             Networking.NetworkServer.StaticClientInterface.UpdateScoreboard(ClientShipsLeft, HostShipsLeft);
         }
 
-        void TurnDone()
+        private void TurnDone()
         {
             if (ClientsTurn)
             {
@@ -253,16 +239,16 @@ namespace Battleship2pMP
             }
         }
 
-        void Victory(bool HostWon)
+        private void Victory(bool HostWon)
         {
-            MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DVictory, new object[] { HostWon, HostShots, HostHits, ClientShots, ClientHits, CompleteTurns , false } );
+            MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DVictory, new object[] { HostWon, HostShots, HostHits, ClientShots, ClientHits, CompleteTurns, false });
             Networking.NetworkServer.StaticClientInterface.Victory(!HostWon, ClientShots, ClientHits, HostShots, HostHits, CompleteTurns);
         }
 
         public void Surrender(bool HostSurrenderd)
         {
             MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DVictory, new object[] { !HostSurrenderd, HostShots, HostHits, ClientShots, ClientHits, CompleteTurns, !HostSurrenderd });
-            Networking.NetworkServer.StaticClientInterface.Victory(HostSurrenderd, ClientShots, ClientHits, HostShots, HostHits, CompleteTurns, HostSurrenderd );
+            Networking.NetworkServer.StaticClientInterface.Victory(HostSurrenderd, ClientShots, ClientHits, HostShots, HostHits, CompleteTurns, HostSurrenderd);
         }
 
         public void Rematch(bool HostWantsRematch)
@@ -328,7 +314,4 @@ namespace Battleship2pMP
     {
         Left, Up, Right, Down
     }
-
-
-
 }

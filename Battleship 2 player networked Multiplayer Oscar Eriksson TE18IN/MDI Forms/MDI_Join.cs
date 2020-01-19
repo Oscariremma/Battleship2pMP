@@ -1,28 +1,18 @@
-﻿using System;
-using System.Net;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using NetworkCommsDotNet;
 using NetworkCommsDotNet.Tools;
-using NetworkCommsDotNet;
+using System;
+using System.Net;
 using System.Threading;
-
+using System.Windows.Forms;
 
 namespace Battleship2pMP.MDI_Forms
 {
     public partial class MDI_Join : Form
     {
-
         public delegate void DelJoinResult(bool ConnectionSuccessful);
-        public static DelJoinResult DJoinResult;
-        readonly string port = ":30664";
 
+        public static DelJoinResult DJoinResult;
+        private readonly string port = ":30664";
 
         public MDI_Join()
         {
@@ -37,7 +27,6 @@ namespace Battleship2pMP.MDI_Forms
             DJoinResult = new DelJoinResult(JoinResult);
 
             tbx_IP.Text = Properties.Settings.Default.LastIP;
-
         }
 
         private void Btn_Back_To_MainMenu_Click(object sender, EventArgs e)

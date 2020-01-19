@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,23 +6,21 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
-using System;
-using System.Collections.Generic;
-using System.Text;
 using NetworkCommsDotNet.DPSBase;
 using NetworkCommsDotNet.Tools;
-using System.Threading;
+using System;
+using System.Collections.Generic;
 
 namespace NetworkCommsDotNet
 {
@@ -38,7 +36,8 @@ namespace NetworkCommsDotNet
         public bool ReceiveConfirmationRequired
         {
             get { return Options.ContainsKey("ReceiveConfirmationRequired"); }
-            set {
+            set
+            {
                 if (value) Options["ReceiveConfirmationRequired"] = "";
                 else Options.Remove("ReceiveConfirmationRequired");
             }
@@ -72,9 +71,9 @@ namespace NetworkCommsDotNet
         }
 
         /// <summary>
-        ///  Incoming packets are handled using a flexible QueueItemPriority (Default - QueueItemPriority.Normal). Reserved internal 
-        ///  packet types and packets marked with QueueItemPriority.Highest are not enqueued but handled in real time by the thread 
-        ///  handling the incoming data. You are free to specify the queue item priority for packet handlers using this 
+        ///  Incoming packets are handled using a flexible QueueItemPriority (Default - QueueItemPriority.Normal). Reserved internal
+        ///  packet types and packets marked with QueueItemPriority.Highest are not enqueued but handled in real time by the thread
+        ///  handling the incoming data. You are free to specify the queue item priority for packet handlers using this
         ///  SendReceiveOptions by setting this value as desired. CAUTION: Only use QueueItemPriority.Highest sparingly.
         /// </summary>
         public QueueItemPriority ReceiveHandlePriority
@@ -86,9 +85,9 @@ namespace NetworkCommsDotNet
                 else
                     return QueueItemPriority.Normal;
             }
-            set 
-            { 
-                Options["ReceiveHandlePriority"] = Enum.GetName(typeof(QueueItemPriority), value); 
+            set
+            {
+                Options["ReceiveHandlePriority"] = Enum.GetName(typeof(QueueItemPriority), value);
             }
         }
 
@@ -113,7 +112,7 @@ namespace NetworkCommsDotNet
         /// <summary>
         /// Gets the <see cref="DPSBase.DataProcessor"/>s that should be used when sending information. <see cref="DPSBase.DataProcessor"/>s are applied in index order
         /// </summary>
-        public List<DataProcessor> DataProcessors 
+        public List<DataProcessor> DataProcessors
         {
             get { return _dataProcessors; }
             protected set
@@ -131,9 +130,9 @@ namespace NetworkCommsDotNet
                 List<DataProcessor> distinctProcessors = new List<DataProcessor>();
                 foreach (var processor in value)
                 {
-                    if(distinctProcessors.Contains(processor))
+                    if (distinctProcessors.Contains(processor))
                         throw new ArgumentException("Same data processor cannot be applied twice");
-                    
+
                     distinctProcessors.Add(processor);
                 }
 
@@ -215,22 +214,22 @@ namespace NetworkCommsDotNet
         }
 
         /// <summary>
-        /// Create a deep clone of this <see cref="SendReceiveOptions"/> object. 
+        /// Create a deep clone of this <see cref="SendReceiveOptions"/> object.
         /// </summary>
         /// <returns>The cloned object</returns>
         public object Clone()
         {
-            return new SendReceiveOptions(DataSerializer, new List<DataProcessor>(DataProcessors), new Dictionary<string,string>(Options));
+            return new SendReceiveOptions(DataSerializer, new List<DataProcessor>(DataProcessors), new Dictionary<string, string>(Options));
         }
     }
 
     /// <inheritdoc />
     /// <typeparam name="T_DS">The type of <see cref="DPSBase.DataSerializer"/> to use</typeparam>
-    public class SendReceiveOptions<T_DS> : SendReceiveOptions 
+    public class SendReceiveOptions<T_DS> : SendReceiveOptions
         where T_DS : DataSerializer
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SendReceiveOptions"/> class. The <see cref="DPSBase.DataSerializer"/> is passed as a generic parameter and no <see cref="DPSBase.DataProcessor"/>s are used. To provide additional options see other overrides. 
+        /// Initializes a new instance of the <see cref="SendReceiveOptions"/> class. The <see cref="DPSBase.DataSerializer"/> is passed as a generic parameter and no <see cref="DPSBase.DataProcessor"/>s are used. To provide additional options see other overrides.
         /// </summary>
         public SendReceiveOptions()
             : base(null)
@@ -243,7 +242,7 @@ namespace NetworkCommsDotNet
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SendReceiveOptions"/> class. The <see cref="DPSBase.DataSerializer"/> is passed as a generic parameter and no <see cref="DPSBase.DataProcessor"/>s are used.  
+        /// Initializes a new instance of the <see cref="SendReceiveOptions"/> class. The <see cref="DPSBase.DataSerializer"/> is passed as a generic parameter and no <see cref="DPSBase.DataProcessor"/>s are used.
         /// Further options can be passed to the <see cref="DPSBase.DataSerializer"/> as an argument which may be null
         /// </summary>
         /// <param name="options">Additional options to be passed to the <see cref="DPSBase.DataSerializer"/></param>
@@ -261,12 +260,12 @@ namespace NetworkCommsDotNet
     /// <inheritdoc />
     /// <typeparam name="T_DS">The type of <see cref="DPSBase.DataSerializer"/> to use</typeparam>
     /// <typeparam name="T_DP1">The type of <see cref="DPSBase.DataProcessor"/> to use</typeparam>
-    public class SendReceiveOptions<T_DS, T_DP1> : SendReceiveOptions 
-        where T_DS : DataSerializer 
+    public class SendReceiveOptions<T_DS, T_DP1> : SendReceiveOptions
+        where T_DS : DataSerializer
         where T_DP1 : DataProcessor
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SendReceiveOptions"/> class. The <see cref="DPSBase.DataSerializer"/> and a single <see cref="DPSBase.DataProcessor"/> while will be used are passed as generic parameters. To provide additional options see other overrides. 
+        /// Initializes a new instance of the <see cref="SendReceiveOptions"/> class. The <see cref="DPSBase.DataSerializer"/> and a single <see cref="DPSBase.DataProcessor"/> while will be used are passed as generic parameters. To provide additional options see other overrides.
         /// </summary>
         public SendReceiveOptions()
             : base(null)
@@ -342,8 +341,8 @@ namespace NetworkCommsDotNet
         {
             DataSerializer = DPSManager.GetDataSerializer<T_DS>();
             DataProcessors = new List<DataProcessor>() {
-                DPSManager.GetDataProcessor<T_DP1>(), 
-                DPSManager.GetDataProcessor<T_DP2>(), 
+                DPSManager.GetDataProcessor<T_DP1>(),
+                DPSManager.GetDataProcessor<T_DP2>(),
                 DPSManager.GetDataProcessor<T_DP3>() };
 
             if (DataSerializer == null)

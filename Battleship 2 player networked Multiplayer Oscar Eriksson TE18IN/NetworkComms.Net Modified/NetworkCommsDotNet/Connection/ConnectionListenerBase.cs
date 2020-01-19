@@ -17,12 +17,11 @@
 // under the License.
 //
 
+using NetworkCommsDotNet.DPSBase;
+using NetworkCommsDotNet.Tools;
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Text;
-using NetworkCommsDotNet.DPSBase;
-using NetworkCommsDotNet.Tools;
 
 #if NETFX_CORE
 using NetworkCommsDotNet.Tools.XPlatformHelper;
@@ -37,6 +36,7 @@ namespace NetworkCommsDotNet.Connections
     public abstract class ConnectionListenerBase
     {
         #region Public Properties
+
         /// <summary>
         /// The send receive options associated with this listener.
         /// </summary>
@@ -66,9 +66,11 @@ namespace NetworkCommsDotNet.Connections
         /// The local IPEndPoint that this listener is associated with.
         /// </summary>
         public EndPoint LocalListenEndPoint { get; protected set; }
-        #endregion
+
+        #endregion Public Properties
 
         #region Private Properties
+
         /// <summary>
         /// Thread safety locker which is used when accessing <see cref="incomingPacketHandlers"/>
         /// and <see cref="incomingPacketUnwrappers"/>
@@ -85,7 +87,8 @@ namespace NetworkCommsDotNet.Connections
         /// A listener specific incoming packet handler dictionary. These are called before any global handlers
         /// </summary>
         private Dictionary<string, List<IPacketTypeHandlerDelegateWrapper>> incomingPacketHandlers = new Dictionary<string, List<IPacketTypeHandlerDelegateWrapper>>();
-        #endregion
+
+        #endregion Private Properties
 
         /// <summary>
         /// Create a new listener instance
@@ -148,6 +151,7 @@ namespace NetworkCommsDotNet.Connections
         }
 
         #region Start and Stop Listening
+
         /// <summary>
         /// Start listening for incoming connections.
         /// </summary>
@@ -159,9 +163,11 @@ namespace NetworkCommsDotNet.Connections
         /// Stop listening for incoming connections.
         /// </summary>
         internal abstract void StopListening();
-        #endregion
+
+        #endregion Start and Stop Listening
 
         #region Listener Specific Packet Handlers
+
         /// <summary>
         /// Append a listener specific packet handler using the listener default SendReceiveOptions
         /// </summary>
@@ -414,6 +420,7 @@ namespace NetworkCommsDotNet.Connections
 
             if (NetworkComms.LoggingEnabled) NetworkComms.Logger.Info("Appended connection specific packet handlers from listener '" + ToString() + "' to connection '" + connection.ToString() + "'.");
         }
-        #endregion
+
+        #endregion Listener Specific Packet Handlers
     }
 }

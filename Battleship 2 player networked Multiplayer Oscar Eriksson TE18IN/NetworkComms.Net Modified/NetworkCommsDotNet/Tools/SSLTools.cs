@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,26 +6,24 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
 #if !NETFX_CORE
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
-using System.Text;
 
 namespace NetworkCommsDotNet.Tools
 {
@@ -35,7 +33,7 @@ namespace NetworkCommsDotNet.Tools
     public class CertificateDetails : IDisposable
     {
         /// <summary>
-        /// Certificate "distinguished name". An example is "CN='My Certificate'; C='USA'". 
+        /// Certificate "distinguished name". An example is "CN='My Certificate'; C='USA'".
         /// Please see http://msdn.microsoft.com/en-us/library/aa377160 and http://en.wikipedia.org/wiki/X.509 for more information.
         /// </summary>
         public string X500 { get; private set; }
@@ -55,7 +53,8 @@ namespace NetworkCommsDotNet.Tools
         /// </summary>
         public SecureString Password { get; private set; }
 
-        static int _keyLength = 1024;
+        private static int _keyLength = 1024;
+
         /// <summary>
         /// The key length to be generated. Default is 1024. Minimum is 384. maximum is 16384.
         /// </summary>
@@ -78,7 +77,7 @@ namespace NetworkCommsDotNet.Tools
         /// <summary>
         /// Initialise certificate details.
         /// </summary>
-        /// <param name="x500">Certificates "distinguished name". An example is "CN='My Certificate'; C='USA'". 
+        /// <param name="x500">Certificates "distinguished name". An example is "CN='My Certificate'; C='USA'".
         /// Please see http://msdn.microsoft.com/en-us/library/aa377160 and http://en.wikipedia.org/wiki/X.509 for more information.</param>
         /// <param name="startTime">Certificate validity start DateTime</param>
         /// <param name="endTime">Certificate validity end DateTime</param>
@@ -96,7 +95,7 @@ namespace NetworkCommsDotNet.Tools
         /// <summary>
         /// Initialise certificate details.
         /// </summary>
-        /// <param name="x500">Certificates "distinguished name". An example is "CN='My Certificate'; C='USA'". 
+        /// <param name="x500">Certificates "distinguished name". An example is "CN='My Certificate'; C='USA'".
         /// Please see http://msdn.microsoft.com/en-us/library/aa377160 and http://en.wikipedia.org/wiki/X.509 for more information.</param>
         /// <param name="startTime">Certificate validity start DateTime</param>
         /// <param name="endTime">Certificate validity end DateTime</param>
@@ -127,7 +126,7 @@ namespace NetworkCommsDotNet.Tools
         /// <summary>
         /// Initialise certificate details.
         /// </summary>
-        /// <param name="x500">Certificates "distinguished name". An example is "CN='My Certificate'; C='USA'". 
+        /// <param name="x500">Certificates "distinguished name". An example is "CN='My Certificate'; C='USA'".
         /// Please see http://msdn.microsoft.com/en-us/library/aa377160 and http://en.wikipedia.org/wiki/X.509 for more information.</param>
         /// <param name="startTime">Certificate validity start DateTime</param>
         /// <param name="endTime">Certificate validity end DateTime</param>
@@ -152,14 +151,16 @@ namespace NetworkCommsDotNet.Tools
     }
 
 #if !iOS
+
     /// <summary>
     /// Tools used in conjunction with SSL encrypted connections.
     /// </summary>
     public static class SSLTools
     {
         #region Create Self Signed Certificates
+
         /// <summary>
-        /// Creates a self signed certificate which can be used for peer to peer authentication and 
+        /// Creates a self signed certificate which can be used for peer to peer authentication and
         /// saves it to disk using provided certificateFileName. Initial implementation used with permission from http://blogs.msdn.com/b/dcook/archive/2008/11/25/creating-a-self-signed-certificate-in-c.aspx
         /// </summary>
         /// <param name="certificateDetails">The certificate details to use.</param>
@@ -183,7 +184,7 @@ namespace NetworkCommsDotNet.Tools
         }
 
         /// <summary>
-        /// Creates a self signed certificate which can be used for peer to peer authentication. 
+        /// Creates a self signed certificate which can be used for peer to peer authentication.
         /// Initial implementation used with permission from http://blogs.msdn.com/b/dcook/archive/2008/11/25/creating-a-self-signed-certificate-in-c.aspx
         /// </summary>
         /// <param name="certificateDetails">The certificate details to use.</param>
@@ -421,8 +422,10 @@ namespace NetworkCommsDotNet.Tools
         {
             [MarshalAs(UnmanagedType.LPWStr)]
             public string ContainerName;
+
             [MarshalAs(UnmanagedType.LPWStr)]
             public string ProviderName;
+
             public int ProviderType;
             public int Flags;
             public int ProviderParameterCount;
@@ -540,8 +543,11 @@ namespace NetworkCommsDotNet.Tools
                 IntPtr reserved,
                 int flags);
         }
-        #endregion
+
+        #endregion Create Self Signed Certificates
     }
+
 #endif
 }
+
 #endif

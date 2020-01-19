@@ -6,7 +6,6 @@ using System.Text;
 
 namespace NetworkCommsDotNet.Tools.XPlatformHelper
 {
-
     public enum SocketError
     {
         AccessDenied = 10013,

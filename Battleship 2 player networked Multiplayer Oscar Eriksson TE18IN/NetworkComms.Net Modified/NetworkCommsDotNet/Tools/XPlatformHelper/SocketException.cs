@@ -21,7 +21,7 @@ namespace NetworkCommsDotNet.Tools.XPlatformHelper
         {
             errorCode = error;
         }
-        
+
         internal SocketException(int error, string message)
             : base(message)
         {

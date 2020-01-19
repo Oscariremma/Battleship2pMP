@@ -8,7 +8,6 @@ namespace NetworkCommsDotNet.Tools.XPlatformHelper
 {
     public class IPEndPoint : EndPoint
     {
-
         private IPAddress address;
         private int port;
 
@@ -101,6 +100,7 @@ namespace NetworkCommsDotNet.Tools.XPlatformHelper
 
                     ipe = new IPEndPoint(address, port);
                     break;
+
                 case AddressFamily.InterNetworkV6:
                     if (size < 28)
                     {
@@ -128,6 +128,7 @@ namespace NetworkCommsDotNet.Tools.XPlatformHelper
 
                     ipe = new IPEndPoint(new IPAddress(addressData, scopeId), port);
                     break;
+
                 default:
                     return null;
             }

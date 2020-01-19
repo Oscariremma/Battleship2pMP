@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,44 +6,47 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NetworkCommsDotNet.Tools
 {
     /// <summary>
-    /// Represents a shortform globally unique identifier (<see href="http://en.wikipedia.org/wiki/Globally_unique_identifier">GUID</see>) which is easier to handle than Guid.NewGuid(). 
+    /// Represents a shortform globally unique identifier (<see href="http://en.wikipedia.org/wiki/Globally_unique_identifier">GUID</see>) which is easier to handle than Guid.NewGuid().
     /// This class is used to uniquely identify a peer/application using NetworkComms.Net.
     /// See <see href="http://www.singular.co.nz/blog/archive/2007/12/20/shortguid-a-shorter-and-url-friendly-guid-in-c-sharp.aspx">here</see> for original source.
     /// </summary>
     public struct ShortGuid
     {
         #region Static
+
         /// <summary>
         /// A read-only instance of the ShortGuid class whose value
         /// is guaranteed to be all zeroes.
         /// </summary>
         public static readonly ShortGuid Empty = new ShortGuid(Guid.Empty);
-        #endregion
+
+        #endregion Static
 
         #region Fields
-        Guid _guid;
-        string _value;
-        #endregion
+
+        private Guid _guid;
+        private string _value;
+
+        #endregion Fields
 
         #region Contructors
+
         /// <summary>
         /// Creates a ShortGuid from a base64 encoded string
         /// </summary>
@@ -64,7 +67,8 @@ namespace NetworkCommsDotNet.Tools
             _value = Encode(guid);
             _guid = guid;
         }
-        #endregion
+
+        #endregion Contructors
 
         #region Properties
 
@@ -99,9 +103,11 @@ namespace NetworkCommsDotNet.Tools
                 }
             }
         }
-        #endregion
+
+        #endregion Properties
 
         #region ToString
+
         /// <summary>
         /// Returns the base64 encoded guid as a string
         /// </summary>
@@ -110,9 +116,11 @@ namespace NetworkCommsDotNet.Tools
         {
             return _value;
         }
-        #endregion
+
+        #endregion ToString
 
         #region Equals
+
         /// <summary>
         /// Returns a value indicating whether this instance and a
         /// specified Object represent the same type and value.
@@ -132,9 +140,11 @@ namespace NetworkCommsDotNet.Tools
 
             return false;
         }
-        #endregion
+
+        #endregion Equals
 
         #region GetHashCode
+
         /// <summary>
         /// Returns the HashCode for underlying Guid.
         /// </summary>
@@ -143,9 +153,11 @@ namespace NetworkCommsDotNet.Tools
         {
             return _guid.GetHashCode();
         }
-        #endregion
+
+        #endregion GetHashCode
 
         #region NewGuid
+
         /// <summary>
         /// Initialises a new instance of the ShortGuid class
         /// </summary>
@@ -158,11 +170,11 @@ namespace NetworkCommsDotNet.Tools
 
             //Try and get the process Id. May fail in some enviornments.
             int processId = 0;
-            
+
 #if !iOS && !WINDOWS_PHONE && !NETFX_CORE
-            try 
+            try
             {
-                using(System.Diagnostics.Process process = System.Diagnostics.Process.GetCurrentProcess())
+                using (System.Diagnostics.Process process = System.Diagnostics.Process.GetCurrentProcess())
                     processId = process.Id;
             }
             catch (Exception) { }
@@ -173,9 +185,11 @@ namespace NetworkCommsDotNet.Tools
 
             return new ShortGuid(resultGuid);
         }
-        #endregion
+
+        #endregion NewGuid
 
         #region Encode
+
         /// <summary>
         /// Creates a new instance of a Guid using the string value,
         /// then returns the base64 encoded version of the Guid.
@@ -200,9 +214,11 @@ namespace NetworkCommsDotNet.Tools
             encoded = encoded.Replace("/", "_").Replace("+", "-");
             return encoded.Substring(0, 22);
         }
-        #endregion
+
+        #endregion Encode
 
         #region Decode
+
         /// <summary>
         /// Decodes the given base64 string
         /// </summary>
@@ -217,9 +233,11 @@ namespace NetworkCommsDotNet.Tools
             byte[] buffer = Convert.FromBase64String(value + "==");
             return new Guid(buffer);
         }
-        #endregion
+
+        #endregion Decode
 
         #region Operators
+
         /// <summary>
         /// Determines if both ShortGuids have the same underlying
         /// Guid value.
@@ -284,6 +302,7 @@ namespace NetworkCommsDotNet.Tools
         {
             return new ShortGuid(guid);
         }
-        #endregion
+
+        #endregion Operators
     }
 }

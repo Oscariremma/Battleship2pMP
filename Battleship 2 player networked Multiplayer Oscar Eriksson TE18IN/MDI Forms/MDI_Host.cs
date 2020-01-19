@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Battleship2pMP.MDI_Forms
@@ -22,7 +15,6 @@ namespace Battleship2pMP.MDI_Forms
             Btn_GameSettings.SetMilitaryFont();
 
             pictureBox1.BackgroundImage = Program.MainMenuImg;
-
         }
 
         private void Btn_Back_To_MainMenu_Click(object sender, EventArgs e)
@@ -33,7 +25,6 @@ namespace Battleship2pMP.MDI_Forms
                 MDI_Container.SwitchMDI(MDI_Form_Enum.MDI_MainMenu);
             }
         }
-
 
         private void Btn_Host_Click(object sender, EventArgs e)
         {
@@ -54,12 +45,7 @@ namespace Battleship2pMP.MDI_Forms
                 tbx_IPs.Visible = false;
                 lbl_GameStart.Visible = false;
                 Btn_GameSettings.Enabled = true;
-
             }
-
-
-
-
         }
 
         private void Btn_GameSettings_Click(object sender, EventArgs e)

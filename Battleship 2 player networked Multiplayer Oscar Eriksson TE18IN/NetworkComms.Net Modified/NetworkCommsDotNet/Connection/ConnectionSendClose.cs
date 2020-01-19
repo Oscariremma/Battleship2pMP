@@ -17,19 +17,15 @@
 // under the License.
 //
 
+using NetworkCommsDotNet.Tools;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Net;
-using System.Threading;
-using NetworkCommsDotNet.DPSBase;
-using NetworkCommsDotNet.Tools;
 using System.IO;
+using System.Threading;
 
 #if NETFX_CORE
 using NetworkCommsDotNet.Tools.XPlatformHelper;
 #else
-using System.Net.Sockets;
 #endif
 
 namespace NetworkCommsDotNet.Connections
@@ -55,8 +51,9 @@ namespace NetworkCommsDotNet.Connections
         /// <summary>
         /// Maintains a list of sent packets for the purpose of confirmation and possible resends.
         /// </summary>
-        object sentPacketsLocker = new object();
-        Dictionary<string, SentPacket> sentPackets = new Dictionary<string, SentPacket>();
+        private object sentPacketsLocker = new object();
+
+        private Dictionary<string, SentPacket> sentPackets = new Dictionary<string, SentPacket>();
 
         /// <summary>
         /// Send bytes on an unmanaged connection
@@ -239,6 +236,7 @@ namespace NetworkCommsDotNet.Connections
             AutoResetEvent returnWaitSignal = new AutoResetEvent(false);
 
             #region SendReceiveDelegate
+
             NetworkComms.PacketHandlerCallBackDelegate<returnObjectType> SendReceiveDelegate = (packetHeader, sourceConnection, incomingObject) =>
             {
                 returnObject = incomingObject;
@@ -252,7 +250,8 @@ namespace NetworkCommsDotNet.Connections
                 returnObject = default(returnObjectType);
                 returnWaitSignal.Set();
             };
-            #endregion
+
+            #endregion SendReceiveDelegate
 
             if (sendOptions == null) sendOptions = ConnectionDefaultSendReceiveOptions;
             if (receiveOptions == null) receiveOptions = ConnectionDefaultSendReceiveOptions;
@@ -374,7 +373,6 @@ namespace NetworkCommsDotNet.Connections
                 }
                 catch (Exception)
                 {
-
                 }
 #endif
                 //Close connection my get called multiple times for a given connection depending on the reason for being closed
@@ -527,7 +525,7 @@ namespace NetworkCommsDotNet.Connections
                 if (packet.PacketHeader.ContainsOption(PacketHeaderStringItems.CheckSumHash))
                     packetDataMD5 = packet.PacketHeader.GetOption(PacketHeaderStringItems.CheckSumHash);
 
-                NetworkComms.Logger.Trace("Entering packet send of '" + packet.PacketHeader.PacketType + "' packetType to " + ConnectionInfo + (packetDataMD5 == "" ? "" : ". PacketCheckSum="+packetDataMD5));
+                NetworkComms.Logger.Trace("Entering packet send of '" + packet.PacketHeader.PacketType + "' packetType to " + ConnectionInfo + (packetDataMD5 == "" ? "" : ". PacketCheckSum=" + packetDataMD5));
             }
 
             if (packet.PacketHeader.ContainsOption(PacketHeaderStringItems.ReceiveConfirmationRequired) &&
@@ -545,7 +543,6 @@ namespace NetworkCommsDotNet.Connections
                     throw new CommunicationException("Attempting to send packet on connection which has been closed or is currently closing.");
                 }
 
-
                 //Set packet sequence number inside sendLocker
                 //Increment the global counter as well to ensure future connections with the same host can not create duplicates
                 Interlocked.Increment(ref NetworkComms.totalPacketSendCount);
@@ -558,6 +555,7 @@ namespace NetworkCommsDotNet.Connections
                 bool remotePeerDisconnectedDuringWait = false;
 
                 #region Delegates
+
                 //Specify a delegate we may use if we require receive confirmation
                 NetworkComms.PacketHandlerCallBackDelegate<long> confirmationDelegate = (packetHeader, connectionInfo, incomingSequenceIdentifier) =>
                 {
@@ -572,11 +570,13 @@ namespace NetworkCommsDotNet.Connections
                     remotePeerDisconnectedDuringWait = true;
                     confirmationWaitSignal.Set();
                 };
-                #endregion
+
+                #endregion Delegates
 
                 try
                 {
                     #region Prepare For Confirmation and Possible Validation
+
                     //Add the confirmation handler if required
                     if (packet.PacketHeader.ContainsOption(PacketHeaderStringItems.ReceiveConfirmationRequired))
                     {
@@ -600,11 +600,13 @@ namespace NetworkCommsDotNet.Connections
                             }
                         }
                     }
-                    #endregion
+
+                    #endregion Prepare For Confirmation and Possible Validation
 
                     SendPacketSpecific(packet);
 
                     #region SentPackets Cleanup
+
                     //If sent packets is greater than 40 we delete anything older than a minute
                     lock (sentPacketsLocker)
                     {
@@ -622,9 +624,11 @@ namespace NetworkCommsDotNet.Connections
                             NetworkComms.LastSentPacketCacheCleanup = DateTime.Now;
                         }
                     }
-                    #endregion
+
+                    #endregion SentPackets Cleanup
 
                     #region Wait For Confirmation If Required
+
                     //If we required receive confirmation we now wait for that confirmation
                     if (packet.PacketHeader.ContainsOption(PacketHeaderStringItems.ReceiveConfirmationRequired))
                     {
@@ -644,7 +648,8 @@ namespace NetworkCommsDotNet.Connections
                             if (NetworkComms.LoggingEnabled) NetworkComms.Logger.Trace(" ... confirmation packet received.");
                         }
                     }
-                    #endregion
+
+                    #endregion Wait For Confirmation If Required
 
                     //Update the traffic time as late as possible in case there is a problem
                     ConnectionInfo.UpdateLastTrafficTime();
@@ -664,7 +669,7 @@ namespace NetworkCommsDotNet.Connections
                 catch (TimeoutException ex)
                 {
                     //We close the connection due to communication exceptions
-                    if (NetworkComms.LoggingEnabled) NetworkComms.Logger.Warn("Timeout exception for connection " + this.ConnectionInfo + (ex.Message != null ? ". " +ex.Message : "."));
+                    if (NetworkComms.LoggingEnabled) NetworkComms.Logger.Warn("Timeout exception for connection " + this.ConnectionInfo + (ex.Message != null ? ". " + ex.Message : "."));
 
                     CloseConnection(true, 48);
                     throw new ConnectionSendTimeoutException(ex.ToString());

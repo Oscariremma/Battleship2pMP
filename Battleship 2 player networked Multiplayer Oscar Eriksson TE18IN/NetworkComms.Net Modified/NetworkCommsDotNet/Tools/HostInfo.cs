@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,22 +6,20 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
-using NetworkCommsDotNet.DPSBase;
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Net.NetworkInformation;
 
@@ -30,7 +28,9 @@ using NetworkCommsDotNet.Tools.XPlatformHelper;
 using System.Threading.Tasks;
 using Windows.Storage;
 #else
+
 using System.Net.Sockets;
+
 #endif
 
 #if NET35 || NET4
@@ -44,8 +44,7 @@ namespace NetworkCommsDotNet.Tools
     /// A static class which provides information about the local host.
     /// </summary>
     public static class HostInfo
-    {       
-
+    {
         static HostInfo()
         {
             IP.NetworkLoadUpdateWindowMS = 2000;
@@ -69,23 +68,24 @@ namespace NetworkCommsDotNet.Tools
             }
         }
 
-        static string[] _restrictLocalAdaptorNames = null;
+        private static string[] _restrictLocalAdaptorNames = null;
+
         /// <summary>
         /// Restricts the addresses that may be used when listening.
-        /// If set <see cref="IP.FilteredLocalAddresses()"/> will only return addresses corresponding with specified adaptors names. 
+        /// If set <see cref="IP.FilteredLocalAddresses()"/> will only return addresses corresponding with specified adaptors names.
         /// Please see <see cref="AllLocalAdaptorNames()"/> for a list of local adaptor names.
         /// Correct format is string[] { "Local Area Connection", "eth0", "en0", "wlan0" }.
         /// </summary>
-        public static string[] RestrictLocalAdaptorNames 
+        public static string[] RestrictLocalAdaptorNames
         {
             get { return _restrictLocalAdaptorNames; }
             set
             {
-                #if WINDOWS_PHONE || NETFX_CORE
+#if WINDOWS_PHONE || NETFX_CORE
                 throw new NotSupportedException("This feature is not supported on the current platform.");
-                #else
+#else
                 _restrictLocalAdaptorNames = value;
-                #endif
+#endif
             }
         }
 
@@ -114,12 +114,13 @@ namespace NetworkCommsDotNet.Tools
         {
             //Local IPAddress cache. Provides significant performance improvement if
             //the IPAddresses are enumerated many times in a short period of time
-            static List<IPAddress> filteredLocalAddressesCache = null;
-			static DateTime filteredLocalAddressesCacheUpdate = DateTime.UtcNow;
+            private static List<IPAddress> filteredLocalAddressesCache = null;
+
+            private static DateTime filteredLocalAddressesCacheUpdate = DateTime.UtcNow;
 
             /// <summary>
             /// Restricts the IPAdddresses that are returned by <see cref="FilteredLocalAddresses()"/>.
-            /// If using StartListening overrides that do not take IPEndPoints NetworkComms.Net 
+            /// If using StartListening overrides that do not take IPEndPoints NetworkComms.Net
             /// will only listen on IP Addresses within provided ranges. Also see <see cref="RestrictLocalAdaptorNames"/>.
             /// The order of provided ranges determines the order of IPAddresses returned by <see cref="FilteredLocalAddresses()"/>.
             /// </summary>
@@ -128,7 +129,7 @@ namespace NetworkCommsDotNet.Tools
             /// <summary>
             /// Returns all allowed local IP addresses. Caches results for up to 5 second since the previous refresh.
             /// If <see cref="RestrictLocalAdaptorNames"/> has been set only returns IP addresses corresponding with specified adaptors.
-            /// If <see cref="RestrictLocalAddressRanges"/> has been set only returns matching addresses ordered in descending 
+            /// If <see cref="RestrictLocalAddressRanges"/> has been set only returns matching addresses ordered in descending
             /// preference. i.e. Most preferred at [0].
             /// </summary>
             /// <returns></returns>
@@ -140,7 +141,7 @@ namespace NetworkCommsDotNet.Tools
             /// <summary>
             /// Returns all allowed local IP addresses. Caches results for up to 5 second since the previous refresh unless forceCacheUpdate is true.
             /// If <see cref="RestrictLocalAdaptorNames"/> has been set only returns IP addresses corresponding with specified adaptors.
-            /// If <see cref="RestrictLocalAddressRanges"/> has been set only returns matching addresses ordered in descending 
+            /// If <see cref="RestrictLocalAddressRanges"/> has been set only returns matching addresses ordered in descending
             /// preference. i.e. Most preferred at [0].
             /// </summary>
             /// <param name="forceCacheUpdate">If true will refresh the cache and return latest result</param>
@@ -148,11 +149,10 @@ namespace NetworkCommsDotNet.Tools
             public static List<IPAddress> FilteredLocalAddresses(bool forceCacheUpdate)
             {
                 if (filteredLocalAddressesCache != null &&
-					(DateTime.UtcNow - filteredLocalAddressesCacheUpdate).TotalSeconds < 5)
+                    (DateTime.UtcNow - filteredLocalAddressesCacheUpdate).TotalSeconds < 5)
                     return filteredLocalAddressesCache;
                 else
                 {
-
 #if WINDOWS_PHONE || NETFX_CORE
             //On windows phone we simply ignore IP addresses from the auto assigned range as well as those without a valid prefix
             List<IPAddress> allowedIPs = new List<IPAddress>();
@@ -169,7 +169,7 @@ namespace NetworkCommsDotNet.Tools
 
                         for (int i = 0; i < RestrictLocalAddressRanges.Length; i++)
                             valid |= RestrictLocalAddressRanges[i].Contains(hName.DisplayName);
-                                
+
                         if(valid)
                             allowedIPs.Add(IPAddress.Parse(hName.DisplayName));
                     }
@@ -179,7 +179,7 @@ namespace NetworkCommsDotNet.Tools
             }
 
             return allowedIPs;
-#else                    
+#else
                     List<IPAddress> validIPAddresses = new List<IPAddress>();
 
 #if ANDROID
@@ -237,7 +237,7 @@ namespace NetworkCommsDotNet.Tools
                             }
                         }
                     }
-                }    
+                }
             }
 
 #else
@@ -294,7 +294,7 @@ namespace NetworkCommsDotNet.Tools
                     }
 #endif
 
-            //Sort the results to be returned
+                    //Sort the results to be returned
                     if (RestrictLocalAddressRanges != null)
                     {
                         validIPAddresses.Sort((a, b) =>
@@ -317,7 +317,7 @@ namespace NetworkCommsDotNet.Tools
                     }
 
                     filteredLocalAddressesCache = validIPAddresses;
-					filteredLocalAddressesCacheUpdate = DateTime.UtcNow;
+                    filteredLocalAddressesCacheUpdate = DateTime.UtcNow;
 
                     return validIPAddresses;
 #endif
@@ -325,8 +325,8 @@ namespace NetworkCommsDotNet.Tools
             }
 
             /// <summary>
-            /// The number of milliseconds over which to take an instance load (CurrentNetworkLoad) to be used in averaged 
-            /// values (AverageNetworkLoad). Default is 2000ms. Shorter values can be used but less than 200ms may cause significant 
+            /// The number of milliseconds over which to take an instance load (CurrentNetworkLoad) to be used in averaged
+            /// values (AverageNetworkLoad). Default is 2000ms. Shorter values can be used but less than 200ms may cause significant
             /// errors in the value of returned value, especially in mono environments.
             /// </summary>
             public static int NetworkLoadUpdateWindowMS { get; set; }
@@ -346,7 +346,7 @@ namespace NetworkCommsDotNet.Tools
             public static long InterfaceLinkSpeed { get; set; }
 
             /// <summary>
-            /// Returns the current instance network usage, as a value between 0 and 1. Returns the largest value for any available 
+            /// Returns the current instance network usage, as a value between 0 and 1. Returns the largest value for any available
             /// network adaptor. Triggers load analysis upon first call.
             /// </summary>
             public static double CurrentNetworkLoadIncoming
@@ -377,13 +377,12 @@ namespace NetworkCommsDotNet.Tools
 #else
                 throw new NotSupportedException("This feature is not supported on the current platform.");
 #endif
-
                 }
                 private set { currentNetworkLoadIncoming = value; }
             }
 
             /// <summary>
-            /// Returns the current instance network usage, as a value between 0 and 1. Returns the largest value for any available network 
+            /// Returns the current instance network usage, as a value between 0 and 1. Returns the largest value for any available network
             /// adaptor. Triggers load analysis upon first call.
             /// </summary>
             public static double CurrentNetworkLoadOutgoing
@@ -419,7 +418,7 @@ namespace NetworkCommsDotNet.Tools
             }
 
             /// <summary>
-            /// Returns the averaged value of CurrentNetworkLoadIncoming, as a value between 0 and 1, for a time window of up to 254 seconds. 
+            /// Returns the averaged value of CurrentNetworkLoadIncoming, as a value between 0 and 1, for a time window of up to 254 seconds.
             /// Triggers load analysis upon first call.
             /// </summary>
             /// <param name="secondsToAverage">Number of seconds over which historical data should be used to arrive at an average</param>
@@ -510,6 +509,7 @@ namespace NetworkCommsDotNet.Tools
             }
 
 #if !WINDOWS_PHONE && !ANDROID  && !NETFX_CORE
+
             /// <summary>
             /// Takes a network load snapshot (CurrentNetworkLoad) every NetworkLoadUpdateWindowMS
             /// </summary>
@@ -581,7 +581,7 @@ namespace NetworkCommsDotNet.Tools
                         }
 
                         //If either of the usage levels have gone above 2 it suggests we are most likely on a faster connection that we think
-                        //As such we will bump the interface link speed up to 1Gbps so that future load calculations more accurately reflect the 
+                        //As such we will bump the interface link speed up to 1Gbps so that future load calculations more accurately reflect the
                         //actual load.
                         if (inMax > 2 || outMax > 2) InterfaceLinkSpeed = 950000000;
 
@@ -610,6 +610,7 @@ namespace NetworkCommsDotNet.Tools
                     }
                 }
             }
+
 #endif
         }
 
@@ -621,7 +622,7 @@ namespace NetworkCommsDotNet.Tools
         public static class BT
         {
             /// <summary>
-            /// Returns all allowed local Bluetooth addresses. 
+            /// Returns all allowed local Bluetooth addresses.
             /// If <see cref="RestrictLocalAdaptorNames"/> has been set only returns bBluetooth addresses corresponding with specified adaptors.
             /// </summary>
             /// <returns></returns>

@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,26 +6,27 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.IO;
 using System.Reflection;
 using System.Threading;
 
 #if !NET2 && !NET35
+
 using System.Threading.Tasks;
+
 #endif
 
 #if WINDOWS_PHONE || NETFX_CORE
@@ -37,21 +38,26 @@ using System.Threading.Tasks;
 namespace NetworkCommsDotNet.DPSBase
 {
     /// <summary>
-    /// Automatically detects and manages the use of <see cref="DataSerializer"/> and <see cref="DataProcessor"/>s.  
-    /// Any <see cref="DataSerializer"/> or <see cref="DataProcessor"/> in an assembly located in the working 
+    /// Automatically detects and manages the use of <see cref="DataSerializer"/> and <see cref="DataProcessor"/>s.
+    /// Any <see cref="DataSerializer"/> or <see cref="DataProcessor"/> in an assembly located in the working
     /// directory (including subdirectories) will be automatically detected.
     /// </summary>
     public sealed class DPSManager
     {
         #region Comparers
-                
-        class ReflectedTypeComparer : IEqualityComparer<Type>
+
+        private class ReflectedTypeComparer : IEqualityComparer<Type>
         {
             public static ReflectedTypeComparer Instance { get; private set; }
 
-            static ReflectedTypeComparer() { Instance = new ReflectedTypeComparer(); }
+            static ReflectedTypeComparer()
+            {
+                Instance = new ReflectedTypeComparer();
+            }
 
-            public ReflectedTypeComparer() { }
+            public ReflectedTypeComparer()
+            {
+            }
 
             #region IEqualityComparer<ICompress> Members
 
@@ -65,22 +71,27 @@ namespace NetworkCommsDotNet.DPSBase
                 return obj.AssemblyQualifiedName.GetHashCode();
             }
 
-            #endregion
+            #endregion IEqualityComparer<ICompress> Members
         }
 
-        class AssemblyComparer : IEqualityComparer<AssemblyName>
+        private class AssemblyComparer : IEqualityComparer<AssemblyName>
         {
             public static AssemblyComparer Instance { get; private set; }
 
-            static AssemblyComparer() { Instance = new AssemblyComparer(); }
+            static AssemblyComparer()
+            {
+                Instance = new AssemblyComparer();
+            }
 
-            public AssemblyComparer() { }
+            public AssemblyComparer()
+            {
+            }
 
             #region IEqualityComparer<AssemblyName> Members
 
             public bool Equals(AssemblyName x, AssemblyName y)
             {
-                return x.FullName == y.FullName;               
+                return x.FullName == y.FullName;
             }
 
             public int GetHashCode(AssemblyName obj)
@@ -88,14 +99,14 @@ namespace NetworkCommsDotNet.DPSBase
                 return obj.FullName.GetHashCode();
             }
 
-            #endregion
+            #endregion IEqualityComparer<AssemblyName> Members
         }
 
-        #endregion
+        #endregion Comparers
 
         private Dictionary<string, bool> AssembliesToLoad = new Dictionary<string, bool>();
-        
-        private Dictionary<string, DataSerializer> SerializersByType = new Dictionary<string, DataSerializer>();        
+
+        private Dictionary<string, DataSerializer> SerializersByType = new Dictionary<string, DataSerializer>();
         private Dictionary<string, DataProcessor> DataProcessorsByType = new Dictionary<string, DataProcessor>();
 
         private Dictionary<byte, string> DataSerializerIdToType = new Dictionary<byte, string>();
@@ -105,8 +116,9 @@ namespace NetworkCommsDotNet.DPSBase
 
         private ManualResetEvent loadCompleted = new ManualResetEvent(false);
 
-        static object instance = null;
-        static object singletonLocker = new object();
+        private static object instance = null;
+        private static object singletonLocker = new object();
+
         private static DPSManager Instance
         {
             get
@@ -125,7 +137,7 @@ namespace NetworkCommsDotNet.DPSBase
                 return instance as DPSManager;
             }
         }
-                        
+
         /// <summary>
         /// Retrieves the singleton instance of the <see cref="DataSerializer"/> with <see cref="System.Type"/> T
         /// </summary>
@@ -184,7 +196,7 @@ namespace NetworkCommsDotNet.DPSBase
                             t = protoAss.GetType("NetworkCommsDotNet.DPSBase.ProtobufSerializer");
                         }
                         catch (Exception) { }
-                    }                    
+                    }
 
                     if (t != null)
                     {
@@ -232,9 +244,9 @@ namespace NetworkCommsDotNet.DPSBase
                 }
             }
 
-            return serializer;            
+            return serializer;
         }
-                
+
         /// <summary>
         /// Retrieves the singleton instance of the <see cref="DataProcessor"/> with <see cref="System.Type"/> T
         /// </summary>
@@ -298,12 +310,12 @@ namespace NetworkCommsDotNet.DPSBase
         }
 
         /// <summary>
-        /// Allows the addition of <see cref="DataProcessor"/>s which are not auto detected.  Use only if the assembly 
-        /// in which the <see cref="DataProcessor"/> is defined is not in the working directory (including subfolders) 
+        /// Allows the addition of <see cref="DataProcessor"/>s which are not auto detected.  Use only if the assembly
+        /// in which the <see cref="DataProcessor"/> is defined is not in the working directory (including subfolders)
         /// or if automatic detection is not supported on your platform.
         /// </summary>
         /// <param name="dataProcessor">The <see cref="DataProcessor"/> to make the <see cref="DPSManager"/> aware of</param>
-        /// <exception cref="ArgumentException">Thrown if A different <see cref="DataProcessor"/> of the same 
+        /// <exception cref="ArgumentException">Thrown if A different <see cref="DataProcessor"/> of the same
         /// <see cref="System.Type"/> or Id has already been added to the <see cref="DPSManager"/></exception>
         public static void AddDataProcessor(DataProcessor dataProcessor)
         {
@@ -323,12 +335,12 @@ namespace NetworkCommsDotNet.DPSBase
         }
 
         /// <summary>
-        /// Allows the addition of <see cref="DataSerializer"/>s which are not auto detected.  Use only if the assembly 
-        /// in which the <see cref="DataSerializer"/> is defined is not in the working directory (including subfolders) 
+        /// Allows the addition of <see cref="DataSerializer"/>s which are not auto detected.  Use only if the assembly
+        /// in which the <see cref="DataSerializer"/> is defined is not in the working directory (including subfolders)
         /// or if automatic detection is not supported on your platform
         /// </summary>
         /// <param name="dataSerializer">The <see cref="DataSerializer"/> to make the see <see cref="DPSManager"/> aware of</param>
-        /// <exception cref="ArgumentException">Thrown if A different <see cref="DataSerializer"/> of the same 
+        /// <exception cref="ArgumentException">Thrown if A different <see cref="DataSerializer"/> of the same
         /// <see cref="System.Type"/> or Id has already been added to the <see cref="DPSManager"/></exception>
         public static void AddDataSerializer(DataSerializer dataSerializer)
         {
@@ -354,7 +366,7 @@ namespace NetworkCommsDotNet.DPSBase
         /// <param name="dataProcessors">A <see cref="System.Collections.Generic.List{DataProcessor}()"/> to be used.  The order of this </param>
         /// <returns>A <see cref="long"/> describing the arguments</returns>
         /// <exception cref="ArgumentException">Thrown is more than 7 <see cref="DataSerializer"/>s are used</exception>
-        /// <remarks>This method is used to specify succinctly the serialization method and any data processing that will be 
+        /// <remarks>This method is used to specify succinctly the serialization method and any data processing that will be
         /// used when transmitting data using NetworkCommsDotNet</remarks>
         public static long CreateSerializerDataProcessorIdentifier(DataSerializer serializer, List<DataProcessor> dataProcessors)
         {
@@ -388,13 +400,13 @@ namespace NetworkCommsDotNet.DPSBase
         }
 
         /// <summary>
-        /// Takes an identifier generated using <see cref="DPSManager.CreateSerializerDataProcessorIdentifier"/> and returns 
+        /// Takes an identifier generated using <see cref="DPSManager.CreateSerializerDataProcessorIdentifier"/> and returns
         /// the <see cref="DataSerializer"/> and set of <see cref="DataProcessor"/>s used to generate the identifier
         /// </summary>
         /// <param name="id">The <see cref="long"/> describing the <see cref="DataSerializer"/> and a set of <see cref="DataProcessor"/>s</param>
         /// <param name="serializer">The resultant <see cref="DataSerializer"/></param>
         /// <param name="dataProcessors">A List of the resultant <see cref="DataProcessor"/>s</param>
-        /// <remarks>This method is used to extract the serialization method and any data processing that needs to 
+        /// <remarks>This method is used to extract the serialization method and any data processing that needs to
         /// be used when transmitting data using NetworkCommsDotNet</remarks>
         public static void GetSerializerDataProcessorsFromIdentifier(long id, out DataSerializer serializer, out List<DataProcessor> dataProcessors)
         {
@@ -445,13 +457,13 @@ namespace NetworkCommsDotNet.DPSBase
 
         private DPSManager()
         {
-            //This constructor loops through referenced assemblies looking for types that inherit off of DataSerializer and 
-            //DataProcessor.  On windows this should mean perfect auto detection of serializers and compressors. On windows 
-            //phone we cannot get a list of referenced assemblies so we can only do this for already loaded assemblies.  
-            //Any others that are used will have to be added manually.  On windows this will be done from a new app domain 
+            //This constructor loops through referenced assemblies looking for types that inherit off of DataSerializer and
+            //DataProcessor.  On windows this should mean perfect auto detection of serializers and compressors. On windows
+            //phone we cannot get a list of referenced assemblies so we can only do this for already loaded assemblies.
+            //Any others that are used will have to be added manually.  On windows this will be done from a new app domain
             //so we can unload it afterwards
-            
-            //This action will perform the load in the background on some client dependent "thread" 
+
+            //This action will perform the load in the background on some client dependent "thread"
             Action loadAction = new Action(() =>
                 {
                     //Initialise the core extensions
@@ -487,13 +499,13 @@ namespace NetworkCommsDotNet.DPSBase
                         }
                         catch (FileNotFoundException)
                         {
-                            //If that fails try with the assembly location.  An exception here 
+                            //If that fails try with the assembly location.  An exception here
                             loader = (AssemblyLoader)tempDomain.CreateInstanceFromAndUnwrap(typeof(AssemblyLoader).Assembly.Location, typeof(AssemblyLoader).FullName);
                         }
 
                         args = new ProcessArgument();
 
-                        //If an entry assembly exists just pass that, the rest can be worked out from there.  
+                        //If an entry assembly exists just pass that, the rest can be worked out from there.
                         //On WCF there is no entry assembly. In that case fill the loaded domains list with those already loaded
                         if (Assembly.GetEntryAssembly() != null)
                             args.loadedDomains = new List<string>() { Assembly.GetEntryAssembly().FullName };
@@ -512,7 +524,7 @@ namespace NetworkCommsDotNet.DPSBase
                     catch (FileNotFoundException)
                     {
                         //In mono, using mkbundle, the above load method may not work so we will fall back to our older way of doing the same
-                        //The disadvantage of this approach is that all assemblies are loaded and then stay in memory increasing the footprint slightly 
+                        //The disadvantage of this approach is that all assemblies are loaded and then stay in memory increasing the footprint slightly
                         loader = new AssemblyLoader();
                         args = new ProcessArgument();
 
@@ -588,7 +600,6 @@ namespace NetworkCommsDotNet.DPSBase
 #else
             Task.Factory.StartNew(loadAction);
 #endif
-
         }
 
         private class ProcessArgument : MarshalByRefObject
@@ -603,13 +614,12 @@ namespace NetworkCommsDotNet.DPSBase
         private class AssemblyLoader : MarshalByRefObject
         {
             public Dictionary<byte, string> serializerTypes = new Dictionary<byte, string>();
-            public Dictionary<byte, string> processorTypes = new Dictionary<byte,string>();
+            public Dictionary<byte, string> processorTypes = new Dictionary<byte, string>();
 
             public void ProcessApplicationAssemblies(ProcessArgument args)
             {
                 try
                 {
-
 #if !WINDOWS_PHONE && !iOS && !ANDROID && !NETFX_CORE
                     AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += CurrentDomain_ReflectionOnlyAssemblyResolve;
 
@@ -631,7 +641,7 @@ namespace NetworkCommsDotNet.DPSBase
                     var processorType = typeof(DPSBase.DataProcessor);
 
                     //We're now going to look through the assemly reference tree to look for more components
-                    //This will be done by first checking whether a relefection only load of each assembly and checking 
+                    //This will be done by first checking whether a relefection only load of each assembly and checking
                     //for reference to DPSBase.  We will therefore get a reference to DPSBase
 #if NETFX_CORE
                     var dpsBaseAssembly = typeof(DPSManager).GetTypeInfo().Assembly;
@@ -654,8 +664,8 @@ namespace NetworkCommsDotNet.DPSBase
                             foreach (Windows.Storage.StorageFile file in filesInt)
                             {
                                 if (file.FileType == ".dll" || file.FileType == ".exe")
-                                {                                    
-                                    AssemblyName name = new AssemblyName() { Name = file.Name.Substring(0, file.Name.Length - 4) };                                    
+                                {
+                                    AssemblyName name = new AssemblyName() { Name = file.Name.Substring(0, file.Name.Length - 4) };
                                     Assembly asm = Assembly.Load(name);
                                     alreadyLoadedAssemblies.Add(asm);
                                 }
@@ -664,7 +674,7 @@ namespace NetworkCommsDotNet.DPSBase
 
                     getAssemblies().Wait();
 #else
-                    //Loop through all loaded assemblies looking for types that are not abstract and implement DataProcessor or DataSerializer.  They also need to have a paramterless contstructor                
+                    //Loop through all loaded assemblies looking for types that are not abstract and implement DataProcessor or DataSerializer.  They also need to have a paramterless contstructor
                     var alreadyLoadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
 #endif
 
@@ -742,7 +752,7 @@ namespace NetworkCommsDotNet.DPSBase
                             }
                         }
 #endif
-                                dicOfSearchedAssemblies.Add(ass.FullName, ass);
+                        dicOfSearchedAssemblies.Add(ass.FullName, ass);
                     }
 
 #if WINDOWS_PHONE || iOS || ANDROID || NETFX_CORE
@@ -846,7 +856,7 @@ namespace NetworkCommsDotNet.DPSBase
                     //int i = 1;
 
                     //using (StreamWriter sw = new StreamWriter("DPSManagerLoadError.txt", false))
-                        //Console.WriteLine(ex.ToString());
+                    //Console.WriteLine(ex.ToString());
                 }
                 finally
                 {
@@ -856,10 +866,12 @@ namespace NetworkCommsDotNet.DPSBase
             }
 
 #if !WINDOWS_PHONE && !iOS && !ANDROID && !NETFX_CORE
-            Assembly CurrentDomain_ReflectionOnlyAssemblyResolve(object sender, ResolveEventArgs args)
+
+            private Assembly CurrentDomain_ReflectionOnlyAssemblyResolve(object sender, ResolveEventArgs args)
             {
-                return Assembly.ReflectionOnlyLoad(args.Name); 
+                return Assembly.ReflectionOnlyLoad(args.Name);
             }
+
 #endif
         }
     }

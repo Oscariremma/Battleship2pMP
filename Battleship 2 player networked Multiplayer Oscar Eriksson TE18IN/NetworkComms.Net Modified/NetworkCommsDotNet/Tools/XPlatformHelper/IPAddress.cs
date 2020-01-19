@@ -13,7 +13,7 @@ namespace NetworkCommsDotNet.Tools.XPlatformHelper
         public class IPAddress {
                 // Don't change the name of this field without also
                 // changing socket-io.c in the runtime
-                // The IP address is stored in little-endian order inside the int, 
+                // The IP address is stored in little-endian order inside the int,
                 // meaning the lower order bytes contain the netid
                 private long m_Address;
                 private AddressFamily m_Family;
@@ -66,7 +66,7 @@ namespace NetworkCommsDotNet.Tools.XPlatformHelper
 
                         return SwapInt (host);
                 }
-                
+
                 public static long HostToNetworkOrder(long host) {
                         if (!BitConverter.IsLittleEndian)
                                 return(host);
@@ -94,7 +94,7 @@ namespace NetworkCommsDotNet.Tools.XPlatformHelper
 
                         return SwapLong (network);
                 }
-                
+
                 /// <summary>
                 ///   Constructor from a 32-bit constant with the address bytes in
                 ///   little-endian order (the lower order bytes contain the netid)
@@ -175,7 +175,6 @@ namespace NetworkCommsDotNet.Tools.XPlatformHelper
 
                 private static IPAddress ParseIPV4 (string ip)
                 {
-
                         int pos = ip.IndexOf (' ');
                         if (pos != -1) {
                                 string [] nets = ip.Substring (pos + 1).Split (new char [] {'.'});
@@ -196,7 +195,7 @@ namespace NetworkCommsDotNet.Tools.XPlatformHelper
                         string [] ips = ip.Split (new char [] {'.'});
                         if (ips.Length > 4)
                                 return null;
-                        
+
                         // Make the number in network order
                         try {
                                 long a = 0;
@@ -207,7 +206,7 @@ namespace NetworkCommsDotNet.Tools.XPlatformHelper
                                             (subnet [0] == '0') && (subnet [1] == 'x' || subnet [1] == 'X')) {
                                                 if (subnet.Length == 3)
                                                         val = (byte) FromHex (subnet [2]);
-                                                else 
+                                                else
                                                         val = (byte) ((FromHex (subnet [2]) << 4) | FromHex (subnet [3]));
                                         } else if (subnet.Length == 0)
                                                 return null;
@@ -243,7 +242,7 @@ namespace NetworkCommsDotNet.Tools.XPlatformHelper
                                 return null;
                         }
                 }
-                
+
                 private static IPAddress ParseIPV6 (string ip)
                 {
                         IPv6Address newIPv6Address;
@@ -254,7 +253,7 @@ namespace NetworkCommsDotNet.Tools.XPlatformHelper
                 }
 
                 [Obsolete("This property is obsolete. Use GetAddressBytes.")]
-                public long Address 
+                public long Address
                 {
                         get {
                                 if(m_Family != AddressFamily.InterNetwork)
@@ -322,7 +321,7 @@ namespace NetworkCommsDotNet.Tools.XPlatformHelper
                         }
                 }
 
-                public byte [] GetAddressBytes () 
+                public byte [] GetAddressBytes ()
                 {
                         if(m_Family == AddressFamily.InterNetworkV6) {
                                 byte [] addressBytes = new byte [16];
@@ -332,21 +331,20 @@ namespace NetworkCommsDotNet.Tools.XPlatformHelper
                                 return new byte [4] { (byte)(m_Address & 0xFF),
                                                      (byte)((m_Address >> 8) & 0xFF),
                                                      (byte)((m_Address >> 16) & 0xFF),
-                                                     (byte)(m_Address >> 24) }; 
+                                                     (byte)(m_Address >> 24) };
                         }
                 }
 
-                public AddressFamily AddressFamily 
+                public AddressFamily AddressFamily
                 {
                         get {
                                 return m_Family;
                         }
                 }
-                
-                
+
                 /// <summary>
                 ///   Used to tell whether an address is a loopback.
-                ///   All IP addresses of the form 127.X.Y.Z, where X, Y, and Z are in 
+                ///   All IP addresses of the form 127.X.Y.Z, where X, Y, and Z are in
                 ///   the range 0-255, are loopback addresses.
                 /// </summary>
                 /// <param name="addr">Address to compare</param>
@@ -428,13 +426,13 @@ namespace NetworkCommsDotNet.Tools.XPlatformHelper
                         if(m_Family == AddressFamily.InterNetwork)
                                 return (int)m_Address;
                         else
-                                return Hash (((((int) m_Numbers[0]) << 16) + m_Numbers [1]), 
+                                return Hash (((((int) m_Numbers[0]) << 16) + m_Numbers [1]),
                                         ((((int) m_Numbers [2]) << 16) + m_Numbers [3]),
                                         ((((int) m_Numbers [4]) << 16) + m_Numbers [5]),
                                         ((((int) m_Numbers [6]) << 16) + m_Numbers [7]));
                 }
 
-                private static int Hash (int i, int j, int k, int l) 
+                private static int Hash (int i, int j, int k, int l)
                 {
                         return i ^ (j << 13 | j >> 19) ^ (k << 26 | k >> 6) ^ (l << 7 | l >> 25);
                 }
@@ -466,7 +464,6 @@ namespace NetworkCommsDotNet.Tools.XPlatformHelper
                 // Added for serialization compatibility with MS.NET
                 private int m_HashCode;
 #pragma warning restore
-                
         }
 }
 #endif

@@ -1,14 +1,9 @@
-﻿using System;
+﻿using LibOscar;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using LibOscar;
 using static LibOscar.Methods;
 
 namespace Battleship2pMP.MDI_Forms
@@ -20,21 +15,32 @@ namespace Battleship2pMP.MDI_Forms
         public static MDI_Game staticGame;
 
         public delegate void DelUpdateGameBoard(GameLogic.GameBoardTile[,] localgameBoard, GameLogic.GameBoardTile[,] remotegameBoard);
+
         public delegate void DelBeginTurn(bool ShowOpponentsGameBoard);
+
         public delegate void DelInvalidate();
+
         public delegate void DelStopUpdateTimer();
+
         public delegate void DelUpdateScoreboard(Ships.ShipsLeft LocalShipsLeft, Ships.ShipsLeft OpponentShipsLeft);
+
         public delegate void DelSetGameSettings(Ships.ShipsLeft ShipsToPlace, int FirstTurnShots, int ShotsPerGameTurn);
+
         public delegate void DelSetTargetsToDisplay(Point[] ScreenCordTargets);
+
         public delegate void DelVictory(bool YouWon, int YourShots, int YourHits, int OpponentsShots, int OpponentsHits, double Turns, bool OpponentSurrenderd = false);
+
         public delegate void DelOpponentWantsRematch();
+
         public delegate void DelOpponentHasLeftGame();
 
         public DelUpdateGameBoard DUpdateGameBoard;
+
         /// <summary>
         /// Switches the players view to the local game board if false and the opponents if true. Also sets Targeting and reticle visibility
         /// </summary>
         public DelBeginTurn DBeginTurn;
+
         public DelInvalidate DInvalidate;
         public DelStopUpdateTimer DStopUpdateTimer;
         public DelUpdateScoreboard DUpdateScoreboard;
@@ -73,7 +79,7 @@ namespace Battleship2pMP.MDI_Forms
         private bool DrawAllShipsOveride = false;
 
         //Ships left to place counters
-        Ships.ShipsLeft ShipsLeftToPlace;
+        private Ships.ShipsLeft ShipsLeftToPlace;
 
         public Timer UpdateTimer;
 
@@ -106,8 +112,6 @@ namespace Battleship2pMP.MDI_Forms
             lbl_Victory.SetMilitaryFont();
             lbl_Defeat.SetMilitaryFont();
 
-
-
             DUpdateGameBoard = new DelUpdateGameBoard(UpdateGameBoard);
             DBeginTurn = new DelBeginTurn(BeginTurn);
             DInvalidate = new DelInvalidate(pnlGameBoard.Invalidate);
@@ -133,12 +137,10 @@ namespace Battleship2pMP.MDI_Forms
 
         private void Update(object sender, EventArgs eventArgs)
         {
-
             try
             {
                 Point pointPnl = pnlGameBoard.PointToClient(Cursor.Position);
                 Point point = new Point(pointPnl.X / 61 - 1, pointPnl.Y / 61);
-
 
                 if (point.X >= 0 && point.X <= 8 && point.Y >= 0 && point.Y <= 8 && !DeleteMode)
                 {
@@ -208,8 +210,6 @@ namespace Battleship2pMP.MDI_Forms
                     UpdateTimer.Stop();
                 }
             }
-
-
         }
 
         public void UpdateGameBoard(GameLogic.GameBoardTile[,] localgameBoard, GameLogic.GameBoardTile[,] remotegameBoard)
@@ -270,12 +270,11 @@ namespace Battleship2pMP.MDI_Forms
                 }
             }
 
-            foreach(Rectangle ShipRect in DestroyedShipsRects)
+            foreach (Rectangle ShipRect in DestroyedShipsRects)
             {
                 e.Graphics.DrawLine(BlackPen, ShipRect.X, ShipRect.Y, ShipRect.X + 61, ShipRect.Y + 61);
                 e.Graphics.DrawLine(BlackPen, ShipRect.X + 61, ShipRect.Y, ShipRect.X, ShipRect.Y + 61);
             }
-
         }
 
         private void MDI_Game_Load(object sender, EventArgs e)
@@ -403,14 +402,11 @@ namespace Battleship2pMP.MDI_Forms
                 }
                 else
                 {
+                    Point Reticle_Cord = new Point(((pbx_Reticle.Location.X + 10) / 61) - 1, (pbx_Reticle.Location.Y + 10) / 61);
 
-                    Point Reticle_Cord = new Point(((pbx_Reticle.Location.X +10) / 61) -1 , (pbx_Reticle.Location.Y +10) / 61);
-
-                    if (remoteGameBoardTiles[Reticle_Cord.X,Reticle_Cord.Y].TileType == GameLogic.TileType.Ship || remoteGameBoardTiles[Reticle_Cord.X, Reticle_Cord.Y].TileType == GameLogic.TileType.Water)
+                    if (remoteGameBoardTiles[Reticle_Cord.X, Reticle_Cord.Y].TileType == GameLogic.TileType.Ship || remoteGameBoardTiles[Reticle_Cord.X, Reticle_Cord.Y].TileType == GameLogic.TileType.Water)
                     {
-
                         ref int ShotsThisTurn = ref FirstTurn ? ref ShotsFirstTurn : ref ShotsPerTurn;
-
 
                         Targets.Add(pbx_Reticle.Location);
 
@@ -428,7 +424,7 @@ namespace Battleship2pMP.MDI_Forms
 
                             if (Networking.IsServer)
                             {
-                                Networking.NetworkServer.StaticgameLogic.FireShots(CordTargets.ToArray(), Targets.ToArray() , true);
+                                Networking.NetworkServer.StaticgameLogic.FireShots(CordTargets.ToArray(), Targets.ToArray(), true);
                             }
                             else
                             {
@@ -436,15 +432,9 @@ namespace Battleship2pMP.MDI_Forms
                             }
 
                             FirstTurn = false;
-
                         }
-
                     }
-
                 }
-
-
-
             }
         }
 
@@ -554,7 +544,7 @@ namespace Battleship2pMP.MDI_Forms
 
                 List<Point> CoveredTileCordsList = new List<Point>();
 
-                foreach(GameLogic.GameBoardTile tile in TilesCovered)
+                foreach (GameLogic.GameBoardTile tile in TilesCovered)
                 {
                     CoveredTileCordsList.Add(new Point(tile.Rectangle.X / 61 - 1, tile.Rectangle.Y / 61));
                 }
@@ -563,8 +553,6 @@ namespace Battleship2pMP.MDI_Forms
                 ShipOrientation = Orientation;
                 Enabled = SpriteEnabled;
                 ShipDestroyed = Destroyed;
-
-
             }
 
             public Sprite(Ships.ShipEnum ship, ShipOrientation Orientation, Point position, Point[] CoveredTilesCords, bool SpriteEnabled = true, bool Destroyed = false)
@@ -595,7 +583,6 @@ namespace Battleship2pMP.MDI_Forms
                 ShipOrientation = Orientation;
                 Enabled = SpriteEnabled;
                 ShipDestroyed = Destroyed;
-
             }
 
             #region Dispose
@@ -624,7 +611,6 @@ namespace Battleship2pMP.MDI_Forms
 
             #endregion Dispose
         }
-
 
         private void Rbtn_Carrier_CheckedChanged(object sender, EventArgs e)
         {
@@ -774,10 +760,9 @@ namespace Battleship2pMP.MDI_Forms
 
         private void Btn_Ship_Placement_Done_Click(object sender, EventArgs e)
         {
-
-            if(ShipsLeftToPlace.Total != 0)
+            if (ShipsLeftToPlace.Total != 0)
             {
-                MessageBox.Show("Please place all ships before continuing", "You have ships left to be placed!",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                MessageBox.Show("Please place all ships before continuing", "You have ships left to be placed!", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -807,21 +792,18 @@ namespace Battleship2pMP.MDI_Forms
                     Networking.NetworkServer.StaticgameLogic.OpponentDonePlacingShips = true;
                     lbl_Waiting_For_Opponent.Visible = true;
                 }
-
             }
             else
             {
                 List<Networking.NetworkSprite> networkSprites = new List<Networking.NetworkSprite>();
 
-                foreach(Sprite sprite in localSpriteTable)
+                foreach (Sprite sprite in localSpriteTable)
                 {
                     networkSprites.Add(new Networking.NetworkSprite(sprite, false));
                 }
 
-                Networking.NetworkClient.RemoteServerInterface.DonePlacingShips(GetBinaryArray(networkSprites.ToArray(),true), GetBinaryArray(localGameBoardTiles, true));
+                Networking.NetworkClient.RemoteServerInterface.DonePlacingShips(GetBinaryArray(networkSprites.ToArray(), true), GetBinaryArray(localGameBoardTiles, true));
                 lbl_Waiting_For_Opponent.Visible = true;
-
-
             }
         }
 
@@ -830,7 +812,6 @@ namespace Battleship2pMP.MDI_Forms
         /// </summary>
         public void BeginTurn(bool ShowOpponentsGameBoard)
         {
-
             if (MDI_Container.GameIsFinished) return;
 
             if (ShowOpponentsGameBoard)
@@ -879,16 +860,15 @@ namespace Battleship2pMP.MDI_Forms
             }
         }
 
-        void StopUpdateTimer()
+        private void StopUpdateTimer()
         {
             UpdateTimer.Stop();
             UpdateTimer.Dispose();
         }
 
-        void UpdateScoreboard(Ships.ShipsLeft LocalShipsLeft, Ships.ShipsLeft OpponentShipsLeft)
+        private void UpdateScoreboard(Ships.ShipsLeft LocalShipsLeft, Ships.ShipsLeft OpponentShipsLeft)
         {
-
-            if(pnl_PlaceShips.Visible == true)
+            if (pnl_PlaceShips.Visible == true)
             {
                 pnl_PlaceShips.Visible = false;
                 pnl_PlaceShips.Enabled = false;
@@ -913,13 +893,12 @@ namespace Battleship2pMP.MDI_Forms
 
             lbl_Total_You.Text = LocalShipsLeft.Total.ToString();
             lbl_Total_Op.Text = OpponentShipsLeft.Total.ToString();
-
         }
 
         public void SetGameSettings(Ships.ShipsLeft ShipsToPlace, int FirstTurnShots, int ShotsPerGameTurn)
         {
             ShipsLeftToPlace = ShipsToPlace;
-            foreach(Ships.ShipEnum ShipType in (Ships.ShipEnum[])Enum.GetValues(typeof(Ships.ShipEnum)))
+            foreach (Ships.ShipEnum ShipType in (Ships.ShipEnum[])Enum.GetValues(typeof(Ships.ShipEnum)))
             {
                 UpdateRadioButtonText(ShipType);
             }
@@ -927,8 +906,6 @@ namespace Battleship2pMP.MDI_Forms
 
             ShotsFirstTurn = FirstTurnShots;
             ShotsPerTurn = ShotsPerGameTurn;
-
-
         }
 
         public void SetTargetsToDisplay(Point[] ScreenCordTargets)
@@ -938,9 +915,8 @@ namespace Battleship2pMP.MDI_Forms
             drawTargets = true;
         }
 
-        public void Victory(bool YouWon, int YourShots, int YourHits, int OpponentsShots, int OpponentsHits, double Turns , bool OpponentSurrenderd = false)
+        public void Victory(bool YouWon, int YourShots, int YourHits, int OpponentsShots, int OpponentsHits, double Turns, bool OpponentSurrenderd = false)
         {
-
             Won = YouWon;
             OpponentHasSurrenderd = OpponentSurrenderd;
             DrawAllShipsOveride = true;
@@ -979,7 +955,6 @@ namespace Battleship2pMP.MDI_Forms
             pnl_GameOver.Visible = true;
 
             pnlGameBoard.Invalidate();
-
         }
 
         public void OpponentHasLeftGame()
@@ -993,7 +968,6 @@ namespace Battleship2pMP.MDI_Forms
         {
             lbl_OpWantsRematch.Visible = true;
         }
-
 
         private void Btn_Surrender_Click(object sender, EventArgs e)
         {
@@ -1012,7 +986,6 @@ namespace Battleship2pMP.MDI_Forms
 
         private void Btn_LeaveGame_Click(object sender, EventArgs e)
         {
-
             if (MessageBox.Show("Are you sure you want to leave the game?", "Leave Game?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
 
             if (!MDI_Container.OpponentHasLeftGame)
@@ -1024,12 +997,10 @@ namespace Battleship2pMP.MDI_Forms
                 else
                 {
                     Networking.NetworkClient.RemoteServerInterface.LeaveGame();
-
                 }
             }
 
             MDI_Container.staticMdi_Container.BeginInvoke(MDI_Container.staticMdi_Container.DLeaveGame);
-
         }
 
         private void Btn_Rematch_Click(object sender, EventArgs e)
@@ -1044,7 +1015,6 @@ namespace Battleship2pMP.MDI_Forms
             {
                 Networking.NetworkClient.RemoteServerInterface.Rematch();
             }
-
         }
 
         private void Btn_SwitchGameBoard_Click(object sender, EventArgs e)

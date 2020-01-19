@@ -1,10 +1,6 @@
-﻿using System;
+﻿using ProtoBuf;
+using System;
 using System.Drawing;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ProtoBuf;
 
 namespace Battleship2pMP.Ships
 {
@@ -114,12 +110,16 @@ namespace Battleship2pMP.Ships
     {
         [ProtoMember(1)]
         public int Carriers;
+
         [ProtoMember(2)]
         public int Battleships;
+
         [ProtoMember(3)]
         public int Cruisers;
+
         [ProtoMember(4)]
         public int Destroyers;
+
         [ProtoMember(5)]
         public int Submarines;
 
@@ -136,8 +136,5 @@ namespace Battleship2pMP.Ships
             Destroyers = Destroyer;
             Submarines = Submarine;
         }
-
-
     }
-
 }

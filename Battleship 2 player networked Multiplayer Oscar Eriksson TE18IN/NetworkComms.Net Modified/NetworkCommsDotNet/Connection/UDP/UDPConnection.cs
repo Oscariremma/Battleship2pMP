@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,30 +6,29 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Net;
 using System.IO;
 using System.Threading;
-using NetworkCommsDotNet.DPSBase;
 using NetworkCommsDotNet.Tools;
 
 #if NETFX_CORE
 using NetworkCommsDotNet.Tools.XPlatformHelper;
 #else
+
 using System.Net.Sockets;
+
 #endif
 
 #if WINDOWS_PHONE || NETFX_CORE
@@ -59,7 +58,7 @@ namespace NetworkCommsDotNet.Connections.UDP
         /// <summary>
         /// An isolated UDP connection will only accept incoming packets coming from a specific RemoteEndPoint.
         /// </summary>
-        bool isIsolatedUDPConnection = false;
+        private bool isIsolatedUDPConnection = false;
 
         /// <summary>
         /// Internal constructor for UDP connections
@@ -108,7 +107,7 @@ namespace NetworkCommsDotNet.Connections.UDP
                     isIsolatedUDPConnection = true;
 
 #if WINDOWS_PHONE || NETFX_CORE
-                    if (ConnectionInfo.LocalEndPoint == null || 
+                    if (ConnectionInfo.LocalEndPoint == null ||
                         (ConnectionInfo.LocalIPEndPoint.Address == IPAddress.Any && connectionInfo.LocalIPEndPoint.Port == 0) ||
                         (ConnectionInfo.LocalIPEndPoint.Address == IPAddress.IPv6Any && connectionInfo.LocalIPEndPoint.Port == 0))
                     {
@@ -146,7 +145,7 @@ namespace NetworkCommsDotNet.Connections.UDP
                 //NAT traversal does not work in .net 2.0
                 //Mono does not seem to have implemented AllowNatTraversal method and attempting the below method call will throw an exception
                 //if (Type.GetType("Mono.Runtime") == null)
-                    //Allow NAT traversal by default for all udp clients
+                //Allow NAT traversal by default for all udp clients
                 //    udpClientThreadSafe.AllowNatTraversal(true);
 
                 if (listenForIncomingPackets)
@@ -299,7 +298,7 @@ namespace NetworkCommsDotNet.Connections.UDP
 
             byte[] udpDatagram = new byte[totalBytesToSend];
             MemoryStream udpDatagramStream = new MemoryStream(udpDatagram, 0, udpDatagram.Length, true);
-            
+
             for (int i = 0; i < streamsToSend.Length; i++)
             {
                 if (streamsToSend[i].Length > 0)
@@ -368,10 +367,10 @@ namespace NetworkCommsDotNet.Connections.UDP
         void socket_MessageReceived(DatagramSocket sender, DatagramSocketMessageReceivedEventArgs args)
         {
             try
-            {                
+            {
                 var stream = args.GetDataStream().AsStreamForRead();
                 var dataLength = args.GetDataReader().UnconsumedBufferLength;
-                
+
                 byte[] receivedBytes = new byte[dataLength];
                 using (MemoryStream mem = new MemoryStream(receivedBytes))
                     stream.CopyTo(mem);
@@ -380,7 +379,7 @@ namespace NetworkCommsDotNet.Connections.UDP
                 if (NetworkComms.commsShutdown) CloseConnection(false, -15);
 
                 stream = null;
-               
+
                 if (NetworkComms.LoggingEnabled) NetworkComms.Logger.Trace("Received " + receivedBytes.Length + " bytes via UDP from " + args.RemoteAddress + ":" + args.RemotePort + ".");
 
                 UDPConnection connection;
@@ -445,7 +444,7 @@ namespace NetworkCommsDotNet.Connections.UDP
             }
             catch (SocketException)
             {
-                //Receive may throw a SocketException ErrorCode=10054  after attempting to send a datagram to an unreachable target. 
+                //Receive may throw a SocketException ErrorCode=10054  after attempting to send a datagram to an unreachable target.
                 //We will try to get around this by ignoring the ICMP packet causing these problems on client creation
                 CloseConnection(true, 28);
             }
@@ -455,7 +454,7 @@ namespace NetworkCommsDotNet.Connections.UDP
             }
             catch (ConnectionSetupException)
             {
-                //Can occur if data is received as comms is being shutdown. 
+                //Can occur if data is received as comms is being shutdown.
                 //Method will attempt to create new connection which will throw ConnectionSetupException.
                 CloseConnection(true, 50);
             }
@@ -466,6 +465,7 @@ namespace NetworkCommsDotNet.Connections.UDP
             }
         }
 #else
+
         /// <summary>
         /// Incoming data listen async method
         /// </summary>
@@ -546,7 +546,7 @@ namespace NetworkCommsDotNet.Connections.UDP
             }
             catch (SocketException)
             {
-                //Receive may throw a SocketException ErrorCode=10054  after attempting to send a datagram to an unreachable target. 
+                //Receive may throw a SocketException ErrorCode=10054  after attempting to send a datagram to an unreachable target.
                 //We will try to get around this by ignoring the ICMP packet causing these problems on client creation
                 CloseConnection(true, 28);
             }
@@ -556,7 +556,7 @@ namespace NetworkCommsDotNet.Connections.UDP
             }
             catch (ConnectionSetupException)
             {
-                //Can occur if data is received as comms is being shutdown. 
+                //Can occur if data is received as comms is being shutdown.
                 //Method will attempt to create new connection which will throw ConnectionSetupException.
                 CloseConnection(true, 50);
             }
@@ -649,7 +649,7 @@ namespace NetworkCommsDotNet.Connections.UDP
             }
             catch (SocketException)
             {
-                //Receive may throw a SocketException ErrorCode=10054  after attempting to send a datagram to an unreachable target. 
+                //Receive may throw a SocketException ErrorCode=10054  after attempting to send a datagram to an unreachable target.
                 //We will try to get around this by ignoring the ICMP packet causing these problems on client creation
                 CloseConnection(true, 23);
             }
@@ -659,7 +659,7 @@ namespace NetworkCommsDotNet.Connections.UDP
             }
             catch (ConnectionSetupException)
             {
-                //Can occur if data is received as comms is being shutdown. 
+                //Can occur if data is received as comms is being shutdown.
                 //Method will attempt to create new connection which will throw ConnectionSetupException.
                 CloseConnection(true, 50);
             }
@@ -674,6 +674,7 @@ namespace NetworkCommsDotNet.Connections.UDP
 
             if (NetworkComms.LoggingEnabled) NetworkComms.Logger.Trace("Incoming data listen thread ending for " + ConnectionInfo);
         }
+
 #endif
     }
 }

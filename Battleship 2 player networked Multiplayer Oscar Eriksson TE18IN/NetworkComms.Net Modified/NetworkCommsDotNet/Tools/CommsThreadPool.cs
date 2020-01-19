@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,21 +6,19 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
 using System.Threading;
 
 #if NETFX_CORE
@@ -46,7 +44,7 @@ namespace NetworkCommsDotNet.Tools
         Dictionary<int, CancellationTokenSource> taskCancellationTokens = new Dictionary<int, CancellationTokenSource>();
 
         /// <summary>
-        /// Priority queue used to order call backs 
+        /// Priority queue used to order call backs
         /// </summary>
         PriorityQueue<WaitCallBackWrapper> jobQueue = new PriorityQueue<WaitCallBackWrapper>();
 
@@ -54,7 +52,7 @@ namespace NetworkCommsDotNet.Tools
         /// Set to true to ensure correct shutdown of worker threads.
         /// </summary>
         bool shutdown = false;
-        
+
         /// <summary>
         /// The total number of items currently waiting to be collected by a thread
         /// </summary>
@@ -71,7 +69,7 @@ namespace NetworkCommsDotNet.Tools
         /// <param name="maxTotalThreadsCount">Maximum number of threads to create in the pool</param>
         /// <param name="threadIdleTimeoutClose">Timespan after which an idle thread will close</param>
         public CommsThreadPool()
-        {            
+        {
         }
 
         /// <summary>
@@ -89,7 +87,7 @@ namespace NetworkCommsDotNet.Tools
         /// <param name="threadShutdownTimeoutMS"></param>
         public void EndShutdown(int threadShutdownTimeoutMS = 1000)
         {
-#if NETFX_CORE     
+#if NETFX_CORE
             foreach (var pair in scheduledTasks)
             {
                 if (!pair.Value.Wait(threadShutdownTimeoutMS))
@@ -145,10 +143,10 @@ namespace NetworkCommsDotNet.Tools
         {
             lock (SyncRoot)
                 jobQueue.TryAdd(new KeyValuePair<QueueItemPriority, WaitCallBackWrapper>(priority, new WaitCallBackWrapper(callback, state)));
-            
+
             Task t = null;
-            CancellationTokenSource cSource = new CancellationTokenSource();     
-       
+            CancellationTokenSource cSource = new CancellationTokenSource();
+
             t = new Task(() =>
                 {
                     KeyValuePair<QueueItemPriority, WaitCallBackWrapper> toRun;
@@ -175,7 +173,7 @@ namespace NetworkCommsDotNet.Tools
                 t.Start();
             }
         }
-        
+
         /// <summary>
         /// Provides a brief string summarisation the state of the thread pool
         /// </summary>
@@ -188,7 +186,8 @@ namespace NetworkCommsDotNet.Tools
             }
         }
     }
-#else    
+#else
+
     /// <summary>
     /// A compact priority based thread pool used by NetworkComms.Net to run packet handlers
     /// </summary>
@@ -197,42 +196,42 @@ namespace NetworkCommsDotNet.Tools
         /// <summary>
         /// A sync object to make things thread safe
         /// </summary>
-        object SyncRoot = new object();
+        private object SyncRoot = new object();
 
         /// <summary>
         /// Dictionary of threads, index is ThreadId
         /// </summary>
-        Dictionary<int, Thread> threadDict = new Dictionary<int, Thread>();
+        private Dictionary<int, Thread> threadDict = new Dictionary<int, Thread>();
 
         /// <summary>
         /// Dictionary of thread worker info, index is ThreadId
         /// </summary>
-        Dictionary<int, WorkerInfo> workerInfoDict = new Dictionary<int, WorkerInfo>();
+        private Dictionary<int, WorkerInfo> workerInfoDict = new Dictionary<int, WorkerInfo>();
 
         /// <summary>
         /// The minimum timespan between thread wait sleep join updates
         /// </summary>
-        TimeSpan ThreadWaitSleepJoinCountUpdateInterval = new TimeSpan(0, 0, 0, 0, 250);
+        private TimeSpan ThreadWaitSleepJoinCountUpdateInterval = new TimeSpan(0, 0, 0, 0, 250);
 
         /// <summary>
         /// A quick lookup of the number of current threads which are idle and require jobs
         /// </summary>
-        int requireJobThreadsCount = 0;
+        private int requireJobThreadsCount = 0;
 
         /// <summary>
-        /// Priority queue used to order call backs 
+        /// Priority queue used to order call backs
         /// </summary>
-        PriorityQueue<WaitCallBackWrapper> jobQueue = new PriorityQueue<WaitCallBackWrapper>();
+        private PriorityQueue<WaitCallBackWrapper> jobQueue = new PriorityQueue<WaitCallBackWrapper>();
 
         /// <summary>
         /// Set to true to ensure correct shutdown of worker threads.
         /// </summary>
-        bool shutdown = false;
+        private bool shutdown = false;
 
         /// <summary>
         /// The timespan after which an idle thread will close
         /// </summary>
-        TimeSpan ThreadIdleTimeoutClose { get; set; }
+        private TimeSpan ThreadIdleTimeoutClose { get; set; }
 
         /// <summary>
         /// The maximum number of threads to create in the pool
@@ -322,7 +321,7 @@ namespace NetworkCommsDotNet.Tools
                     allWorkerThreads.Add(thread.Value);
                 }
             }
-            
+
             //Wait for all threads to finish
             foreach (Thread thread in allWorkerThreads)
             {
@@ -578,7 +577,7 @@ namespace NetworkCommsDotNet.Tools
     /// <summary>
     /// A private wrapper used by CommsThreadPool
     /// </summary>
-    class WorkerInfo
+    internal class WorkerInfo
     {
         public int ThreadId { get; private set; }
         public AutoResetEvent ThreadSignal { get; private set; }
@@ -643,11 +642,13 @@ namespace NetworkCommsDotNet.Tools
             this.ThreadIdle = false;
         }
     }
+
 #endif
+
     /// <summary>
     /// A private wrapper used by CommsThreadPool
     /// </summary>
-    class WaitCallBackWrapper
+    internal class WaitCallBackWrapper
     {
         public WaitCallback WaitCallBack { get; private set; }
         public object State { get; private set; }

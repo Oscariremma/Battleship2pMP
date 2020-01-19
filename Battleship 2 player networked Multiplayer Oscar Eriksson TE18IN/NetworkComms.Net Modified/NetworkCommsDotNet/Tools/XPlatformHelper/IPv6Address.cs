@@ -335,7 +335,6 @@ namespace NetworkCommsDotNet.Tools.XPlatformHelper
         {
             StringBuilder s = new StringBuilder();
 
-
             if (IsIPv4Compatible() || IsIPv4Mapped())
             {
                 s.Append("::");

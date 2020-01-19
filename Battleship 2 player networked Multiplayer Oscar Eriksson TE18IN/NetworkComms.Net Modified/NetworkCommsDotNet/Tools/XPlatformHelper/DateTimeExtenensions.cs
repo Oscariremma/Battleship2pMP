@@ -47,7 +47,7 @@ namespace NetworkCommsDotNet.Tools.XPlatformHelper
         public static string ToLongTimeString(this DateTime dt)
         {
             return dt.ToString(System.Globalization.DateTimeFormatInfo.CurrentInfo.LongTimePattern);
-        }        
+        }
     }
 }
 #endif

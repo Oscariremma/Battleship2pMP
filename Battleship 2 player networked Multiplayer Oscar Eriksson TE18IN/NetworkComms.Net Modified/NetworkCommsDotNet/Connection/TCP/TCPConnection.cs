@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,30 +6,29 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Net;
 using System.IO;
-using NetworkCommsDotNet.DPSBase;
 using NetworkCommsDotNet.Tools;
 
 #if NETFX_CORE
 using NetworkCommsDotNet.Tools.XPlatformHelper;
 #else
+
 using System.Net.Sockets;
+
 #endif
 
 #if WINDOWS_PHONE || NETFX_CORE
@@ -38,9 +37,11 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Storage.Streams;
 #else
+
 using System.Net.Security;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
+
 #endif
 
 namespace NetworkCommsDotNet.Connections.TCP
@@ -56,26 +57,28 @@ namespace NetworkCommsDotNet.Connections.TCP
         /// </summary>
         StreamSocket socket;
 #else
+
         /// <summary>
         /// The TcpClient corresponding to this connection.
         /// </summary>
-        TcpClient tcpClient;
+        private TcpClient tcpClient;
 
         /// <summary>
         /// The networkstream associated with the tcpClient.
         /// </summary>
-        Stream connectionStream;
-        
+        private Stream connectionStream;
+
         /// <summary>
         /// The SSL options associated with this connection.
         /// </summary>
         public SSLOptions SSLOptions { get; private set; }
+
 #endif
 
         /// <summary>
         /// The current incoming data buffer
         /// </summary>
-        byte[] dataBuffer;
+        private byte[] dataBuffer;
 
         /// <summary>
         /// TCP connection constructor
@@ -83,6 +86,7 @@ namespace NetworkCommsDotNet.Connections.TCP
 #if WINDOWS_PHONE || NETFX_CORE
         private TCPConnection(ConnectionInfo connectionInfo, SendReceiveOptions defaultSendReceiveOptions, StreamSocket socket)
 #else
+
         private TCPConnection(ConnectionInfo connectionInfo, SendReceiveOptions defaultSendReceiveOptions, TcpClient tcpClient, SSLOptions sslOptions)
 #endif
             : base(connectionInfo, defaultSendReceiveOptions)
@@ -193,9 +197,9 @@ namespace NetworkCommsDotNet.Connections.TCP
                 try
                 {
                     if (ConnectionInfo.LocalEndPoint != null && ConnectionInfo.LocalIPEndPoint.Address != IPAddress.IPv6Any && ConnectionInfo.LocalIPEndPoint.Address != IPAddress.Any)
-                    {                        
+                    {
                         var endpointPairForConnection = new Windows.Networking.EndpointPair(new Windows.Networking.HostName(ConnectionInfo.LocalIPEndPoint.Address.ToString()), ConnectionInfo.LocalIPEndPoint.Port.ToString(),
-                                                        new Windows.Networking.HostName(ConnectionInfo.RemoteIPEndPoint.Address.ToString()), ConnectionInfo.RemoteIPEndPoint.Port.ToString());                        
+                                                        new Windows.Networking.HostName(ConnectionInfo.RemoteIPEndPoint.Address.ToString()), ConnectionInfo.RemoteIPEndPoint.Port.ToString());
 
                         var task = socket.ConnectAsync(endpointPairForConnection).AsTask(cancelAfterTimeoutToken.Token);
                         task.Wait();
@@ -252,15 +256,15 @@ namespace NetworkCommsDotNet.Connections.TCP
 
 #if WINDOWS_PHONE
             var stream = socket.InputStream.AsStreamForRead();
-            stream.BeginRead(dataBuffer, 0, dataBuffer.Length, new AsyncCallback(IncomingTCPPacketHandler), stream);   
+            stream.BeginRead(dataBuffer, 0, dataBuffer.Length, new AsyncCallback(IncomingTCPPacketHandler), stream);
 #elif NETFX_CORE
             Task readTask = new Task(async () =>
-            {                
+            {
                 var buffer = Windows.Security.Cryptography.CryptographicBuffer.CreateFromByteArray(dataBuffer);
-                var readBuffer = await socket.InputStream.ReadAsync(buffer, buffer.Capacity, InputStreamOptions.Partial);                
+                var readBuffer = await socket.InputStream.ReadAsync(buffer, buffer.Capacity, InputStreamOptions.Partial);
                 await IncomingTCPPacketHandler(readBuffer);
             });
-            
+
             readTask.Start();
 #else
             lock (SyncRoot)
@@ -299,6 +303,7 @@ namespace NetworkCommsDotNet.Connections.TCP
 #if NETFX_CORE
         private async Task IncomingTCPPacketHandler(IBuffer buffer)
 #else
+
         private void IncomingTCPPacketHandler(IAsyncResult ar)
 #endif
         {
@@ -316,9 +321,9 @@ namespace NetworkCommsDotNet.Connections.TCP
 #if WINDOWS_PHONE
                 Stream stream = ar.AsyncState as Stream;
                 totalBytesRead = stream.EndRead(ar) + totalBytesRead;
-#elif NETFX_CORE                
+#elif NETFX_CORE
                 buffer.CopyTo(0, dataBuffer, totalBytesRead, (int)buffer.Length);
-                totalBytesRead = (int)buffer.Length + totalBytesRead;                   
+                totalBytesRead = (int)buffer.Length + totalBytesRead;
 #else
                 Stream stream;
                 if (SSLOptions.SSLEnabled)
@@ -344,7 +349,7 @@ namespace NetworkCommsDotNet.Connections.TCP
                     ConnectionInfo.UpdateLastTrafficTime();
 
                     //If we have read a single byte which is 0 and we are not expecting other data
-                    if (ConnectionInfo.ApplicationLayerProtocol == ApplicationLayerProtocolStatus.Enabled && 
+                    if (ConnectionInfo.ApplicationLayerProtocol == ApplicationLayerProtocolStatus.Enabled &&
                         totalBytesRead == 1 && dataBuffer[0] == 0 && packetBuilder.TotalBytesExpected - packetBuilder.TotalBytesCached == 0)
                     {
                         if (NetworkComms.LoggingEnabled) NetworkComms.Logger.Trace(" ... null packet removed in IncomingPacketHandler() from " + ConnectionInfo + ". 1");
@@ -368,7 +373,7 @@ namespace NetworkCommsDotNet.Connections.TCP
                             if (packetBuilder.TotalPartialPacketCount > 0 && packetBuilder.NumUnusedBytesMostRecentPartialPacket() > 0)
                                 dataBuffer = packetBuilder.RemoveMostRecentPartialPacket(ref bufferOffset);
                             else
-                            //If we have nothing to reuse we allocate a new buffer. As we are in this loop this can only be a suplementary buffer for THIS packet. 
+                            //If we have nothing to reuse we allocate a new buffer. As we are in this loop this can only be a suplementary buffer for THIS packet.
                             //Therefore we choose a buffer size between the initial amount and the maximum amount based on the expected size
                             {
                                 long additionalBytesNeeded = packetBuilder.TotalBytesExpected - packetBuilder.TotalBytesCached;
@@ -391,7 +396,7 @@ namespace NetworkCommsDotNet.Connections.TCP
                                 {
                                     if (NetworkComms.LoggingEnabled) NetworkComms.Logger.Trace(" ... " + totalBytesRead.ToString() + " bytes added to packetBuilder for " + ConnectionInfo + ". Cached " + packetBuilder.TotalBytesCached.ToString() + " bytes, expecting " + packetBuilder.TotalBytesExpected.ToString() + " bytes.");
                                     packetBuilder.AddPartialPacket(totalBytesRead, dataBuffer);
-                                    
+
                                     if (SSLOptions.SSLEnabled)
                                         //SSLstream does not have a DataAvailable property. We will just assume false.
                                         dataAvailable = false;
@@ -449,7 +454,6 @@ namespace NetworkCommsDotNet.Connections.TCP
                     stream.BeginRead(dataBuffer, totalBytesRead, dataBuffer.Length - totalBytesRead, IncomingTCPPacketHandler, stream);
 #endif
                 }
-
             }
             catch (IOException)
             {
@@ -479,6 +483,7 @@ namespace NetworkCommsDotNet.Connections.TCP
         }
 
 #if !WINDOWS_PHONE && !NETFX_CORE
+
         /// <summary>
         /// Synchronous incoming connection data worker
         /// </summary>
@@ -532,7 +537,7 @@ namespace NetworkCommsDotNet.Connections.TCP
                         //If we have read a single byte which is 0 and we are not expecting other data
                         if (ConnectionInfo.ApplicationLayerProtocol == ApplicationLayerProtocolStatus.Enabled && totalBytesRead == 1 && dataBuffer[0] == 0 && packetBuilder.TotalBytesExpected - packetBuilder.TotalBytesCached == 0)
                         {
-                            if (NetworkComms.LoggingEnabled) NetworkComms.Logger.Trace(" ... null packet removed in IncomingDataSyncWorker() from "+ConnectionInfo+".");
+                            if (NetworkComms.LoggingEnabled) NetworkComms.Logger.Trace(" ... null packet removed in IncomingDataSyncWorker() from " + ConnectionInfo + ".");
                         }
                         else
                         {
@@ -613,7 +618,6 @@ namespace NetworkCommsDotNet.Connections.TCP
                         new LocalCertificateSelectionCallback(CertificateSelectionCallback));
 
                     ((SslStream)connectionStream).AuthenticateAsClient(SSLOptions.CertificateName, certs, SslProtocols.Default, false);
-
                 }
             }
             catch (AuthenticationException ex)
@@ -664,11 +668,12 @@ namespace NetworkCommsDotNet.Connections.TCP
         /// <param name="remoteCertificate"></param>
         /// <param name="acceptableIssuers"></param>
         /// <returns></returns>
-        private X509Certificate CertificateSelectionCallback(object sender, string targetHost, X509CertificateCollection localCertificates, 
+        private X509Certificate CertificateSelectionCallback(object sender, string targetHost, X509CertificateCollection localCertificates,
             X509Certificate remoteCertificate, string[] acceptableIssuers)
         {
             return SSLOptions.Certificate;
         }
+
 #endif
 
         /// <inheritdoc />
@@ -701,7 +706,7 @@ namespace NetworkCommsDotNet.Connections.TCP
             //Try to close the tcpClient
             try
             {
-                if (tcpClient.Client!=null)
+                if (tcpClient.Client != null)
                 {
                     tcpClient.Client.Disconnect(false);
 
@@ -741,7 +746,7 @@ namespace NetworkCommsDotNet.Connections.TCP
             sendingStream = connectionStream;
 #endif
 
-            for(int i=0; i<streamsToSend.Length; i++)
+            for (int i = 0; i < streamsToSend.Length; i++)
             {
                 if (streamsToSend[i].Length > 0)
                 {
@@ -761,7 +766,7 @@ namespace NetworkCommsDotNet.Connections.TCP
             if (!tcpClient.Connected)
             {
                 if (NetworkComms.LoggingEnabled) NetworkComms.Logger.Error("TCPClient is not marked as connected after write to networkStream. Possibly indicates a dropped connection.");
-                
+
                 throw new CommunicationException("TCPClient is not marked as connected after write to networkStream. Possibly indicates a dropped connection.");
             }
 #endif

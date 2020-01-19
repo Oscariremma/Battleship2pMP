@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Net;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using Battleship2pMP.MDI_Forms;
 using NetworkCommsDotNet;
 using NetworkCommsDotNet.Connections;
 using NetworkCommsDotNet.Connections.TCP;
 using NetworkCommsDotNet.DPSBase;
-using NetworkCommsDotNet.Tools;
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using static LibOscar.Methods;
-using Battleship2pMP.MDI_Forms;
 
 namespace Battleship2pMP
 {
@@ -22,7 +19,6 @@ namespace Battleship2pMP
         [Serializable]
         public class NetworkSprite
         {
-
             public Ships.ShipEnum ShipType;
             public System.Drawing.Point Location;
             public System.Drawing.Point[] CoveredTiles;
@@ -49,7 +45,6 @@ namespace Battleship2pMP
                 Enabled = EnabelOverride;
                 ShipDestroyed = sprite.ShipDestroyed;
             }
-
         }
 
         // The servers RPC interface with functions called from the client
@@ -82,6 +77,7 @@ namespace Battleship2pMP
             /// Updates the map of the hosts game board including sprite table on the client instance
             /// </summary>
             void UpdateHostGameBoard(byte[] HostGameBoardBinaryArray, byte[] HostNetworkSpriteTableBinaryArray);
+
             /// <summary>
             /// Updates the map of the clients game board including sprite table on the client instance
             /// </summary>
@@ -98,13 +94,11 @@ namespace Battleship2pMP
             void HostLeftGame();
 
             void OpponentWantsRematch();
-
         }
 
         // Derived class of the server interface containing the actual functions
         private class ServerInterfaceClass : IServerInterface
         {
-
             public void StartGame()
             {
                 Task.Run(NetworkServer.InitializeGame);
@@ -112,7 +106,7 @@ namespace Battleship2pMP
 
             public void DonePlacingShips(byte[] ClientNetworkSprites, byte[] ClientGameBoardByteAray)
             {
-                NetworkServer.StaticgameLogic.ClientSpriteTable = GetObjectFromBinaryArray<NetworkSprite[]>(ClientNetworkSprites,true);
+                NetworkServer.StaticgameLogic.ClientSpriteTable = GetObjectFromBinaryArray<NetworkSprite[]>(ClientNetworkSprites, true);
 
                 NetworkServer.StaticgameLogic.ClientGameBoard = GetObjectFromBinaryArray<GameLogic.GameBoardTile[,]>(ClientGameBoardByteAray, true);
 
@@ -142,7 +136,6 @@ namespace Battleship2pMP
                 NetworkServer.StaticgameLogic.Rematch(false);
             }
 
-
             public void LeaveGame()
             {
                 NetworkServer.StaticgameLogic.LeaveGame(false);
@@ -158,7 +151,7 @@ namespace Battleship2pMP
                 MDI_Container.GameIsFinished = false;
                 MDI_Container.staticMdi_Container.Invoke(MDI_Container.DSwitchMDI, new object[] { MDI_Form_Enum.MDI_Game, true });
                 MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DSetGameSettings, new object[] { ShipsToPlace, ShotsFirstTurn, ShotsPerTurn });
-                MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DUpdateGameBoard, new object[] { GetObjectFromBinaryArray<GameLogic.GameBoardTile[,]>(ClientGameBoardTilesBinary, true) , GetObjectFromBinaryArray<GameLogic.GameBoardTile[,]>(HostGameBoardTilesBinary, true) });
+                MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DUpdateGameBoard, new object[] { GetObjectFromBinaryArray<GameLogic.GameBoardTile[,]>(ClientGameBoardTilesBinary, true), GetObjectFromBinaryArray<GameLogic.GameBoardTile[,]>(HostGameBoardTilesBinary, true) });
             }
 
             /// <summary>
@@ -176,7 +169,7 @@ namespace Battleship2pMP
             {
                 MDI_Game.staticGame.remoteGameBoardTiles = GetObjectFromBinaryArray<GameLogic.GameBoardTile[,]>(HostGameBoardBinaryArray, true);
                 List<MDI_Game.Sprite> hostSpriteTable = new List<MDI_Game.Sprite>();
-                foreach(NetworkSprite networkSprite in GetObjectFromBinaryArray<NetworkSprite[]>(HostNetworkSpriteTableBinaryArray, true))
+                foreach (NetworkSprite networkSprite in GetObjectFromBinaryArray<NetworkSprite[]>(HostNetworkSpriteTableBinaryArray, true))
                 {
                     hostSpriteTable.Add(new MDI_Game.Sprite(networkSprite.ShipType, networkSprite.ShipOrientation, networkSprite.Location, networkSprite.CoveredTiles, networkSprite.Enabled, networkSprite.ShipDestroyed));
                 }
@@ -227,7 +220,6 @@ namespace Battleship2pMP
             {
                 MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DOpponentWantsRematch);
             }
-
         }
 
         public static class NetworkServer
@@ -354,13 +346,12 @@ namespace Battleship2pMP
             {
                 RemoteProcedureCalls.Client.DestroyRPCClient(NetworkServer.StaticClientInterface as RemoteProcedureCalls.IRPCProxy);
             }
-            else if(NetworkClient.RemoteServerInterface != null)
+            else if (NetworkClient.RemoteServerInterface != null)
             {
                 RemoteProcedureCalls.Client.DestroyRPCClient(NetworkClient.RemoteServerInterface as RemoteProcedureCalls.IRPCProxy);
             }
             NetworkComms.Shutdown();
             RemoteProcedureCalls.Server.serverConnection = null;
         }
-
     }
 }

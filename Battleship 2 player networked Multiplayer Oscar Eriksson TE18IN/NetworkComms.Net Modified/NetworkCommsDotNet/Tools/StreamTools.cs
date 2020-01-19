@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,21 +6,19 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading;
 
 #if NETFX_CORE
@@ -103,7 +101,6 @@ namespace NetworkCommsDotNet.Tools
                 try
                 {
                 while (true)  {
-
                 int bytesRead = await input.ReadAsync(bufferA, 0, (writeBufferSize > bytesRemaining ? (int)bytesRemaining : writeBufferSize));
 #else
             AsyncCallback readCompleted = null, writeCompleted = null;
@@ -122,7 +119,7 @@ namespace NetworkCommsDotNet.Tools
 #endif
 #if NET2
                     if (!readCanStartSignal.WaitOne(writeWaitTimeMS, false))
-#else 
+#else
                     if (!readCanStartSignal.WaitOne(writeWaitTimeMS))
 #endif
                         innerException = new TimeoutException("Write timed out after " + writeWaitTimeMS.ToString() + "ms");
@@ -167,7 +164,7 @@ namespace NetworkCommsDotNet.Tools
             {
                 try
                 {
-                await output.WriteAsync(bufferB, 0, bytesRead);            
+                await output.WriteAsync(bufferB, 0, bytesRead);
 #else
             writeCompleted = new AsyncCallback((IAsyncResult ar) =>
             {
@@ -229,23 +226,22 @@ namespace NetworkCommsDotNet.Tools
         /// <summary>
         /// Locker for LogError() which ensures thread safe saves.
         /// </summary>
-        static object errorLocker = new object();
+        private static object errorLocker = new object();
 
         /// <summary>
         /// Appends the provided logString to end of fileName.txt. If the file does not exist it will be created.
         /// </summary>
         /// <param name="fileName">The filename to use. The extension .txt will be appended automatically</param>
         /// <param name="logString">The string to append.</param>
-        static void AppendStringToLogFile(string fileName, string logString)
+        private static void AppendStringToLogFile(string fileName, string logString)
         {
             try
             {
                 lock (errorLocker)
                 {
-
 #if NETFX_CORE
                     string toWrite = DateTime.Now.Hour.ToString() + "." + DateTime.Now.Minute.ToString() + "." + DateTime.Now.Second.ToString() + "." + DateTime.Now.Millisecond.ToString() + " [" + Environment.CurrentManagedThreadId.ToString() + "] " + logString + Environment.NewLine;
-                    
+
                     Func<Task> writeTask = new Func<Task>(async () =>
                     {
                         StorageFolder folder = ApplicationData.Current.LocalFolder;
@@ -267,7 +263,7 @@ namespace NetworkCommsDotNet.Tools
         }
 
         /// <summary>
-        /// Return the MD5 hash of the provided memory stream as a string. Stream position will be equal to the length of stream on 
+        /// Return the MD5 hash of the provided memory stream as a string. Stream position will be equal to the length of stream on
         /// return, this ensures the MD5 is consistent.
         /// </summary>
         /// <param name="streamToMD5">The bytes which will be checksummed</param>
@@ -299,7 +295,7 @@ namespace NetworkCommsDotNet.Tools
         }
 
         /// <summary>
-        /// Return the MD5 hash of the provided memory stream as a string. Stream position will be equal to the length of stream on 
+        /// Return the MD5 hash of the provided memory stream as a string. Stream position will be equal to the length of stream on
         /// return, this ensures the MD5 is consistent.
         /// </summary>
         /// <param name="streamToMD5">The bytes which will be checksummed</param>
@@ -330,23 +326,26 @@ namespace NetworkCommsDotNet.Tools
 #endif
             return resultStr;
         }
-        #endregion
+
+        #endregion Static Stream Tools
 
         /// <summary>
         /// Used to send all or parts of a stream. Particularly useful for sending files directly from disk etc.
         /// </summary>
         public class StreamSendWrapper : IDisposable
         {
-            object streamLocker = new object();
+            private object streamLocker = new object();
 
             /// <summary>
             /// The wrapped stream
             /// </summary>
             public ThreadSafeStream ThreadSafeStream { get; set; }
+
             /// <summary>
             /// The start position to read from Stream
             /// </summary>
             public long Start { get; private set; }
+
             /// <summary>
             /// The number of bytes to read from Stream
             /// </summary>
@@ -595,7 +594,7 @@ namespace NetworkCommsDotNet.Tools
 
             /// <summary>
             /// Attempts to return the buffer associated with the internal stream. In certain circumstances this is more efficient
-            /// than copying the stream contents into a new buffer using ToArray. If the internal stream is not a memory stream 
+            /// than copying the stream contents into a new buffer using ToArray. If the internal stream is not a memory stream
             /// will throw InvalidCastException. If access to the buffer is not allowed will throw an UnauthorizedAccessException.
             /// </summary>
             /// <returns></returns>
@@ -619,7 +618,7 @@ namespace NetworkCommsDotNet.Tools
             }
 
             /// <summary>
-            /// Disposes the internal stream if <see cref="DiposeInnerStreamOnDispose"/> is true. 
+            /// Disposes the internal stream if <see cref="DiposeInnerStreamOnDispose"/> is true.
             /// Use Close() to close the inner stream regardless of <see cref="DiposeInnerStreamOnDispose"/>.
             /// </summary>
             public new void Dispose()

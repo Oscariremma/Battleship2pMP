@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text;
 
 #if NETFX_CORE
@@ -12,7 +11,7 @@ using System.Linq;
 namespace NetworkCommsDotNet.DPSBase
 {
     /// <summary>
-    /// Interface defining serialize/deserialize methods 
+    /// Interface defining serialize/deserialize methods
     /// </summary>
     public interface IExplicitlySerialize
     {
@@ -32,12 +31,14 @@ namespace NetworkCommsDotNet.DPSBase
     /// <summary>
     /// Serializer that will only serialize objects implementing the <see cref="IExplicitlySerialize"/> interface
     /// </summary>
-    [DataSerializerProcessor(3)]    
+    [DataSerializerProcessor(3)]
     public class ExplicitSerializer : DataSerializer
     {
-        Type explicitlySerializableType = typeof(IExplicitlySerialize);
+        private Type explicitlySerializableType = typeof(IExplicitlySerialize);
 
-        private ExplicitSerializer() { }
+        private ExplicitSerializer()
+        {
+        }
 
         /// <inheritdoc />
         protected override void SerialiseDataObjectInt(Stream outputStream, object objectToSerialise, Dictionary<string, string> options)
@@ -98,6 +99,7 @@ namespace NetworkCommsDotNet.DPSBase
 
             outputStream.Seek(0, 0);
         }
+
         /// <inheritdoc />
         protected override object DeserialiseDataObjectInt(Stream inputStream, Type resultType, Dictionary<string, string> options)
         {
@@ -110,7 +112,7 @@ namespace NetworkCommsDotNet.DPSBase
                              select ctor).FirstOrDefault();
 
             if (constructor == null || !explicitlySerializableType.GetTypeInfo().IsAssignableFrom(resultType.GetTypeInfo()))
-#else           
+#else
 
             var constructor = resultType.GetConstructor(BindingFlags.Instance, null, new Type[] { }, null);
 
@@ -123,9 +125,9 @@ namespace NetworkCommsDotNet.DPSBase
                 byte[] buffer = new byte[8];
 
                 if (resultType == typeof(bool))
-                { 
-                    inputStream.Read(buffer, 0, sizeof(bool)); 
-                    return BitConverter.ToBoolean(buffer, 0); 
+                {
+                    inputStream.Read(buffer, 0, sizeof(bool));
+                    return BitConverter.ToBoolean(buffer, 0);
                 }
                 else if (resultType == typeof(byte))
                 {

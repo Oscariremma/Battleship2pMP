@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,22 +6,20 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
-using System.Collections;
 
 namespace NetworkCommsDotNet.Tools
 {
@@ -32,11 +30,11 @@ namespace NetworkCommsDotNet.Tools
     public class PriorityQueue<TValue>
     {
         /// <summary>
-        /// Each internal queue in the array represents a priority level.  
-        /// We keep the priority associated with each item so that when eventually returned the 
+        /// Each internal queue in the array represents a priority level.
+        /// We keep the priority associated with each item so that when eventually returned the
         /// priority can be easily included.
         /// </summary>
-        private Dictionary<QueueItemPriority,Queue<KeyValuePair<QueueItemPriority, TValue>>> internalQueues = null;
+        private Dictionary<QueueItemPriority, Queue<KeyValuePair<QueueItemPriority, TValue>>> internalQueues = null;
 
         /// <summary>
         /// The list of priorities used to handle incoming packets.
@@ -44,7 +42,7 @@ namespace NetworkCommsDotNet.Tools
         private QueueItemPriority[] QueueItemPriorityVals;
 
         /// <summary>
-        /// The number of queues we store internally. 
+        /// The number of queues we store internally.
         /// </summary>
         private int numDistinctPriorities = 0;
 
@@ -64,8 +62,8 @@ namespace NetworkCommsDotNet.Tools
             this.numDistinctPriorities = vals.Length;
 
             QueueItemPriorityVals = new QueueItemPriority[numDistinctPriorities];
-            
-            internalQueues = new Dictionary<QueueItemPriority,Queue<KeyValuePair<QueueItemPriority,TValue>>>(numDistinctPriorities);
+
+            internalQueues = new Dictionary<QueueItemPriority, Queue<KeyValuePair<QueueItemPriority, TValue>>>(numDistinctPriorities);
             for (int i = 0; i < numDistinctPriorities; i++)
             {
                 internalQueues[(QueueItemPriority)vals[i]] = new Queue<KeyValuePair<QueueItemPriority, TValue>>();
@@ -79,7 +77,7 @@ namespace NetworkCommsDotNet.Tools
         /// <param name="item">Key is priority, lower number is lower priority, and value is TValue</param>
         /// <returns>True if an item was successfully added to the queue</returns>
         public bool TryAdd(KeyValuePair<QueueItemPriority, TValue> item)
-        {            
+        {
             lock (internalQueues)
             {
                 internalQueues[item.Key].Enqueue(item);
@@ -99,8 +97,8 @@ namespace NetworkCommsDotNet.Tools
             // Loop through the queues in priority order. Higher priority first
             for (int i = numDistinctPriorities - 1; i >= 0; i--)
             {
-                // Lock the internal data so that the Dequeue 
-                // operation and the updating of m_count are atomic. 
+                // Lock the internal data so that the Dequeue
+                // operation and the updating of m_count are atomic.
                 lock (internalQueues)
                 {
                     if (internalQueues[QueueItemPriorityVals[i]].Count > 0)
@@ -130,8 +128,8 @@ namespace NetworkCommsDotNet.Tools
             // Loop through the queues in priority order. Higher priority first
             for (int i = numDistinctPriorities - 1; i >= (int)minimumPriority; i--)
             {
-                // Lock the internal data so that the Dequeue 
-                // operation and the updating of m_count are atomic.                 
+                // Lock the internal data so that the Dequeue
+                // operation and the updating of m_count are atomic.
                 lock (internalQueues)
                 {
                     if (internalQueues[QueueItemPriorityVals[i]].Count > 0)
@@ -159,7 +157,7 @@ namespace NetworkCommsDotNet.Tools
         }
 
         /// <summary>
-        /// Copies queued items into the provided destination array. Highest priority items first descending until 
+        /// Copies queued items into the provided destination array. Highest priority items first descending until
         /// destination is full or there are no remaining items.
         /// </summary>
         /// <param name="destination">The destination array</param>

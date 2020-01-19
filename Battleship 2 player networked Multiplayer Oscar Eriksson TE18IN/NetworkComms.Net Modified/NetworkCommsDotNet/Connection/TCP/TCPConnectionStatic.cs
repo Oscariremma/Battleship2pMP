@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,30 +6,28 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
 using System.Net;
-using System.IO;
-using NetworkCommsDotNet.DPSBase;
 using NetworkCommsDotNet.Tools;
 
 #if NETFX_CORE
 using NetworkCommsDotNet.Tools.XPlatformHelper;
 #else
+
 using System.Net.Sockets;
+
 #endif
 
 #if WINDOWS_PHONE || NETFX_CORE
@@ -48,8 +46,9 @@ namespace NetworkCommsDotNet.Connections.TCP
         public static bool EnableNagleAlgorithmForNewConnections { get; set; }
 
         #region GetConnection
+
         /// <summary>
-        /// Create a <see cref="TCPConnection"/> with the provided connectionInfo. If there is an existing connection that will be returned instead. 
+        /// Create a <see cref="TCPConnection"/> with the provided connectionInfo. If there is an existing connection that will be returned instead.
         /// If a new connection is created it will be registered with NetworkComms and can be retrieved using <see cref="NetworkComms.GetExistingConnection(ConnectionInfo)"/> and overrides.
         /// </summary>
         /// <param name="connectionInfo">ConnectionInfo to be used to create connection</param>
@@ -57,7 +56,7 @@ namespace NetworkCommsDotNet.Connections.TCP
         /// <returns>Returns a <see cref="TCPConnection"/></returns>
         public static TCPConnection GetConnection(ConnectionInfo connectionInfo, bool establishIfRequired = true)
         {
-            //Added conditional compilation so that GetConnection method usage is not ambiguous. 
+            //Added conditional compilation so that GetConnection method usage is not ambiguous.
             SendReceiveOptions options = null;
 #if WINDOWS_PHONE || NETFX_CORE
             StreamSocket socket = null;
@@ -65,7 +64,7 @@ namespace NetworkCommsDotNet.Connections.TCP
 #else
             TcpClient tcpClient = null;
             return GetConnection(connectionInfo, options, tcpClient, establishIfRequired);
-#endif 
+#endif
         }
 
         /// <summary>
@@ -78,7 +77,7 @@ namespace NetworkCommsDotNet.Connections.TCP
         /// <returns>Returns a <see cref="TCPConnection"/></returns>
         public static TCPConnection GetConnection(ConnectionInfo connectionInfo, SendReceiveOptions defaultSendReceiveOptions, bool establishIfRequired = true)
         {
-            //Added conditional compilation so that GetConnection method usage is not ambiguous. 
+            //Added conditional compilation so that GetConnection method usage is not ambiguous.
 #if WINDOWS_PHONE || NETFX_CORE
             StreamSocket socket = null;
             return GetConnection(connectionInfo, defaultSendReceiveOptions, socket, establishIfRequired);
@@ -89,6 +88,7 @@ namespace NetworkCommsDotNet.Connections.TCP
         }
 
 #if !WINDOWS_PHONE && !NETFX_CORE
+
         /// <summary>
         /// Create a TCP connection with the provided connectionInfo and sets the connection default SendReceiveOptions. If there is an existing connection that is returned instead.
         /// If a new connection is created it will be registered with NetworkComms and can be retrieved using <see cref="NetworkComms.GetExistingConnection(ConnectionInfo)"/> and overrides.
@@ -102,8 +102,9 @@ namespace NetworkCommsDotNet.Connections.TCP
         {
             return GetConnection(connectionInfo, defaultSendReceiveOptions, null, establishIfRequired, sslOptions);
         }
+
 #endif
-  
+
 #if WINDOWS_PHONE || NETFX_CORE
         /// <summary>
         /// Internal <see cref="TCPConnection"/> creation which hides the necessary internal calls
@@ -115,6 +116,7 @@ namespace NetworkCommsDotNet.Connections.TCP
         /// <returns>An existing connection or a new one</returns>
         internal static TCPConnection GetConnection(ConnectionInfo connectionInfo, SendReceiveOptions defaultSendReceiveOptions, StreamSocket socket, bool establishIfRequired)
 #else
+
         /// <summary>
         /// Internal <see cref="TCPConnection"/> creation which hides the necessary internal calls
         /// </summary>
@@ -165,7 +167,7 @@ namespace NetworkCommsDotNet.Connections.TCP
                         throw new ConnectionSetupException("Connection state for connection " + connectionInfo + " is marked as establishing. This should only be the case here due to a bug.");
 
                     //If an existing connection does not exist but the info we are using suggests it should we need to reset the info
-                    //so that it can be reused correctly. This case generally happens when using Comms in the format 
+                    //so that it can be reused correctly. This case generally happens when using Comms in the format
                     //TCPConnection.GetConnection(info).SendObject(packetType, objToSend);
                     if (connectionInfo.ConnectionState == ConnectionState.Established || connectionInfo.ConnectionState == ConnectionState.Shutdown)
                         connectionInfo.ResetConnectionInfo();
@@ -180,16 +182,18 @@ namespace NetworkCommsDotNet.Connections.TCP
                 }
             }
 
-            if (newConnection && establishIfRequired) connection.EstablishConnection(); 
+            if (newConnection && establishIfRequired) connection.EstablishConnection();
             else if (!newConnection) connection.WaitForConnectionEstablish(NetworkComms.ConnectionEstablishTimeoutMS);
 
             if (!NetworkComms.commsShutdown) TriggerConnectionKeepAliveThread();
 
             return connection;
         }
-        #endregion
+
+        #endregion GetConnection
 
         #region Depreciated
+
         /// <summary>
         /// Accept new incoming TCP connections on all allowed IP's and Port's
         /// </summary>
@@ -209,7 +213,6 @@ namespace NetworkCommsDotNet.Connections.TCP
                     }
                     catch (CommsSetupShutdownException)
                     {
-
                     }
                 }
             }
@@ -303,6 +306,7 @@ namespace NetworkCommsDotNet.Connections.TCP
         {
             return Connection.Listening(ConnectionType.TCP);
         }
-        #endregion
+
+        #endregion Depreciated
     }
 }

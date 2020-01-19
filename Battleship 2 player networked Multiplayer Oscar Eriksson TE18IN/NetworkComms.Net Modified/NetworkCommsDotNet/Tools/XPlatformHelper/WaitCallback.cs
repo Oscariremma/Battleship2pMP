@@ -6,6 +6,6 @@ using System.Text;
 
 namespace NetworkCommsDotNet.Tools.XPlatformHelper
 {
-    public delegate void WaitCallback(object obj);    
+    public delegate void WaitCallback(object obj);
 }
 #endif

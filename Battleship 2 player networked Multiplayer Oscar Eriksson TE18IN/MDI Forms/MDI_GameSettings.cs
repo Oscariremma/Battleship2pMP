@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Battleship2pMP.MDI_Forms
@@ -24,7 +17,7 @@ namespace Battleship2pMP.MDI_Forms
             LoadValuesFromSettings();
         }
 
-        void LoadValuesFromSettings()
+        private void LoadValuesFromSettings()
         {
             num_Carriers.Value = Properties.Settings.Default.Carriers;
             num_Battleships.Value = Properties.Settings.Default.Battleships;
@@ -40,8 +33,7 @@ namespace Battleship2pMP.MDI_Forms
 
         private void Btn_Reset_Click(object sender, EventArgs e)
         {
-
-            if(MessageBox.Show("Are you sure that you want to reset all settings to their defaults?", "Reset all settings?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+            if (MessageBox.Show("Are you sure that you want to reset all settings to their defaults?", "Reset all settings?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
 
             string LastIP = Properties.Settings.Default.LastIP;
             Properties.Settings.Default.Reset();
@@ -52,7 +44,7 @@ namespace Battleship2pMP.MDI_Forms
 
         private void Btn_Back_Click(object sender, EventArgs e)
         {
-            if(num_Carriers.Value + num_Battleships.Value + num_Cruisers.Value + num_Destroyers.Value + num_Submarines.Value == 0)
+            if (num_Carriers.Value + num_Battleships.Value + num_Cruisers.Value + num_Destroyers.Value + num_Submarines.Value == 0)
             {
                 MessageBox.Show("You need to have at minimum 1 ship", "No Ships", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -72,7 +64,6 @@ namespace Battleship2pMP.MDI_Forms
             Properties.Settings.Default.Save();
 
             MDI_Container.SwitchMDI(MDI_Form_Enum.MDI_Host);
-
         }
     }
 }

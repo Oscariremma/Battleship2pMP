@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.IO.Compression;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace LibOscar
 {
@@ -87,12 +84,11 @@ namespace LibOscar
                 graphics.DrawLine(pen, line.StartPoint, line.EndPoint);
             }
         }
-
     }
 
     public static class ExecutionTimer
     {
-        static List<System.Timers.Timer> Timers = new List<System.Timers.Timer>();
+        private static List<System.Timers.Timer> Timers = new List<System.Timers.Timer>();
 
         public static void ExecuteAfterDelay(System.Timers.ElapsedEventHandler DelayedMethod, int Delay)
         {
@@ -123,13 +119,12 @@ namespace LibOscar
             Timer.Start();
         }
 
-        static void RemoveElapsedTimer(object sender, System.Timers.ElapsedEventArgs e, System.Timers.Timer timerToDispose)
+        private static void RemoveElapsedTimer(object sender, System.Timers.ElapsedEventArgs e, System.Timers.Timer timerToDispose)
         {
             timerToDispose.Stop();
             Timers.Remove(timerToDispose);
             timerToDispose.Dispose();
         }
-
     }
 
     public struct Line

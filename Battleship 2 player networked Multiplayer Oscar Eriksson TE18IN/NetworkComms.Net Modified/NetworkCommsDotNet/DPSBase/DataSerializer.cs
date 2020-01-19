@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,31 +6,30 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
+using NetworkCommsDotNet.Tools;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Runtime.InteropServices;
 using System.IO;
 using System.Reflection;
-using NetworkCommsDotNet.Tools;
+using System.Runtime.InteropServices;
 
 #if NETFX_CORE
 using System.Linq;
 #endif
 
 namespace NetworkCommsDotNet.DPSBase
-{    
+{
     /// <summary>
     /// Provides methods that convert an <see cref="object"/> into a <see cref="byte"/>[]
     /// </summary>
@@ -72,7 +71,7 @@ namespace NetworkCommsDotNet.DPSBase
 
             return instance as T;
         }
-            
+
         /// <summary>
         /// Converts objectToSerialize to an array of bytes. Uses no data processors.
         /// </summary>
@@ -83,7 +82,7 @@ namespace NetworkCommsDotNet.DPSBase
         {
             return SerialiseDataObject<T>(objectToSerialise, null, null);
         }
-    
+
         /// <summary>
         /// Converts objectToSerialize to an array of bytes using the data processors and options provided.
         /// </summary>
@@ -103,11 +102,11 @@ namespace NetworkCommsDotNet.DPSBase
                 return StreamSendWrapperSerializer.SerialiseStreamSendWrapper(objectToSerialise as StreamTools.StreamSendWrapper, dataProcessors, options);
 
             StreamTools.StreamSendWrapper baseRes = null;
-     
+
             baseRes = ArraySerializer.SerialiseArrayObject(objectToSerialise, dataProcessors, options);
 
             //if the object was an array baseres will != null
-            if (baseRes != null) 
+            if (baseRes != null)
                 return baseRes;
             else
                 return SerialiseGeneralObject<T>(objectToSerialise, dataProcessors, options);
@@ -115,7 +114,7 @@ namespace NetworkCommsDotNet.DPSBase
 
         private StreamTools.StreamSendWrapper SerialiseGeneralObject<T>(T objectToSerialise, List<DataProcessor> dataProcessors, Dictionary<string, string> options)
         {
-            //Create the first memory stream that will be used 
+            //Create the first memory stream that will be used
             MemoryStream tempStream1 = new MemoryStream();
 
             //Serialise the object using the overridden method
@@ -224,7 +223,7 @@ namespace NetworkCommsDotNet.DPSBase
         public T DeserialiseDataObject<T>(byte[] receivedObjectBytes, List<DataProcessor> dataProcessors, Dictionary<string, string> options)
         {
             if (receivedObjectBytes == null) throw new ArgumentNullException("receivedObjectBytes");
-            
+
 #if NETFX_CORE
             return DeserialiseDataObject<T>(new MemoryStream(receivedObjectBytes, 0, receivedObjectBytes.Length, false), dataProcessors, options);
 #else
@@ -243,13 +242,13 @@ namespace NetworkCommsDotNet.DPSBase
         public T DeserialiseDataObject<T>(MemoryStream receivedObjectStream, List<DataProcessor> dataProcessors, Dictionary<string, string> options)
         {
             if (receivedObjectStream == null) throw new ArgumentNullException("receivedObjectStream");
-            
+
             //Ensure the stream is at the beginning
             receivedObjectStream.Seek(0, SeekOrigin.Begin);
 
             //Try to deserialise using the array helper.  If the result is a primitive array this call will return an object
             object baseRes = null;
-                
+
             baseRes = ArraySerializer.DeserialiseArrayObject(receivedObjectStream, typeof(T), dataProcessors, options);
 
             if (baseRes != null)
@@ -358,7 +357,7 @@ namespace NetworkCommsDotNet.DPSBase
                 }
             }
         }
-        
+
         /// <summary>
         /// Serialises an object to a stream using any relevant options provided
         /// </summary>
@@ -368,7 +367,7 @@ namespace NetworkCommsDotNet.DPSBase
         protected abstract void SerialiseDataObjectInt(Stream ouputStream, object objectToSerialise, Dictionary<string, string> options);
 
         /// <summary>
-        /// Deserialises the data in a stream to an object of the specified type using any relevant provided options 
+        /// Deserialises the data in a stream to an object of the specified type using any relevant provided options
         /// </summary>
         /// <param name="inputStream">The stream containing the serialised object</param>
         /// <param name="resultType">The return object Type</param>
@@ -376,18 +375,18 @@ namespace NetworkCommsDotNet.DPSBase
         /// <returns>The deserialised object</returns>
         protected abstract object DeserialiseDataObjectInt(Stream inputStream, Type resultType, Dictionary<string, string> options);
     }
-    
+
     /// <summary>
     /// Class that provides optimised method for serializing arrays of primitive data types.
     /// </summary>
-    static class ArraySerializer
+    internal static class ArraySerializer
     {
 #if WINDOWS_PHONE || iOS || NETFX_CORE
 
         /// <summary>
-        /// Serializes objectToSerialize to a byte array using compression provided by compressor if T is an array of primitives.  Otherwise returns default value for T.  Override 
+        /// Serializes objectToSerialize to a byte array using compression provided by compressor if T is an array of primitives.  Otherwise returns default value for T.  Override
         /// to serialize other types
-        /// </summary>        
+        /// </summary>
         /// <param name="objectToSerialise">Object to serialize</param>
         /// <param name="dataProcessors">The compression provider to use</param>
         /// <param name="options">Options to be used during serialization and processing of data</param>
@@ -426,14 +425,12 @@ namespace NetworkCommsDotNet.DPSBase
 
                     try
                     {
-
 #if WINDOWS_PHONE || iOS || NETFX_CORE
 #else
                         IntPtr safePtr = Marshal.UnsafeAddrOfPinnedArrayElement(asArray, 0);
 #endif
 
                         long writtenBytes = 0;
-
 
 #if WINDOWS_PHONE || iOS || NETFX_CORE
                         var byteArray = new byte[asArray.Length * Marshal.SizeOf(elementType)];
@@ -516,10 +513,11 @@ namespace NetworkCommsDotNet.DPSBase
         }
 
 #else
+
         /// <summary>
-        /// Serializes objectToSerialize to a byte array using compression provided by compressor if T is an array of primitives.  Otherwise returns default value for T.  Override 
+        /// Serializes objectToSerialize to a byte array using compression provided by compressor if T is an array of primitives.  Otherwise returns default value for T.  Override
         /// to serialize other types
-        /// </summary>        
+        /// </summary>
         /// <param name="objectToSerialise">Object to serialize</param>
         /// <param name="dataProcessors">The compression provider to use</param>
         /// <param name="options">Options to be used during serialization and processing of data</param>
@@ -618,12 +616,13 @@ namespace NetworkCommsDotNet.DPSBase
 
             return null;
         }
+
 #endif
 
 #if WINDOWS_PHONE || iOS || NETFX_CORE
         /// <summary>
         /// Deserializes data object held as compressed bytes in receivedObjectBytes using compressor if desired type is an array of primitives
-        /// </summary>        
+        /// </summary>
         /// <param name="inputStream">Byte array containing serialized and compressed object</param>
         /// <param name="dataProcessors">Compression provider to use</param>
         /// <param name="objType">The <see cref="System.Type"/> of the <see cref="object"/> to be returned</param>
@@ -664,7 +663,7 @@ namespace NetworkCommsDotNet.DPSBase
                         numElements = (int)(inputStream.Length / Marshal.SizeOf(elementType));
                     else
                     {
-                        byte[] temp = new byte[sizeof(int)];                        
+                        byte[] temp = new byte[sizeof(int)];
                         inputStream.Seek(inputStream.Length - sizeof(int), SeekOrigin.Begin);
                         inputStream.Read(temp, 0, sizeof(int));
                         numElements = (int)(BitConverter.ToUInt32(temp, 0));
@@ -691,7 +690,6 @@ namespace NetworkCommsDotNet.DPSBase
                         resultBytes = new byte[numElements * Marshal.SizeOf(elementType)];
                         using (System.IO.MemoryStream finalOutputStream = new MemoryStream(resultBytes))
                         {
-
 #else
                         using (System.IO.UnmanagedMemoryStream finalOutputStream = new System.IO.UnmanagedMemoryStream((byte*)safePtr, resultArray.Length * Marshal.SizeOf(elementType), resultArray.Length * Marshal.SizeOf(elementType), System.IO.FileAccess.ReadWrite))
                         {
@@ -703,7 +701,7 @@ namespace NetworkCommsDotNet.DPSBase
                                 inputBytesStream = new MemoryStream(inputStream.ToArray(), 0, (int)(inputStream.Length - ((dataProcessors == null || dataProcessors.Count == 0) ? 0 : sizeof(int))));
 #else
                                 //We hope that the buffer is publicly accessible as otherwise it defeats the point of having a special serializer for arrays
-                                inputBytesStream = new MemoryStream(inputStream.GetBuffer(), 0, (int)(inputStream.Length - ((dataProcessors == null || dataProcessors.Count == 0) ? 0 : sizeof(int))));                                
+                                inputBytesStream = new MemoryStream(inputStream.GetBuffer(), 0, (int)(inputStream.Length - ((dataProcessors == null || dataProcessors.Count == 0) ? 0 : sizeof(int))));
 #endif
                             }
                             catch (UnauthorizedAccessException)
@@ -786,7 +784,7 @@ namespace NetworkCommsDotNet.DPSBase
 
         /// <summary>
         /// Deserializes data object held as compressed bytes in receivedObjectBytes using compressor if desired type is an array of primitives
-        /// </summary>        
+        /// </summary>
         /// <param name="inputStream">Byte array containing serialized and compressed object</param>
         /// <param name="dataProcessors">Compression provider to use</param>
         /// <param name="objType">The <see cref="System.Type"/> of the <see cref="object"/> to be returned</param>
@@ -820,9 +818,9 @@ namespace NetworkCommsDotNet.DPSBase
                     else
                     {
                         if (inputStream.Length < sizeof(int))
-                            throw new SerialisationException("Error deserializing to type " + objType +". Input stream length too short to determine number of elements.");
+                            throw new SerialisationException("Error deserializing to type " + objType + ". Input stream length too short to determine number of elements.");
 
-                        byte[] temp = new byte[sizeof(int)];                        
+                        byte[] temp = new byte[sizeof(int)];
                         inputStream.Seek(inputStream.Length - sizeof(int), SeekOrigin.Begin);
                         inputStream.Read(temp, 0, sizeof(int));
                         numElements = (int)(BitConverter.ToUInt32(temp, 0));
@@ -915,18 +913,18 @@ namespace NetworkCommsDotNet.DPSBase
 
             return null;
         }
-#endif
 
+#endif
     }
-    
+
     /// <summary>
     /// Class that provides optimised method for serializing arrays of primitive data types.
     /// </summary>
-    static class StreamSendWrapperSerializer
+    internal static class StreamSendWrapperSerializer
     {
         /// <summary>
         /// Serializes StreamSendWrapper to a StreamSendWrapper possibly using provided data processors.  If there are no data processor streamSendWrapperToSerialize will be returned.
-        /// </summary>        
+        /// </summary>
         /// <param name="streamSendWrapperToSerialize">StreamSendWrapper to serialize</param>
         /// <param name="dataProcessors">The compression provider to use</param>
         /// <param name="options">Options to be used during serialization and processing of data</param>
@@ -941,12 +939,12 @@ namespace NetworkCommsDotNet.DPSBase
             using (MemoryStream tempStream = new MemoryStream(array))
                 streamSendWrapperToSerialize.ThreadSafeStream.CopyTo(tempStream, streamSendWrapperToSerialize.Start, streamSendWrapperToSerialize.Length, 8000);
 
-            return ArraySerializer.SerialiseArrayObject(array, dataProcessors, options);            
+            return ArraySerializer.SerialiseArrayObject(array, dataProcessors, options);
         }
 
         /// <summary>
         /// Deserializes data object held as compressed bytes in receivedObjectBytes using compressor if desired type is a <see cref="StreamTools.StreamSendWrapper"/>
-        /// </summary>        
+        /// </summary>
         /// <param name="receivedObjectBytes">Byte array containing serialized and compressed object</param>
         /// <param name="dataProcessors">Compression provider to use</param>
         /// <param name="objType">The <see cref="System.Type"/> of the <see cref="object"/> to be returned</param>

@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,29 +6,29 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Net;
-using System.Diagnostics;
 using NetworkCommsDotNet.DPSBase;
 using NetworkCommsDotNet.Tools;
 
 #if NETFX_CORE
 using NetworkCommsDotNet.Tools.XPlatformHelper;
 #else
+
 using System.Net.Sockets;
+
 #endif
 
 namespace NetworkCommsDotNet.Connections.UDP
@@ -36,9 +36,9 @@ namespace NetworkCommsDotNet.Connections.UDP
     public sealed partial class UDPConnection : IPConnection
     {
         /// <summary>
-        /// By default a UDP datagram sent to an unreachable destination will result in an ICMP Destination Unreachable 
-        /// packet. This can result in a SocketException on the local end. To avoid this behaviour these ICMP packets 
-        /// are ignored by default, i.e. this value is set to true. Setting this value to false could cause new UDP 
+        /// By default a UDP datagram sent to an unreachable destination will result in an ICMP Destination Unreachable
+        /// packet. This can result in a SocketException on the local end. To avoid this behaviour these ICMP packets
+        /// are ignored by default, i.e. this value is set to true. Setting this value to false could cause new UDP
         /// connections to close, possibly unexpectedly.
         /// </summary>
         public static bool IgnoreICMPDestinationUnreachable { get; set; }
@@ -53,13 +53,14 @@ namespace NetworkCommsDotNet.Connections.UDP
         /// First key is address family of rogue sender, second key is value of ApplicationLayerProtocolEnabled.
         /// Third key is local IPEndPoint of the rouge sender
         /// </summary>
-        static Dictionary<ApplicationLayerProtocolStatus, Dictionary<IPEndPoint, UDPConnection>> udpRogueSenders = new Dictionary<ApplicationLayerProtocolStatus, Dictionary<IPEndPoint, UDPConnection>>();
-        static object udpRogueSenderCreationLocker = new object();
+        private static Dictionary<ApplicationLayerProtocolStatus, Dictionary<IPEndPoint, UDPConnection>> udpRogueSenders = new Dictionary<ApplicationLayerProtocolStatus, Dictionary<IPEndPoint, UDPConnection>>();
+
+        private static object udpRogueSenderCreationLocker = new object();
 
         /// <summary>
         /// The maximum datagram size limit for UDP
         /// </summary>
-        const int maximumSingleDatagramSizeBytes = 65506;
+        private const int maximumSingleDatagramSizeBytes = 65506;
 
         /// <summary>
         /// Static constructor which creates the rogue sender
@@ -70,15 +71,16 @@ namespace NetworkCommsDotNet.Connections.UDP
         }
 
         #region GetConnection
+
         /// <summary>
         /// Create a UDP connection with the provided connectionInfo. If there is an existing connection that is returned instead.
-        /// If a new connection is created it will be registered with NetworkComms and can be retrieved using 
+        /// If a new connection is created it will be registered with NetworkComms and can be retrieved using
         /// <see cref="NetworkComms.GetExistingConnection(ConnectionInfo)"/> and overrides.
         /// </summary>
         /// <param name="connectionInfo">ConnectionInfo to be used to create connection</param>
         /// <param name="level">The UDP level to use for this connection</param>
         /// <param name="listenForReturnPackets">If set to true will ensure that reply packets are handled</param>
-        /// <param name="establishIfRequired">Will establish the connection, triggering connection establish delegates if a 
+        /// <param name="establishIfRequired">Will establish the connection, triggering connection establish delegates if a
         /// new connection is returned</param>
         /// <returns>Returns a <see cref="UDPConnection"/></returns>
         public static UDPConnection GetConnection(ConnectionInfo connectionInfo, UDPOptions level, bool listenForReturnPackets = true, bool establishIfRequired = true)
@@ -87,15 +89,15 @@ namespace NetworkCommsDotNet.Connections.UDP
         }
 
         /// <summary>
-        /// Create a UDP connection with the provided connectionInfo and and sets the connection default SendReceiveOptions. 
-        /// If there is an existing connection that is returned instead. If a new connection is created it will be registered 
+        /// Create a UDP connection with the provided connectionInfo and and sets the connection default SendReceiveOptions.
+        /// If there is an existing connection that is returned instead. If a new connection is created it will be registered
         /// with NetworkComms and can be retrieved using <see cref="NetworkComms.GetExistingConnection(ConnectionInfo)"/>.
         /// </summary>
         /// <param name="connectionInfo">ConnectionInfo to be used to create connection</param>
         /// <param name="defaultSendReceiveOptions">The SendReceiveOptions to use as defaults for this connection</param>
         /// <param name="level">The UDP options to use for this connection</param>
         /// <param name="listenForReturnPackets">If set to true will ensure that reply packets can be received</param>
-        /// <param name="establishIfRequired">Will establish the connection, triggering connection establish delegates if a 
+        /// <param name="establishIfRequired">Will establish the connection, triggering connection establish delegates if a
         /// new connection is returned</param>
         /// <returns>Returns a <see cref="UDPConnection"/></returns>
         public static UDPConnection GetConnection(ConnectionInfo connectionInfo, UDPOptions level, SendReceiveOptions defaultSendReceiveOptions, bool listenForReturnPackets = true, bool establishIfRequired = true)
@@ -112,7 +114,7 @@ namespace NetworkCommsDotNet.Connections.UDP
         /// <param name="listenForReturnPackets"></param>
         /// <param name="existingListenerConnection"></param>
         /// <param name="possibleHandshakeUDPDatagram"></param>
-        /// <param name="establishIfRequired">Will establish the connection, triggering connection establish delegates if a new 
+        /// <param name="establishIfRequired">Will establish the connection, triggering connection establish delegates if a new
         /// connection is returned</param>
         /// <returns></returns>
         internal static UDPConnection GetConnection(ConnectionInfo connectionInfo, UDPOptions level, SendReceiveOptions defaultSendReceiveOptions, bool listenForReturnPackets, UDPConnection existingListenerConnection, HandshakeUDPDatagram possibleHandshakeUDPDatagram, bool establishIfRequired = true)
@@ -159,7 +161,7 @@ namespace NetworkCommsDotNet.Connections.UDP
                     }
 
                     //If an existing connection does not exist but the info we are using suggests it should we need to reset the info
-                    //so that it can be reused correctly. This case generally happens when using Comms in the format 
+                    //so that it can be reused correctly. This case generally happens when using Comms in the format
                     //UDPConnection.GetConnection(info).SendObject(packetType, objToSend);
                     if (connectionInfo.ConnectionState == ConnectionState.Established || connectionInfo.ConnectionState == ConnectionState.Shutdown)
                         connectionInfo.ResetConnectionInfo();
@@ -176,7 +178,7 @@ namespace NetworkCommsDotNet.Connections.UDP
             //TCP - Receive TCPClient, configure connection, start listening for connectionsetup, wait for connectionsetup
             //
             //possibleHandshakeUDPDatagram will only be set when GetConnection() is called from a listener
-            //If multiple threads try to create an outgoing UDP connection to the same endPoint all but the originating 
+            //If multiple threads try to create an outgoing UDP connection to the same endPoint all but the originating
             //thread will be held on connection.WaitForConnectionEstablish();
             if (possibleHandshakeUDPDatagram != null &&
                 (connection.ConnectionUDPOptions & UDPOptions.Handshake) == UDPOptions.Handshake)
@@ -211,12 +213,14 @@ namespace NetworkCommsDotNet.Connections.UDP
 
             return connection;
         }
-        #endregion
+
+        #endregion GetConnection
 
         #region Static SendObject
+
         /// <summary>
-        /// Sends a single object to the provided IPAddress and Port. NOTE: Any possible reply will be ignored unless listening 
-        /// for incoming UDP packets. 
+        /// Sends a single object to the provided IPAddress and Port. NOTE: Any possible reply will be ignored unless listening
+        /// for incoming UDP packets.
         /// </summary>
         /// <param name="sendingPacketType">The sending packet type</param>
         /// <param name="objectToSend">The object to send.</param>
@@ -225,14 +229,14 @@ namespace NetworkCommsDotNet.Connections.UDP
         public static void SendObject(string sendingPacketType, object objectToSend, string ipAddress, int port)
         {
             IPAddress ipAddressParse;
-            if(!IPAddress.TryParse(ipAddress, out ipAddressParse))
+            if (!IPAddress.TryParse(ipAddress, out ipAddressParse))
                 throw new ArgumentException("Provided ipAddress string was not successfully parsed.", "ipAddress");
 
             SendObject(sendingPacketType, objectToSend, new IPEndPoint(ipAddressParse, port));
         }
 
         /// <summary>
-        /// Sends a single object to the provided endPoint. NOTE: Any possible reply will be ignored unless listening for incoming UDP packets. 
+        /// Sends a single object to the provided endPoint. NOTE: Any possible reply will be ignored unless listening for incoming UDP packets.
         /// </summary>
         /// <param name="sendingPacketType">The sending packet type</param>
         /// <param name="objectToSend">The object to send</param>
@@ -243,7 +247,7 @@ namespace NetworkCommsDotNet.Connections.UDP
         }
 
         /// <summary>
-        /// Sends a single object to the provided endPoint. NOTE: Any possible reply will be ignored unless listening for incoming UDP packets. 
+        /// Sends a single object to the provided endPoint. NOTE: Any possible reply will be ignored unless listening for incoming UDP packets.
         /// </summary>
         /// <param name="sendingPacketType">The sending packet type</param>
         /// <param name="objectToSend">The object to send</param>
@@ -255,15 +259,15 @@ namespace NetworkCommsDotNet.Connections.UDP
         }
 
         /// <summary>
-        /// Sends a single object to the provided endPoint. NOTE: Any possible reply will be ignored unless listening for incoming UDP packets. 
+        /// Sends a single object to the provided endPoint. NOTE: Any possible reply will be ignored unless listening for incoming UDP packets.
         /// </summary>
         /// <param name="sendingPacketType">The sending packet type</param>
         /// <param name="objectToSend">The object to send</param>
         /// <param name="ipEndPoint">The destination IPEndPoint. Supports multicast endpoints.</param>
         /// <param name="sendReceiveOptions">The sendReceiveOptions to use for this send</param>
-        /// <param name="applicationLayerProtocol">If enabled NetworkComms.Net uses a custom 
-        /// application layer protocol to provide useful features such as inline serialisation, 
-        /// transparent packet transmission, remote peer handshake and information etc. We strongly 
+        /// <param name="applicationLayerProtocol">If enabled NetworkComms.Net uses a custom
+        /// application layer protocol to provide useful features such as inline serialisation,
+        /// transparent packet transmission, remote peer handshake and information etc. We strongly
         /// recommend you use the NetworkComms.Net application layer protocol.</param>
         public static void SendObject<sendObjectType>(string sendingPacketType, sendObjectType objectToSend, IPEndPoint ipEndPoint, SendReceiveOptions sendReceiveOptions, ApplicationLayerProtocolStatus applicationLayerProtocol)
         {
@@ -280,16 +284,16 @@ namespace NetworkCommsDotNet.Connections.UDP
         }
 
         /// <summary>
-        /// Sends a <see cref="Packet"/> to the provided endPoint. Offers more performance if an identical packet is being sent to multiple peers. 
-        /// NOTE: Any possible reply will be ignored unless listening for incoming UDP packets. 
+        /// Sends a <see cref="Packet"/> to the provided endPoint. Offers more performance if an identical packet is being sent to multiple peers.
+        /// NOTE: Any possible reply will be ignored unless listening for incoming UDP packets.
         /// </summary>
         /// <typeparam name="packetPayloadObjectType">The type of object encapsulated by the provided packet</typeparam>
         /// <param name="packetToSend">The packet to send</param>
         /// <param name="ipEndPoint">The destination IPEndPoint. Supports multicast endpoints.</param>
         /// <param name="sendReceiveOptions">The sendReceiveOptions to use for this send</param>
-        /// <param name="applicationLayerProtocol">If enabled NetworkComms.Net uses a custom 
-        /// application layer protocol to provide useful features such as inline serialisation, 
-        /// transparent packet transmission, remote peer handshake and information etc. We strongly 
+        /// <param name="applicationLayerProtocol">If enabled NetworkComms.Net uses a custom
+        /// application layer protocol to provide useful features such as inline serialisation,
+        /// transparent packet transmission, remote peer handshake and information etc. We strongly
         /// recommend you use the NetworkComms.Net application layer protocol.</param>
         public static void SendObject<packetPayloadObjectType>(IPacket packetToSend, IPEndPoint ipEndPoint, SendReceiveOptions sendReceiveOptions, ApplicationLayerProtocolStatus applicationLayerProtocol)
         {
@@ -319,7 +323,7 @@ namespace NetworkCommsDotNet.Connections.UDP
             }
 
             List<UDPConnection> connectionsToUse = null;
-            
+
             //If we are already listening on what will be the outgoing adaptor we can send with that client to ensure reply packets are collected
             //The exception here is the broadcasting which goes out all adaptors
             if (ipEndPoint.Address != IPAddress.Broadcast)
@@ -343,9 +347,10 @@ namespace NetworkCommsDotNet.Connections.UDP
                     LogTools.LogException(ex, "BestLocalEndPointError", "Error while attempting to determine the best local end point to contact " + ipEndPoint.ToString());
                 }
 
-                #endregion
+                #endregion Discover best local endpoint
 
                 #region Check For Existing Local Listener
+
                 List<UDPConnectionListener> existingListeners = Connection.ExistingLocalListeners<UDPConnectionListener>(bestLocalEndPoint);
 
                 for (int i = 0; i < existingListeners.Count; i++)
@@ -358,12 +363,14 @@ namespace NetworkCommsDotNet.Connections.UDP
                         break;
                     }
                 }
-                #endregion
+
+                #endregion Check For Existing Local Listener
 
                 //If we have not picked up an existing listener we need to use/create a rougeSender
                 if (connectionsToUse == null)
                 {
                     #region Check For Suitable Rouge Sender
+
                     lock (udpRogueSenderCreationLocker)
                     {
                         if (NetworkComms.commsShutdown)
@@ -387,12 +394,14 @@ namespace NetworkCommsDotNet.Connections.UDP
                             connectionsToUse = new List<UDPConnection> { udpRogueSenders[applicationLayerProtocol][bestLocalEndPoint] };
                         }
                     }
-                    #endregion
+
+                    #endregion Check For Suitable Rouge Sender
                 }
             }
             else
             {
                 #region Get A Sender On All Interfaces For Broadcast
+
                 lock (udpRogueSenderCreationLocker)
                 {
                     //We do something special for broadcasts by selected EVERY adaptor
@@ -439,7 +448,8 @@ namespace NetworkCommsDotNet.Connections.UDP
                         }
                     }
                 }
-                #endregion
+
+                #endregion Get A Sender On All Interfaces For Broadcast
             }
 
             foreach (UDPConnection connection in connectionsToUse)
@@ -455,7 +465,7 @@ namespace NetworkCommsDotNet.Connections.UDP
                     //    connection.SendPacketSpecific<packetPayloadObjectType>(packetToSend, ipEndPointToUse);
                     //}
                     //else
-                        connection.SendPacketSpecific<packetPayloadObjectType>(packetToSend, ipEndPoint);
+                    connection.SendPacketSpecific<packetPayloadObjectType>(packetToSend, ipEndPoint);
                 }
                 catch (SocketException) { /* Ignore any socket exceptions */ }
             }
@@ -477,16 +487,17 @@ namespace NetworkCommsDotNet.Connections.UDP
                 return IPAddress.IPv6Any;
             else
                 throw new CommunicationException("Attempting to send UDP packet over unsupported network address family: " + targetAddressFamily.ToString());
-
         }
-        #endregion
+
+        #endregion Static SendObject
 
         #region Depreciated
+
         /// <summary>
         /// Listen for incoming UDP packets on all allowed local IP's on default port.
         /// </summary>
-        /// <param name="useRandomPortFailOver">If true and the default local port is not available will select one at random. If false 
-        /// and a port is unavailable listening will not be enabled on that adaptor unless NetworkComms.ListenOnAllAllowedInterfaces is 
+        /// <param name="useRandomPortFailOver">If true and the default local port is not available will select one at random. If false
+        /// and a port is unavailable listening will not be enabled on that adaptor unless NetworkComms.ListenOnAllAllowedInterfaces is
         /// false in which case a <see cref="CommsSetupShutdownException"/> will be thrown instead.</param>
         [Obsolete("Depreciated, please use Connection.StartListening.")]
         public static void StartListening(bool useRandomPortFailOver = false)
@@ -503,7 +514,6 @@ namespace NetworkCommsDotNet.Connections.UDP
                     }
                     catch (CommsSetupShutdownException)
                     {
-
                     }
                 }
             }
@@ -516,10 +526,10 @@ namespace NetworkCommsDotNet.Connections.UDP
         }
 
         /// <summary>
-        /// Listen for incoming UDP packets on provided list of <see cref="IPEndPoint"/>. 
+        /// Listen for incoming UDP packets on provided list of <see cref="IPEndPoint"/>.
         /// </summary>
         /// <param name="localEndPoints">The localEndPoints to listen for packets on.</param>
-        /// <param name="useRandomPortFailOver">If true and the requested local port is not available will select one at random. If false 
+        /// <param name="useRandomPortFailOver">If true and the requested local port is not available will select one at random. If false
         /// and a port is unavailable will throw <see cref="CommsSetupShutdownException"/></param>
         [Obsolete("Depreciated, please use Connection.StartListening.")]
         public static void StartListening(List<IPEndPoint> localEndPoints, bool useRandomPortFailOver = true)
@@ -540,10 +550,10 @@ namespace NetworkCommsDotNet.Connections.UDP
         }
 
         /// <summary>
-        /// Listen for incoming UDP packets on specified <see cref="IPEndPoint"/>. 
+        /// Listen for incoming UDP packets on specified <see cref="IPEndPoint"/>.
         /// </summary>
         /// <param name="newLocalEndPoint">The localEndPoint to listen for packets on</param>
-        /// <param name="useRandomPortFailOver">If true and the requested local port is not available will select one at random. 
+        /// <param name="useRandomPortFailOver">If true and the requested local port is not available will select one at random.
         /// If false and a port is unavailable will throw <see cref="CommsSetupShutdownException"/></param>
         /// <param name="allowDiscoverable">Determines if the newly created <see cref="ConnectionListenerBase"/> will be discoverable if <see cref="Tools.PeerDiscovery"/> is enabled.</param>
         [Obsolete("Depreciated, please use Connection.StartListening.")]
@@ -568,7 +578,7 @@ namespace NetworkCommsDotNet.Connections.UDP
         }
 
         /// <summary>
-        /// Returns an <see cref="IPEndPoint"/> corresponding to a possible local listener on the provided <see cref="IPAddress"/>. 
+        /// Returns an <see cref="IPEndPoint"/> corresponding to a possible local listener on the provided <see cref="IPAddress"/>.
         /// If not listening on provided <see cref="IPAddress"/> returns null.
         /// </summary>
         /// <param name="ipAddress">The <see cref="IPAddress"/> to match to a possible local listener</param>
@@ -592,6 +602,7 @@ namespace NetworkCommsDotNet.Connections.UDP
         {
             return Connection.Listening(ConnectionType.UDP);
         }
-        #endregion
+
+        #endregion Depreciated
     }
 }

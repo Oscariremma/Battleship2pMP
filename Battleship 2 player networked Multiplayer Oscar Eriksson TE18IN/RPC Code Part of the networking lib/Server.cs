@@ -35,8 +35,8 @@ namespace RemoteProcedureCalls
     /// </summary>
     public static class Server
     {
-
         public static Connection serverConnection;
+
         private class RPCClientSubscription
         {
             public Connection Connection { get; private set; }

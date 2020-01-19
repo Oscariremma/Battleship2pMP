@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,30 +6,25 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Net;
-using System.Threading;
 using NetworkCommsDotNet.DPSBase;
 using NetworkCommsDotNet.Tools;
-using System.IO;
+using System;
+using System.Collections.Generic;
 
 #if NETFX_CORE
 using NetworkCommsDotNet.Tools.XPlatformHelper;
 #else
-using System.Net.Sockets;
 #endif
 
 namespace NetworkCommsDotNet.Connections
@@ -37,7 +32,7 @@ namespace NetworkCommsDotNet.Connections
     public abstract partial class Connection
     {
         /// <summary>
-        /// Thread safety locker which is used when accessing <see cref="incomingPacketHandlers"/>, 
+        /// Thread safety locker which is used when accessing <see cref="incomingPacketHandlers"/>,
         /// <see cref="incomingPacketUnwrappers"/> and <see cref="ConnectionSpecificShutdownDelegate"/>.
         /// </summary>
         private object _syncRoot = new object();
@@ -70,7 +65,7 @@ namespace NetworkCommsDotNet.Connections
         private Dictionary<string, List<IPacketTypeHandlerDelegateWrapper>> incomingPacketHandlers = new Dictionary<string, List<IPacketTypeHandlerDelegateWrapper>>();
 
         /// <summary>
-        /// Returns the <see cref="SendReceiveOptions"/> to be used for the provided <see cref="PacketHeader"/>. Ensures there 
+        /// Returns the <see cref="SendReceiveOptions"/> to be used for the provided <see cref="PacketHeader"/>. Ensures there
         /// will not be a serializer or data processor clash for different delegate levels.
         /// </summary>
         /// <param name="header">The <see cref="PacketHeader"/> options are desired.</param>
@@ -98,7 +93,7 @@ namespace NetworkCommsDotNet.Connections
 
                 //We need to combine options in this case using the connection specific option in preference if both are present
                 var combinedOptions = new Dictionary<string, string>(globalOptions.Options);
-                
+
                 foreach (var pair in connectionSpecificOptions.Options)
                     combinedOptions[pair.Key] = pair.Value;
 
@@ -160,7 +155,7 @@ namespace NetworkCommsDotNet.Connections
             if (incomingPacketHandlers.TryGetValue(packetTypeStr, out handlers) && handlers != null)
                 return new List<IPacketTypeHandlerDelegateWrapper>(handlers);
             else
-                return null; 
+                return null;
         }
 
         /// <summary>
@@ -281,7 +276,7 @@ namespace NetworkCommsDotNet.Connections
                         throw new PacketHandlerException("The provided SendReceiveOptions are not compatible with existing SendReceiveOptions already specified for this packetTypeStr.");
                 }
                 else
-                    incomingPacketUnwrappers.Add(packetTypeStr, new PacketTypeUnwrapper(packetTypeStr, options));             
+                    incomingPacketUnwrappers.Add(packetTypeStr, new PacketTypeUnwrapper(packetTypeStr, options));
 
                 //Ad the handler to the list
                 if (incomingPacketHandlers.ContainsKey(packetTypeStr))
@@ -297,7 +292,7 @@ namespace NetworkCommsDotNet.Connections
                             break;
                         }
                     }
-                        
+
                     if (delegateAlreadyExists)
                         throw new PacketHandlerException("This specific packet handler delegate already exists for the provided packetTypeStr.");
 
@@ -376,7 +371,7 @@ namespace NetworkCommsDotNet.Connections
         /// <param name="packetHandlerDelgatePointer">The delegate to be executed when an unmanaged packet is received</param>
         public void AppendIncomingUnmanagedPacketHandler(NetworkComms.PacketHandlerCallBackDelegate<byte[]> packetHandlerDelgatePointer)
         {
-            AppendIncomingPacketHandler<byte[]>(Enum.GetName(typeof(ReservedPacketType), ReservedPacketType.Unmanaged),packetHandlerDelgatePointer,new SendReceiveOptions<NullSerializer>());
+            AppendIncomingPacketHandler<byte[]>(Enum.GetName(typeof(ReservedPacketType), ReservedPacketType.Unmanaged), packetHandlerDelgatePointer, new SendReceiveOptions<NullSerializer>());
         }
 
         /// <summary>

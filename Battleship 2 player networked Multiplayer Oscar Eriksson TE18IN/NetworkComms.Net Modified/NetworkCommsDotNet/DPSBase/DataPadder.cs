@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,22 +6,21 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
+using NetworkCommsDotNet.Tools;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using NetworkCommsDotNet.Tools;
 
 #if NETFX_CORE
 using Windows.Security.Cryptography;
@@ -50,6 +49,7 @@ namespace NetworkCommsDotNet.DPSBase
             /// Pads with all zeros (fastest)
             /// </summary>
             Zero,
+
             /// <summary>
             /// Pads with cryptographically secure random numbers (slower but potentially slightly more secure)
             /// </summary>
@@ -63,11 +63,15 @@ namespace NetworkCommsDotNet.DPSBase
 #if ANDROID || iOS
         [Preserve]
 #endif
-        private DataPadder() { }
+
+        private DataPadder()
+        {
+        }
 
 #if !NETFX_CORE
-        System.Security.Cryptography.RandomNumberGenerator rand = new System.Security.Cryptography.RNGCryptoServiceProvider();
+        private System.Security.Cryptography.RandomNumberGenerator rand = new System.Security.Cryptography.RNGCryptoServiceProvider();
 #endif
+
         /// <inheritdoc />
         public override void ForwardProcessDataStream(Stream inStream, Stream outStream, Dictionary<string, string> options, out long writtenBytes)
         {
@@ -79,7 +83,7 @@ namespace NetworkCommsDotNet.DPSBase
             int paddingSize;
             DataPaddingType padType;
             bool padException;
-                        
+
             if (!int.TryParse(options[paddedSizeOptionName], out paddingSize) || !bool.TryParse(options[padExceptionOptionName], out padException))
                 throw new ArgumentException("Options dictionary contained invalid options for DataPadder", "options");
 
@@ -98,7 +102,7 @@ namespace NetworkCommsDotNet.DPSBase
             if (padType == DataPaddingType.Random)
             {
 #if NETFX_CORE
-                CryptographicBuffer.CopyToByteArray(CryptographicBuffer.GenerateRandom((uint)paddingSize), out padData);                
+                CryptographicBuffer.CopyToByteArray(CryptographicBuffer.GenerateRandom((uint)paddingSize), out padData);
 #else
                 padData = new byte[paddingSize];
                 rand.GetBytes(padData);
@@ -131,10 +135,10 @@ namespace NetworkCommsDotNet.DPSBase
         }
 
         /// <summary>
-        /// Adds the necessary options for padding 
+        /// Adds the necessary options for padding
         /// </summary>
         /// <param name="options">The Dictionary to add the options to</param>
-        /// <param name="paddedSize">The size that the data section of the packet should be padded to. If throwExceptionOnNotEnoughPadding is true this must be at least the original data packet size plus four bytes</param>        
+        /// <param name="paddedSize">The size that the data section of the packet should be padded to. If throwExceptionOnNotEnoughPadding is true this must be at least the original data packet size plus four bytes</param>
         /// <param name="paddingType">Determines whether the data is padded with zeros or random data</param>
         /// <param name="throwExceptionOnNotEnoughPadding">If true an <see cref="ArgumentException"/> is thrown if paddingSize is smaller than the original data packet size plus four bytes</param>
         public static void AddPaddingOptions(Dictionary<string, string> options, int paddedSize, DataPaddingType paddingType = DataPaddingType.Zero, bool throwExceptionOnNotEnoughPadding = true)

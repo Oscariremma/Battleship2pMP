@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using System.Threading;
 
 #if NETFX_CORE
@@ -19,7 +17,7 @@ namespace NetworkCommsDotNet.Tools
         /// <summary>
         /// Locker for log methods which ensures threadSafe save outs.
         /// </summary>
-        static object errorLocker = new object();
+        private static object errorLocker = new object();
 
         /// <summary>
         /// Appends the provided logString to end of fileName.txt. If the file does not exist it will be created.
@@ -46,7 +44,7 @@ namespace NetworkCommsDotNet.Tools
 
                     writeTask.ConfigureAwait(false);
                     writeTask.Start();
-                    writeTask.Wait(); 
+                    writeTask.Wait();
 #else
                     using (System.IO.StreamWriter sw = new System.IO.StreamWriter(fileName + ".txt", true))
                         sw.WriteLine(logString);
@@ -123,7 +121,7 @@ namespace NetworkCommsDotNet.Tools
 
                     writeTask.ConfigureAwait(false);
                     writeTask.Start();
-                    writeTask.Wait(); 
+                    writeTask.Wait();
 #else
                     using (System.IO.StreamWriter sw = new System.IO.StreamWriter(entireFileName + ".txt", false))
                     {

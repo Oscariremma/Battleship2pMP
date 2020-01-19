@@ -1,4 +1,4 @@
-﻿// 
+﻿//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -6,29 +6,29 @@
 // to you under the Apache License, Version 2.0 (the
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
-// 
+//
 //   http://www.apache.org/licenses/LICENSE-2.0
-// 
+//
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
 // "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-// 
+//
 
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Net.NetworkInformation;
-using NetworkCommsDotNet.DPSBase;
 
 #if NETFX_CORE
 using NetworkCommsDotNet.Tools.XPlatformHelper;
 #else
+
 using System.Net.Sockets;
+
 #endif
 
 namespace NetworkCommsDotNet.Tools
@@ -47,15 +47,16 @@ namespace NetworkCommsDotNet.Tools
         {
             if (localIPAddress.AddressFamily != AddressFamily.InterNetwork)
                 throw new ArgumentException("The method is for IPv4 addresses only.");
-            
+
 #if WINDOWS_PHONE || NETFX_CORE
             throw new NotImplementedException("This method has not yet been implemented for WP8 and WinRT.");
 #else
             //Determine the correct subnet address
             //We initialise using a standard class C network subnet mask
-            IPAddress subnetAddress = new IPAddress(new byte[] { 255, 255, 255, 0});
+            IPAddress subnetAddress = new IPAddress(new byte[] { 255, 255, 255, 0 });
 
             #region Determine Correct SubnetMask
+
             try
             {
                 //Look at all possible addresses
@@ -80,8 +81,9 @@ namespace NetworkCommsDotNet.Tools
                 subnetAddress = new IPAddress(new byte[] { 255, 255, 255, 0 });
             }
 
-            Exit:
-            #endregion
+        Exit:
+
+            #endregion Determine Correct SubnetMask
 
             byte[] broadcastBytes = localIPAddress.GetAddressBytes();
             byte[] subnetBytes = subnetAddress.GetAddressBytes();
@@ -115,9 +117,9 @@ namespace NetworkCommsDotNet.Tools
 
             return new IPEndPoint(ipAddress, serverPort);
         }
-        
+
         /// <summary>
-        /// Determines the most appropriate local end point to contact the provided remote end point. 
+        /// Determines the most appropriate local end point to contact the provided remote end point.
         /// Testing shows this method takes on average 1.6ms to return.
         /// </summary>
         /// <param name="remoteIPEndPoint">The remote end point</param>
@@ -133,7 +135,7 @@ namespace NetworkCommsDotNet.Tools
                 var enumerator = t.Result.GetEnumerator();
                 enumerator.MoveNext();
 
-                var endpointPair = enumerator.Current;                
+                var endpointPair = enumerator.Current;
                 return new IPEndPoint(IPAddress.Parse(endpointPair.LocalHostName.DisplayName.ToString()), int.Parse(endpointPair.LocalServiceName));
             }
             else
@@ -152,16 +154,18 @@ namespace NetworkCommsDotNet.Tools
         }
 
 #if !WINDOWS_PHONE && !NETFX_CORE
+
         [DllImport("iphlpapi.dll", CharSet = CharSet.Auto)]
-        static extern int GetBestInterface(UInt32 DestAddr, out UInt32 BestIfIndex);
+        private static extern int GetBestInterface(UInt32 DestAddr, out UInt32 BestIfIndex);
+
 #endif
 
         /// <summary>
-        /// Depreciated - . Attempts to guess the best local <see cref="IPAddress"/> of this machine for accessing 
-        /// the provided target <see cref="IPAddress"/>. using the Windows API, to provided targets. 
+        /// Depreciated - . Attempts to guess the best local <see cref="IPAddress"/> of this machine for accessing
+        /// the provided target <see cref="IPAddress"/>. using the Windows API, to provided targets.
         /// This method is only supported in a Windows environment.
         /// </summary>
-        /// <param name="targetIPAddress">The target IP which should be used to determine the best 
+        /// <param name="targetIPAddress">The target IP which should be used to determine the best
         /// local address. e.g. Either a local network or public IP address.</param>
         /// <returns>Local <see cref="IPAddress"/> which is best used to contact that provided target.</returns>
         [Obsolete("Method is depreciated, please use BestLocalEndPoint(IPEndPoint) instead")]
@@ -215,7 +219,6 @@ namespace NetworkCommsDotNet.Tools
             }
             catch (Exception)
             {
-
             }
 
             return null;
@@ -224,13 +227,13 @@ namespace NetworkCommsDotNet.Tools
     }
 
     /// <summary>
-    /// A class that encapsulates an IPv4 or IPv6 range. 
+    /// A class that encapsulates an IPv4 or IPv6 range.
     /// Used for checking if an IPAddress is within an IPRange.
     /// </summary>
     public class IPRange
     {
         /// <summary>
-        /// Number of most significant bits used for network-identifying portion of address. 
+        /// Number of most significant bits used for network-identifying portion of address.
         /// The remaining bits specify the host identifier.
         /// </summary>
         private int numAddressBits;
@@ -243,11 +246,11 @@ namespace NetworkCommsDotNet.Tools
         /// <summary>
         /// IPRanges associated with auto assigned addresses
         /// </summary>
-        static List<IPRange> AutoAssignRanges { get; set; }
-        
+        private static List<IPRange> AutoAssignRanges { get; set; }
+
         static IPRange()
         {
-            //We want to ignore IP's that have been auto assigned                    
+            //We want to ignore IP's that have been auto assigned
             //169.254.0.0
             IPAddress autoAssignSubnetv4 = new IPAddress(new byte[] { 169, 254, 0, 0 });
             //255.255.0.0
@@ -356,7 +359,7 @@ namespace NetworkCommsDotNet.Tools
         public bool Contains(string ipAddressStr)
         {
             if (ipAddressStr == null) throw new ArgumentNullException("ipAddress");
-            
+
             IPAddress ipAddress;
             if (!IPAddress.TryParse(ipAddressStr, out ipAddress))
                 throw new FormatException("Failed to parse ipAddressStr to IPAddress");
@@ -375,7 +378,7 @@ namespace NetworkCommsDotNet.Tools
 
             //Check for the easy scenario when IPv4 != IPv6
             if (addressBytes.Length != ipAddressBytes.Length)
-                return false; 
+                return false;
 
             int currentByteIndex = 0;
             int currentAddressBit;
@@ -419,9 +422,9 @@ namespace NetworkCommsDotNet.Tools
             byte[] firstAddressBytes = new byte[addressBytes.Length];
             byte[] lastAddressBytes = new byte[addressBytes.Length];
 
-            for(int i=0; i<addressBytes.Length; i++)
+            for (int i = 0; i < addressBytes.Length; i++)
             {
-                if (numAddressBits >= (i+1)*8)
+                if (numAddressBits >= (i + 1) * 8)
                 {
                     firstAddressBytes[i] = addressBytes[i];
                     lastAddressBytes[i] = addressBytes[i];
