@@ -32,7 +32,7 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.lbl_Title = new System.Windows.Forms.Label();
             this.tbx_IP = new System.Windows.Forms.TextBox();
-            this.btn_Join = new System.Windows.Forms.Button();
+            this.Btn_Join = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -79,21 +79,20 @@
             this.tbx_IP.Name = "tbx_IP";
             this.tbx_IP.Size = new System.Drawing.Size(169, 23);
             this.tbx_IP.TabIndex = 9;
-            this.tbx_IP.Text = "0";
             // 
-            // btn_Join
+            // Btn_Join
             // 
-            this.btn_Join.BackColor = System.Drawing.Color.Aqua;
-            this.btn_Join.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.btn_Join.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn_Join.Location = new System.Drawing.Point(127, 368);
-            this.btn_Join.Name = "btn_Join";
-            this.btn_Join.Size = new System.Drawing.Size(203, 54);
-            this.btn_Join.TabIndex = 10;
-            this.btn_Join.Text = "Join Game";
-            this.btn_Join.UseCompatibleTextRendering = true;
-            this.btn_Join.UseVisualStyleBackColor = false;
-            this.btn_Join.Click += new System.EventHandler(this.Btn_Join_Click);
+            this.Btn_Join.BackColor = System.Drawing.Color.Aqua;
+            this.Btn_Join.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.Btn_Join.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Btn_Join.Location = new System.Drawing.Point(127, 368);
+            this.Btn_Join.Name = "Btn_Join";
+            this.Btn_Join.Size = new System.Drawing.Size(203, 54);
+            this.Btn_Join.TabIndex = 10;
+            this.Btn_Join.Text = "Join Game";
+            this.Btn_Join.UseCompatibleTextRendering = true;
+            this.Btn_Join.UseVisualStyleBackColor = false;
+            this.Btn_Join.Click += new System.EventHandler(this.Btn_Join_Click);
             // 
             // MDI_Join
             // 
@@ -101,7 +100,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Highlight;
             this.ClientSize = new System.Drawing.Size(1060, 660);
-            this.Controls.Add(this.btn_Join);
+            this.Controls.Add(this.Btn_Join);
             this.Controls.Add(this.tbx_IP);
             this.Controls.Add(this.lbl_Title);
             this.Controls.Add(this.pictureBox1);
@@ -121,6 +120,6 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label lbl_Title;
         private System.Windows.Forms.TextBox tbx_IP;
-        private System.Windows.Forms.Button btn_Join;
+        private System.Windows.Forms.Button Btn_Join;
     }
 }

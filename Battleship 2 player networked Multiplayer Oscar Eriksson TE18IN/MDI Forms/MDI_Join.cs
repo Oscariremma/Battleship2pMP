@@ -20,13 +20,14 @@ namespace Battleship2pMP.MDI_Forms
             //Set fonts to memory font loaded in main
             lbl_Title.SetMilitaryFont();
             btn_Back_To_MainMenu.SetMilitaryFont();
-            btn_Join.SetMilitaryFont();
+            Btn_Join.SetMilitaryFont();
 
             pictureBox1.BackgroundImage = Program.MainMenuImg;
 
             DJoinResult = new DelJoinResult(JoinResult);
 
             tbx_IP.Text = Properties.Settings.Default.LastIP;
+            tbx_IP.KeyDown += new KeyEventHandler(Tbx_IP_KeyDown);
         }
 
         private void Btn_Back_To_MainMenu_Click(object sender, EventArgs e)
@@ -54,10 +55,18 @@ namespace Battleship2pMP.MDI_Forms
             Thread thread = new Thread(() => Networking.NetworkClient.ConnectToServer(new ConnectionInfo(iPEndPoint), this));
             thread.Start();
             tbx_IP.Enabled = false;
-            btn_Join.Enabled = false;
-            btn_Join.Text = "Connecting...";
+            Btn_Join.Enabled = false;
+            Btn_Join.Text = "Connecting...";
             Properties.Settings.Default.LastIP = tbx_IP.Text;
             Properties.Settings.Default.Save();
+        }
+
+        void Tbx_IP_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter && Btn_Join.Enabled)
+            {
+                Btn_Join_Click(null, null);
+            }
         }
 
         public void JoinResult(bool ConnectionSuccessful)
@@ -69,8 +78,8 @@ namespace Battleship2pMP.MDI_Forms
             else
             {
                 tbx_IP.Enabled = true;
-                btn_Join.Enabled = true;
-                btn_Join.Text = "Join Game";
+                Btn_Join.Enabled = true;
+                Btn_Join.Text = "Join Game";
                 MessageBox.Show("Failed to connect to server, is the server running and reachable?", "Failed to connect!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
