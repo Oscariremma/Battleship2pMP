@@ -937,11 +937,12 @@
             this.lbl_OpponentsTurn.AutoSize = true;
             this.lbl_OpponentsTurn.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_OpponentsTurn.ForeColor = System.Drawing.Color.White;
-            this.lbl_OpponentsTurn.Location = new System.Drawing.Point(35, 30);
+            this.lbl_OpponentsTurn.Location = new System.Drawing.Point(27, 30);
             this.lbl_OpponentsTurn.Name = "lbl_OpponentsTurn";
-            this.lbl_OpponentsTurn.Size = new System.Drawing.Size(167, 25);
+            this.lbl_OpponentsTurn.Size = new System.Drawing.Size(164, 30);
             this.lbl_OpponentsTurn.TabIndex = 8;
             this.lbl_OpponentsTurn.Text = "Opponents Turn";
+            this.lbl_OpponentsTurn.UseCompatibleTextRendering = true;
             this.lbl_OpponentsTurn.Visible = false;
             // 
             // lbl_YourTurn
@@ -949,11 +950,12 @@
             this.lbl_YourTurn.AutoSize = true;
             this.lbl_YourTurn.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbl_YourTurn.ForeColor = System.Drawing.Color.White;
-            this.lbl_YourTurn.Location = new System.Drawing.Point(68, 28);
+            this.lbl_YourTurn.Location = new System.Drawing.Point(64, 28);
             this.lbl_YourTurn.Name = "lbl_YourTurn";
-            this.lbl_YourTurn.Size = new System.Drawing.Size(108, 25);
+            this.lbl_YourTurn.Size = new System.Drawing.Size(103, 30);
             this.lbl_YourTurn.TabIndex = 7;
             this.lbl_YourTurn.Text = "Your Turn";
+            this.lbl_YourTurn.UseCompatibleTextRendering = true;
             this.lbl_YourTurn.Visible = false;
             // 
             // pnl_PlaceShips

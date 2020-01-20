@@ -61,6 +61,7 @@ namespace Battleship2pMP
             void Rematch();
 
             void LeaveGame();
+
         }
 
         // The clients RPC interface with functions called from the server
@@ -94,6 +95,7 @@ namespace Battleship2pMP
             void HostLeftGame();
 
             void OpponentWantsRematch();
+
         }
 
         // Derived class of the server interface containing the actual functions
@@ -122,13 +124,12 @@ namespace Battleship2pMP
 
             public void FireShots(byte[] TargetsBinaryArray, byte[] ScreenCordTargets)
             {
-                Console.WriteLine(TargetsBinaryArray.Length);
                 NetworkServer.StaticgameLogic.FireShots(GetObjectFromBinaryArray<System.Drawing.Point[]>(TargetsBinaryArray), GetObjectFromBinaryArray<System.Drawing.Point[]>(ScreenCordTargets), false);
             }
 
             public void Surrender()
             {
-                Task.Run(() => NetworkServer.StaticgameLogic.Surrender(false));
+                NetworkServer.StaticgameLogic.Surrender(false);
             }
 
             public void Rematch()
@@ -145,6 +146,7 @@ namespace Battleship2pMP
         // Derived class of the client interface containing the actual functions
         private class ClientInterfaceClass : IClientInterface
         {
+
             public void GameStarting(byte[] ClientGameBoardTilesBinary, byte[] HostGameBoardTilesBinary, Ships.ShipsLeft ShipsToPlace, int ShotsFirstTurn, int ShotsPerTurn)
             {
                 IsServer = false;

@@ -111,6 +111,8 @@ namespace Battleship2pMP.MDI_Forms
             Btn_LeaveGame.SetMilitaryFont();
             lbl_Victory.SetMilitaryFont();
             lbl_Defeat.SetMilitaryFont();
+            lbl_OpponentsTurn.SetMilitaryFont();
+            lbl_YourTurn.SetMilitaryFont();
 
             DUpdateGameBoard = new DelUpdateGameBoard(UpdateGameBoard);
             DBeginTurn = new DelBeginTurn(BeginTurn);

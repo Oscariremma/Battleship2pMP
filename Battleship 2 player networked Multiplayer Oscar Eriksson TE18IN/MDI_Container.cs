@@ -36,6 +36,7 @@ namespace Battleship2pMP
             DSwitchMDI = new DelSwitchMDI(SwitchMDI);
             DLostConnection = new DelLostConnection(LostConnection);
             DLeaveGame = new DelLeaveGame(LeaveGame);
+            this.FormClosing += new FormClosingEventHandler(GameClosing);
         }
 
         private void MDI_Container_Load(object sender, EventArgs e)
@@ -141,6 +142,66 @@ namespace Battleship2pMP
             staticMdi_Container.mdi_Game = null;
             Networking.ShutdownAllNetworking();
         }
+
+        void GameClosing(object sender, FormClosingEventArgs formClosingEventArgs)
+        {
+            if(CurrentMDI.GetType() == typeof(MDI_Game))
+            {
+                if (GameIsFinished)
+                {
+                    if(MessageBox.Show("Are you sure you want to quit the game?","Quit?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        if (!OpponentHasLeftGame)
+                        {
+                            if (Networking.IsServer)
+                            {
+                                Networking.NetworkServer.StaticgameLogic.LeaveGame(true);
+                                Networking.ShutdownAllNetworking();
+                            }
+                            else
+                            {
+                                Networking.NetworkClient.RemoteServerInterface.LeaveGame();
+                                Networking.ShutdownAllNetworking();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        formClosingEventArgs.Cancel = true;
+                    }
+                }
+                else
+                {
+                    if (MessageBox.Show("Are you sure you want to surrender and quit the game?", "Surrender and Quit?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        if (!OpponentHasLeftGame)
+                        {
+                            if (Networking.IsServer)
+                            {
+                                Networking.NetworkServer.StaticgameLogic.Surrender(true);
+                                Networking.NetworkServer.StaticgameLogic.LeaveGame(true);
+                                Networking.ShutdownAllNetworking();
+                            }
+                            else
+                            {
+                                Networking.NetworkClient.RemoteServerInterface.Surrender();
+                                Networking.NetworkClient.RemoteServerInterface.LeaveGame();
+                                Networking.ShutdownAllNetworking();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        formClosingEventArgs.Cancel = true;
+                    }
+                }
+            }
+            else
+            {
+                Networking.ShutdownAllNetworking();
+            }
+        }
+
     }
 
     public enum MDI_Form_Enum
