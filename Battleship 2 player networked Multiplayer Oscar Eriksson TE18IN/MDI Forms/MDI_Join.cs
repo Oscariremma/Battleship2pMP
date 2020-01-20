@@ -73,6 +73,7 @@ namespace Battleship2pMP.MDI_Forms
         {
             if (ConnectionSuccessful)
             {
+                Networking.NetworkClient.RemoteServerInterface.Test(new Networking.NetworkSprite(new MDI_Game.Sprite(Ships.ShipEnum.Battleship,ShipOrientation.Down, new System.Drawing.Point(1,2), new System.Drawing.Point[2] )));
                 Networking.NetworkClient.RemoteServerInterface.StartGame();
             }
             else

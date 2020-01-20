@@ -430,7 +430,7 @@ namespace Battleship2pMP.MDI_Forms
                             }
                             else
                             {
-                                Networking.NetworkClient.RemoteServerInterface.FireShots(GetBinaryArray(CordTargets.ToArray(), false), GetBinaryArray(Targets.ToArray()));
+                                Networking.NetworkClient.RemoteServerInterface.FireShots(CordTargets.ToArray(), Targets.ToArray());
                             }
 
                             FirstTurn = false;
@@ -804,7 +804,7 @@ namespace Battleship2pMP.MDI_Forms
                     networkSprites.Add(new Networking.NetworkSprite(sprite, false));
                 }
 
-                Networking.NetworkClient.RemoteServerInterface.DonePlacingShips(GetBinaryArray(networkSprites.ToArray(), true), GetBinaryArray(localGameBoardTiles, true));
+                Networking.NetworkClient.RemoteServerInterface.DonePlacingShips(networkSprites.ToArray(), GetBinaryArray(localGameBoardTiles, true));
                 lbl_Waiting_For_Opponent.Visible = true;
             }
         }

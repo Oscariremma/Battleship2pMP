@@ -39,31 +39,35 @@ namespace Battleship2pMP
             // Add the memory font to the private font collection
             pfc.AddMemoryFont(fontDataPointer, fontByteLength);
 
-            //Load the main menu image in to ram
+            //Load a copy of reused images in to ram
             MainMenuImg = (Image)Properties.Resources.USS_Iowa_BB61_broadside_USN.Clone();
-            //Load the game background image in to ram
             GameBackground = (Image)Properties.Resources.Water_texture_1380389_Nevit.Clone();
-
             Green_Reticle = (Image)Properties.Resources.Green_Reticle.Clone();
             Red_Reticle = (Image)Properties.Resources.Red_Reticle.Clone();
-
             HitFire = (Image)Properties.Resources.HitFire.Clone();
             MissWaterFoam = (Image)Properties.Resources.Miss_WaterFoam.Clone();
             Water = (Image)Properties.Resources.Water.Clone();
 
             //Load all ship sprites in to memory
             Ships.Ship.LoadShips();
+            //Add ProtoBuf Serialization support for the Point struct
 
+            ProtoBuf.Meta.RuntimeTypeModel.Default[typeof(Point)].Add("X").Add("Y");
+
+            //Start the Form
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new MDI_Container());
 
+            //Close all networking
             Networking.ShutdownAllNetworking();
+
         }
     }
 
     public static class Extensions
     {
+        //Extension methods that set the font of a button/label to the custom military style font loaded in ram
         public static void SetMilitaryFont(this Button button)
         {
             button.Font = new Font(Program.pfc.Families[0], button.Font.Size);
@@ -74,4 +78,5 @@ namespace Battleship2pMP
             button.Font = new Font(Program.pfc.Families[0], button.Font.Size);
         }
     }
+
 }

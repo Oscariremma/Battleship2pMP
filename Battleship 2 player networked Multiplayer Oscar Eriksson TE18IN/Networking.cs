@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ProtoBuf;
 using static LibOscar.Methods;
 
 namespace Battleship2pMP
@@ -16,14 +17,20 @@ namespace Battleship2pMP
     {
         public static bool IsServer;
 
-        [Serializable]
+        [ProtoContract(SkipConstructor = true, ImplicitFields = ImplicitFields.AllFields)]
         public class NetworkSprite
         {
+            [ProtoMember(1)]
             public Ships.ShipEnum ShipType;
+            [ProtoMember(2)]
             public System.Drawing.Point Location;
+            [ProtoMember(3)]
             public System.Drawing.Point[] CoveredTiles;
+            [ProtoMember(4)]
             public ShipOrientation ShipOrientation;
+            [ProtoMember(5)]
             public bool Enabled;
+            [ProtoMember(6)]
             public bool ShipDestroyed;
 
             public NetworkSprite(MDI_Game.Sprite sprite)
@@ -52,13 +59,15 @@ namespace Battleship2pMP
         {
             void StartGame();
 
-            void DonePlacingShips(byte[] ClientNetworkSprites, byte[] ClientGameBoard);
+            void DonePlacingShips(NetworkSprite[] ClientNetworkSprites, byte[] ClientGameBoard);
 
-            void FireShots(byte[] TargetsBinaryArray, byte[] ScreenCordTargets);
+            void FireShots(System.Drawing.Point[] Targets, System.Drawing.Point[] ScreenCordTargets);
 
             void Surrender();
 
             void Rematch();
+
+            void Test(NetworkSprite test);
 
             void LeaveGame();
 
@@ -77,18 +86,18 @@ namespace Battleship2pMP
             /// <summary>
             /// Updates the map of the hosts game board including sprite table on the client instance
             /// </summary>
-            void UpdateHostGameBoard(byte[] HostGameBoardBinaryArray, byte[] HostNetworkSpriteTableBinaryArray);
+            void UpdateHostGameBoard(byte[] HostGameBoardBinaryArray, NetworkSprite[] HostNetworkSpriteTable);
 
             /// <summary>
             /// Updates the map of the clients game board including sprite table on the client instance
             /// </summary>
-            void UpdateClientGameBoard(byte[] HostGameBoardBinaryArray, byte[] HostNetworkSpriteTableBinaryArray);
+            void UpdateClientGameBoard(byte[] HostGameBoardBinaryArray, NetworkSprite[] HostNetworkSpriteTable);
 
             void InvalidateGameBoard();
 
             void UpdateScoreboard(Ships.ShipsLeft LocalShipsLeft, Ships.ShipsLeft OpponentShipsLeft);
 
-            void SetTargetsToDisplay(byte[] ScreenCordTargetsBinaryArray);
+            void SetTargetsToDisplay(System.Drawing.Point[] ScreenCordTargets);
 
             void Victory(bool ClientWon, int ClientsShots, int ClientsHits, int HostsShots, int HostsHits, double Turns, bool OpponentSurrenderd = false);
 
@@ -101,14 +110,19 @@ namespace Battleship2pMP
         // Derived class of the server interface containing the actual functions
         private class ServerInterfaceClass : IServerInterface
         {
+            public void Test(NetworkSprite test)
+            {
+                Console.WriteLine(test.Location);
+            }
+
             public void StartGame()
             {
                 Task.Run(NetworkServer.InitializeGame);
             }
 
-            public void DonePlacingShips(byte[] ClientNetworkSprites, byte[] ClientGameBoardByteAray)
+            public void DonePlacingShips(NetworkSprite[] ClientNetworkSprites, byte[] ClientGameBoardByteAray)
             {
-                NetworkServer.StaticgameLogic.ClientSpriteTable = GetObjectFromBinaryArray<NetworkSprite[]>(ClientNetworkSprites, true);
+                NetworkServer.StaticgameLogic.ClientSpriteTable = ClientNetworkSprites;
 
                 NetworkServer.StaticgameLogic.ClientGameBoard = GetObjectFromBinaryArray<GameLogic.GameBoardTile[,]>(ClientGameBoardByteAray, true);
 
@@ -122,9 +136,9 @@ namespace Battleship2pMP
                 }
             }
 
-            public void FireShots(byte[] TargetsBinaryArray, byte[] ScreenCordTargets)
+            public void FireShots(System.Drawing.Point[] Targets, System.Drawing.Point[] ScreenCordTargets)
             {
-                NetworkServer.StaticgameLogic.FireShots(GetObjectFromBinaryArray<System.Drawing.Point[]>(TargetsBinaryArray), GetObjectFromBinaryArray<System.Drawing.Point[]>(ScreenCordTargets), false);
+                NetworkServer.StaticgameLogic.FireShots(Targets, ScreenCordTargets, false);
             }
 
             public void Surrender()
@@ -167,11 +181,11 @@ namespace Battleship2pMP
             /// <summary>
             /// Updates the map of the hosts game board including sprite table on the client instance
             /// </summary>
-            public void UpdateHostGameBoard(byte[] HostGameBoardBinaryArray, byte[] HostNetworkSpriteTableBinaryArray)
+            public void UpdateHostGameBoard(byte[] HostGameBoardBinaryArray, NetworkSprite[] HostNetworkSpriteTable)
             {
                 MDI_Game.staticGame.remoteGameBoardTiles = GetObjectFromBinaryArray<GameLogic.GameBoardTile[,]>(HostGameBoardBinaryArray, true);
                 List<MDI_Game.Sprite> hostSpriteTable = new List<MDI_Game.Sprite>();
-                foreach (NetworkSprite networkSprite in GetObjectFromBinaryArray<NetworkSprite[]>(HostNetworkSpriteTableBinaryArray, true))
+                foreach (NetworkSprite networkSprite in HostNetworkSpriteTable)
                 {
                     hostSpriteTable.Add(new MDI_Game.Sprite(networkSprite.ShipType, networkSprite.ShipOrientation, networkSprite.Location, networkSprite.CoveredTiles, networkSprite.Enabled, networkSprite.ShipDestroyed));
                 }
@@ -181,11 +195,11 @@ namespace Battleship2pMP
             /// <summary>
             /// Updates the map of the clients game board including sprite table on the client instance
             /// </summary>
-            public void UpdateClientGameBoard(byte[] ClientGameBoardBinaryArray, byte[] ClientNetworkSpriteTableBinaryArray)
+            public void UpdateClientGameBoard(byte[] ClientGameBoardBinaryArray, NetworkSprite[] ClientNetworkSpriteTable)
             {
                 MDI_Game.staticGame.localGameBoardTiles = GetObjectFromBinaryArray<GameLogic.GameBoardTile[,]>(ClientGameBoardBinaryArray, true);
                 List<MDI_Game.Sprite> clientSpriteTable = new List<MDI_Game.Sprite>();
-                foreach (NetworkSprite networkSprite in GetObjectFromBinaryArray<NetworkSprite[]>(ClientNetworkSpriteTableBinaryArray, true))
+                foreach (NetworkSprite networkSprite in ClientNetworkSpriteTable)
                 {
                     clientSpriteTable.Add(new MDI_Game.Sprite(networkSprite.ShipType, networkSprite.ShipOrientation, networkSprite.Location, networkSprite.CoveredTiles, networkSprite.Enabled, networkSprite.ShipDestroyed));
                 }
@@ -202,9 +216,9 @@ namespace Battleship2pMP
                 MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DUpdateScoreboard, new object[] { LocalShipsLeft, OpponentShipsLeft });
             }
 
-            public void SetTargetsToDisplay(byte[] ScreenCordTargetsBinaryArray)
+            public void SetTargetsToDisplay(System.Drawing.Point[] ScreenCordTargets)
             {
-                MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DSetTargetsToDisplay, new object[] { GetObjectFromBinaryArray<System.Drawing.Point[]>(ScreenCordTargetsBinaryArray) });
+                MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DSetTargetsToDisplay, new object[] { ScreenCordTargets });
             }
 
             public void Victory(bool ClientWon, int ClientsShots, int ClientsHits, int HostsShots, int HostsHits, double Turns, bool OpponentSurrenderd = false)

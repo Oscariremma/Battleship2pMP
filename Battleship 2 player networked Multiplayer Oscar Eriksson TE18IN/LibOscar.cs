@@ -6,6 +6,9 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace LibOscar
 {
+    //This file contains various useful functions
+
+
     public static class Methods
     {
         public static T CreateJaggedArray<T>(params int[] lengths)
@@ -30,6 +33,9 @@ namespace LibOscar
             return array;
         }
 
+        /// <summary>
+        /// Gets a serialized byte array of an object with optional an compression flag
+        /// </summary>
         public static byte[] GetBinaryArray<T>(T objectToConvert, bool commpress = false)
         {
             BinaryFormatter formatter = new BinaryFormatter();
@@ -56,6 +62,9 @@ namespace LibOscar
             }
         }
 
+        /// <summary>
+        /// Gets back an object of type T from a serialized byte array (Opposite of GetBinaryArray). Decompress flag needs to be set accordingly.
+        /// </summary>
         public static T GetObjectFromBinaryArray<T>(byte[] Bytes, bool Decommpress = false)
         {
             BinaryFormatter formatter = new BinaryFormatter();
@@ -77,6 +86,9 @@ namespace LibOscar
             }
         }
 
+        /// <summary>
+        /// Draws all lines in the array using pen on graphics
+        /// </summary>
         public static void DrawLinesFromArray(System.Drawing.Graphics graphics, System.Drawing.Pen pen, Line[] lines)
         {
             foreach (Line line in lines)
@@ -85,11 +97,15 @@ namespace LibOscar
             }
         }
     }
-
+    /// <summary>
+    /// Class containing functionality for running methods after a delay
+    /// </summary>
     public static class ExecutionTimer
     {
         private static List<System.Timers.Timer> Timers = new List<System.Timers.Timer>();
-
+        /// <summary>
+        /// Execute DelayedMethod after the specified delay
+        /// </summary>
         public static void ExecuteAfterDelay(System.Timers.ElapsedEventHandler DelayedMethod, int Delay)
         {
             System.Timers.Timer Timer = new System.Timers.Timer();
@@ -103,7 +119,9 @@ namespace LibOscar
 
             Timer.Start();
         }
-
+        /// <summary>
+        /// Execute DelayedMethod after the specified delay with SychronizingObject for compatibility with WinForms
+        /// </summary>
         public static void ExecuteAfterDelay(System.Timers.ElapsedEventHandler DelayedMethod, int Delay, System.ComponentModel.ISynchronizeInvoke SynchronizingObject)
         {
             System.Timers.Timer Timer = new System.Timers.Timer();
@@ -126,7 +144,9 @@ namespace LibOscar
             timerToDispose.Dispose();
         }
     }
-
+    /// <summary>
+    /// A line with a StartPoint and an EndPoint
+    /// </summary>
     public struct Line
     {
         public Line(System.Drawing.Point Start, System.Drawing.Point End)
@@ -139,13 +159,11 @@ namespace LibOscar
         public System.Drawing.Point EndPoint;
     }
 
-    public class Ref<T> where T : struct
-    {
-        public T Value { get; set; }
-    }
-
     public static class Extensions
     {
+        /// <summary>
+        /// Get the next Enum Value from EnumType
+        /// </summary>
         public static T Next<T>(this T srcEnum) where T : struct
         {
             if (!typeof(T).IsEnum) throw new ArgumentException(String.Format("Argument {0} is not an Enum", typeof(T).FullName));
@@ -154,7 +172,9 @@ namespace LibOscar
             int j = Array.IndexOf<T>(Arr, srcEnum) + 1;
             return (Arr.Length == j) ? Arr[0] : Arr[j];
         }
-
+        /// <summary>
+        /// Get the previous Enum Value from EnumType
+        /// </summary>
         public static T Previous<T>(this T srcEnum) where T : struct
         {
             if (!typeof(T).IsEnum) throw new ArgumentException(String.Format("Argument {0} is not an Enum", typeof(T).FullName));

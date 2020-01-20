@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
+using ProtoBuf;
 using static LibOscar.Methods;
 
 namespace Battleship2pMP
@@ -165,7 +166,7 @@ namespace Battleship2pMP
 
             if (TargetClient)
             {
-                Networking.NetworkServer.StaticClientInterface.SetTargetsToDisplay(GetBinaryArray(ScreenCordTargets));
+                Networking.NetworkServer.StaticClientInterface.SetTargetsToDisplay(ScreenCordTargets);
             }
             else
             {
@@ -204,8 +205,8 @@ namespace Battleship2pMP
             }
             MDI_Game.staticGame.localSpriteTable = hostSpriteTable;
 
-            Networking.NetworkServer.StaticClientInterface.UpdateHostGameBoard(GetBinaryArray(HostGameBoard, true), GetBinaryArray(HostSpriteTable, true));
-            Networking.NetworkServer.StaticClientInterface.UpdateClientGameBoard(GetBinaryArray(ClientGameBoard, true), GetBinaryArray(ClientSpriteTable, true));
+            Networking.NetworkServer.StaticClientInterface.UpdateHostGameBoard(GetBinaryArray(HostGameBoard, true), HostSpriteTable);
+            Networking.NetworkServer.StaticClientInterface.UpdateClientGameBoard(GetBinaryArray(ClientGameBoard, true), ClientSpriteTable);
             ReDrawGameBoards();
         }
 
@@ -309,9 +310,16 @@ namespace Battleship2pMP
             Ship
         }
     }
-
+    [ProtoContract]
     public enum ShipOrientation
     {
-        Left, Up, Right, Down
+        [ProtoEnum(Name = "Left", Value = 0)]
+        Left,
+        [ProtoEnum(Name = "Up", Value = 1)]
+        Up,
+        [ProtoEnum(Name = "Right", Value = 2)]
+        Right,
+        [ProtoEnum(Name = "Down", Value = 3)]
+        Down
     }
 }

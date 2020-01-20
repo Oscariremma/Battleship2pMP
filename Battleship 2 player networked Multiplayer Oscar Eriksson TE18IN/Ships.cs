@@ -97,10 +97,19 @@ namespace Battleship2pMP.Ships
             ShipEnum = ShipEnum.SubMarine;
         }
     }
-
+    [ProtoContract]
     public enum ShipEnum
     {
-        Carrier, Battleship, Cruiser, Destroyer, SubMarine
+        [ProtoEnum(Name = "Carrier", Value = 0)]
+        Carrier,
+        [ProtoEnum(Name = "Battleship", Value = 1)]
+        Battleship,
+        [ProtoEnum(Name = "Cruiser", Value = 2)]
+        Cruiser,
+        [ProtoEnum(Name = "Destroyer", Value = 3)]
+        Destroyer,
+        [ProtoEnum(Name = "SubMarine", Value = 4)]
+        SubMarine
     }
 
     #endregion Ship Declarations
