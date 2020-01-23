@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{0C68D4D6-8BF8-4D11-A7F5-0E3F04134004}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>Battleship2pMP</RootNamespace>
     <AssemblyName>Battleship 2 player networked Multiplayer Oscar Eriksson TE18IN</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -320,7 +320,6 @@
     <Content Include="Img\Ships\ShipSubMarineComplete.png" />
     <None Include="Img\Water.png" />
     <Content Include="Img\Water_texture_1380389_Nevit.jpg" />
-    <None Include="Resources\WoodBoard.bmp" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

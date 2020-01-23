@@ -1112,7 +1112,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "MDI_Game";
             this.Text = "MDI_Game";
-            this.Load += new System.EventHandler(this.MDI_Game_Load);
             this.pnlGameBoard.ResumeLayout(false);
             this.pnlGameBoard.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbx_Reticle)).EndInit();

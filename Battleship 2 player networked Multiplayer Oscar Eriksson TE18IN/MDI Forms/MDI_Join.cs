@@ -12,7 +12,10 @@ namespace Battleship2pMP.MDI_Forms
         public delegate void DelJoinResult(bool ConnectionSuccessful);
 
         public static DelJoinResult DJoinResult;
-        private readonly string port = ":30664";
+
+        /// <summary>
+        ///
+        /// </summary>
 
         public MDI_Join()
         {
@@ -22,7 +25,7 @@ namespace Battleship2pMP.MDI_Forms
             btn_Back_To_MainMenu.SetMilitaryFont();
             Btn_Join.SetMilitaryFont();
 
-            pictureBox1.BackgroundImage = Program.MainMenuImg;
+            pbx_SideBackround.BackgroundImage = Program.MainMenuImg;
 
             DJoinResult = new DelJoinResult(JoinResult);
 
@@ -45,14 +48,14 @@ namespace Battleship2pMP.MDI_Forms
 
             try
             {
-                iPEndPoint = IPTools.ParseEndPointFromString(tbx_IP.Text + port);
+                iPEndPoint = IPTools.ParseEndPointFromString(tbx_IP.Text + ":" + Properties.Settings.Default.Port.ToString());
             }
             catch (Exception)
             {
                 MessageBox.Show("Check IP format", "IP format invalid!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            Thread thread = new Thread(() => Networking.NetworkClient.ConnectToServer(new ConnectionInfo(iPEndPoint), this));
+            Thread thread = new Thread(() => Networking.NetworkClient.ConnectToServer(new ConnectionInfo(iPEndPoint)));
             thread.Start();
             tbx_IP.Enabled = false;
             Btn_Join.Enabled = false;
@@ -73,7 +76,6 @@ namespace Battleship2pMP.MDI_Forms
         {
             if (ConnectionSuccessful)
             {
-                Networking.NetworkClient.RemoteServerInterface.Test(new Networking.NetworkSprite(new MDI_Game.Sprite(Ships.ShipEnum.Battleship,ShipOrientation.Down, new System.Drawing.Point(1,2), new System.Drawing.Point[2] )));
                 Networking.NetworkClient.RemoteServerInterface.StartGame();
             }
             else

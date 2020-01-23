@@ -9,6 +9,9 @@ using static LibOscar.Methods;
 
 namespace Battleship2pMP
 {
+    /// <summary>
+    /// Contains the games main overarching logic. Acts as the game master
+    /// </summary>
     public class GameLogic
     {
         public GameBoardTile[,] HostGameBoard = new GameBoardTile[9, 9];
@@ -28,8 +31,12 @@ namespace Battleship2pMP
         private bool ClientsTurn;
         private bool RematchRequested = false;
 
+        /// <summary>
+        /// The delay after a player have finished their round, primarily hear to let the players see what ships where hit
+        /// </summary>
         private int PostTurnDelay;
 
+        //Statistics
         private double CompleteTurns;
 
         private int HostShots;
@@ -44,6 +51,7 @@ namespace Battleship2pMP
             PostTurnDelay = Properties.Settings.Default.PostTurnDelay;
             ClientShipsLeft = HostShipsLeft;
 
+            //Generate the game boards
             int x = 61;
             int rowx = 0;
             int rowy = 0;
@@ -68,6 +76,9 @@ namespace Battleship2pMP
             }
         }
 
+        /// <summary>
+        /// Starts the shooting part of the game when both players have placed all of their ships
+        /// </summary>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "SecurityIntelliSenseCS:MS Security rules violation", Justification = "<Pending>")]
         public void BothPlayersDonePlacingShips()
         {
@@ -92,6 +103,9 @@ namespace Battleship2pMP
             }
         }
 
+        /// <summary>
+        /// Check if there are any hits and checks if some one won that turn
+        /// </summary>
         public void FireShots(System.Drawing.Point[] Targets, Point[] ScreenCordTargets, bool TargetClient)
         {
             ref GameBoardTile[,] TargetGameBoard = ref TargetClient ? ref ClientGameBoard : ref HostGameBoard;
@@ -118,6 +132,7 @@ namespace Battleship2pMP
 
                     ref Networking.NetworkSprite HitShipSprite = ref TargetClient ? ref ClientSpriteTable[targetTile.SpriteID] : ref HostSpriteTable[targetTile.SpriteID];
 
+                    //Check if the entire ship is destroyed
                     foreach (Point Coveredtile in HitShipSprite.CoveredTiles)
                     {
                         if (TargetGameBoard[Coveredtile.X, Coveredtile.Y].TileType != TileType.Hit)
@@ -127,6 +142,7 @@ namespace Battleship2pMP
                         }
                     }
 
+                    //Enable drawing of a destroyed ship and update the ShipCounter
                     if (ShipDestroyed)
                     {
                         HitShipSprite.Enabled = true;
@@ -164,6 +180,7 @@ namespace Battleship2pMP
                 }
             }
 
+            //Show where the other player where the player who shot aimed
             if (TargetClient)
             {
                 Networking.NetworkServer.StaticClientInterface.SetTargetsToDisplay(ScreenCordTargets);
@@ -175,6 +192,7 @@ namespace Battleship2pMP
 
             PushGameBoardUpdates();
 
+            //Check if any one won
             if (TargetShipCounter.Total == 0)
             {
                 Victory(TargetClient);
@@ -187,10 +205,14 @@ namespace Battleship2pMP
             CompleteTurns += 0.5d;
         }
 
+        /// <summary>
+        /// Updates both players game boards and sprite tables and then redraws their game boards
+        /// </summary>
         private void PushGameBoardUpdates()
         {
             MDI_Game.staticGame.remoteGameBoardTiles = ClientGameBoard;
             List<MDI_Game.Sprite> clientSpriteTable = new List<MDI_Game.Sprite>();
+            //Convert the NetworkSprites to normal Sprites
             foreach (Networking.NetworkSprite networkSprite in ClientSpriteTable)
             {
                 clientSpriteTable.Add(new MDI_Game.Sprite(networkSprite.ShipType, networkSprite.ShipOrientation, networkSprite.Location, networkSprite.CoveredTiles, networkSprite.Enabled, networkSprite.ShipDestroyed));
@@ -199,6 +221,7 @@ namespace Battleship2pMP
 
             List<MDI_Game.Sprite> hostSpriteTable = new List<MDI_Game.Sprite>();
             MDI_Game.staticGame.localGameBoardTiles = HostGameBoard;
+            //Convert the NetworkSprites to normal Sprites
             foreach (Networking.NetworkSprite networkSprite in HostSpriteTable)
             {
                 hostSpriteTable.Add(new MDI_Game.Sprite(networkSprite.ShipType, networkSprite.ShipOrientation, networkSprite.Location, networkSprite.CoveredTiles, networkSprite.Enabled, networkSprite.ShipDestroyed));
@@ -210,18 +233,27 @@ namespace Battleship2pMP
             ReDrawGameBoards();
         }
 
+        /// <summary>
+        /// Invalidates both players game boards
+        /// </summary>
         private void ReDrawGameBoards()
         {
             MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DInvalidate);
             Networking.NetworkServer.StaticClientInterface.InvalidateGameBoard();
         }
 
+        /// <summary>
+        /// Updates both players score counters
+        /// </summary>
         private void UpdateScoreboards()
         {
             MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DUpdateScoreboard, new object[] { HostShipsLeft, ClientShipsLeft });
             Networking.NetworkServer.StaticClientInterface.UpdateScoreboard(ClientShipsLeft, HostShipsLeft);
         }
 
+        /// <summary>
+        /// Ends the current turn and begins the next
+        /// </summary>
         private void TurnDone()
         {
             if (ClientsTurn)
@@ -240,18 +272,27 @@ namespace Battleship2pMP
             }
         }
 
+        /// <summary>
+        /// Declares the victor and informs the players of who won
+        /// </summary>
         private void Victory(bool HostWon)
         {
             MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DVictory, new object[] { HostWon, HostShots, HostHits, ClientShots, ClientHits, CompleteTurns, false });
             Networking.NetworkServer.StaticClientInterface.Victory(!HostWon, ClientShots, ClientHits, HostShots, HostHits, CompleteTurns);
         }
 
+        /// <summary>
+        /// Called when a player wants to surrender
+        /// </summary>
         public void Surrender(bool HostSurrenderd)
         {
             MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DVictory, new object[] { !HostSurrenderd, HostShots, HostHits, ClientShots, ClientHits, CompleteTurns, !HostSurrenderd });
             Networking.NetworkServer.StaticClientInterface.Victory(HostSurrenderd, ClientShots, ClientHits, HostShots, HostHits, CompleteTurns, HostSurrenderd);
         }
 
+        /// <summary>
+        /// Requests a rematch and if a rematch already have been requested, starts a new game
+        /// </summary>
         public void Rematch(bool HostWantsRematch)
         {
             if (!RematchRequested)
@@ -272,6 +313,9 @@ namespace Battleship2pMP
             }
         }
 
+        /// <summary>
+        /// Informs the other player that their opponent is leaving the game
+        /// </summary>
         public void LeaveGame(bool HostLeftGame)
         {
             if (HostLeftGame)
@@ -286,6 +330,9 @@ namespace Battleship2pMP
         }
 
         [Serializable]
+        /// <summary>
+        /// Struct representing a tile on the game board
+        /// </summary>
         public struct GameBoardTile
         {
             public GameBoardTile(Rectangle rectangle, TileType tileType)
@@ -302,6 +349,9 @@ namespace Battleship2pMP
             public int SpriteID;
         }
 
+        /// <summary>
+        /// Specifies what type of tile a GameBoardTile is
+        /// </summary>
         public enum TileType
         {
             Water,
@@ -311,6 +361,9 @@ namespace Battleship2pMP
         }
     }
     [ProtoContract]
+    /// <summary>
+    /// Represents a direction
+    /// </summary>
     public enum ShipOrientation
     {
         [ProtoEnum(Name = "Left", Value = 0)]

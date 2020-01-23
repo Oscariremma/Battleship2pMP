@@ -4,6 +4,9 @@ using System.Drawing;
 
 namespace Battleship2pMP.Ships
 {
+    /// <summary>
+    /// Base class for all different ship types
+    /// </summary>
     public class Ship
     {
         public int Length;
@@ -28,6 +31,9 @@ namespace Battleship2pMP.Ships
             SubMarine.ShipSprite = Properties.Resources.ShipSubMarineComplete;
         }
 
+        /// <summary>
+        /// Returns the correct derived Ship matching the ShipEnum provided
+        /// </summary>
         public static Ship ShipFromShipEnum(ShipEnum shipEnum)
         {
             switch (shipEnum)
@@ -51,6 +57,7 @@ namespace Battleship2pMP.Ships
         }
     }
 
+    //All derived ship classes
     #region Ship Declarations
 
     public class CarrierType : Ship
@@ -97,6 +104,10 @@ namespace Battleship2pMP.Ships
             ShipEnum = ShipEnum.SubMarine;
         }
     }
+
+    /// <summary>
+    /// Enum corresponding to all available ship types
+    /// </summary>
     [ProtoContract]
     public enum ShipEnum
     {
@@ -114,6 +125,9 @@ namespace Battleship2pMP.Ships
 
     #endregion Ship Declarations
 
+    /// <summary>
+    /// Struct to help keep track of the different amounts of all the different ship types
+    /// </summary>
     [ProtoContract]
     public struct ShipsLeft
     {

@@ -30,7 +30,7 @@
         {
             this.Btn_Back = new System.Windows.Forms.Button();
             this.lbl_Title = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pbx_SideBackround = new System.Windows.Forms.PictureBox();
             this.num_Carriers = new System.Windows.Forms.NumericUpDown();
             this.num_Battleships = new System.Windows.Forms.NumericUpDown();
             this.num_Cruisers = new System.Windows.Forms.NumericUpDown();
@@ -49,7 +49,7 @@
             this.label8 = new System.Windows.Forms.Label();
             this.Btn_Reset = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbx_SideBackround)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_Carriers)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_Battleships)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_Cruisers)).BeginInit();
@@ -86,16 +86,16 @@
             this.lbl_Title.Text = "Game Settings";
             this.lbl_Title.UseCompatibleTextRendering = true;
             // 
-            // pictureBox1
+            // pbx_SideBackround
             // 
-            this.pictureBox1.BackColor = System.Drawing.SystemColors.Highlight;
-            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBox1.Location = new System.Drawing.Point(532, -11);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(550, 724);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 1;
-            this.pictureBox1.TabStop = false;
+            this.pbx_SideBackround.BackColor = System.Drawing.SystemColors.Highlight;
+            this.pbx_SideBackround.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pbx_SideBackround.Location = new System.Drawing.Point(532, -11);
+            this.pbx_SideBackround.Name = "pbx_SideBackround";
+            this.pbx_SideBackround.Size = new System.Drawing.Size(550, 724);
+            this.pbx_SideBackround.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbx_SideBackround.TabIndex = 1;
+            this.pbx_SideBackround.TabStop = false;
             // 
             // num_Carriers
             // 
@@ -301,11 +301,11 @@
             this.Controls.Add(this.num_Carriers);
             this.Controls.Add(this.lbl_Title);
             this.Controls.Add(this.Btn_Back);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.pbx_SideBackround);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "MDI_GameSettings";
             this.Text = "MDI_Host";
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbx_SideBackround)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_Carriers)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_Battleships)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.num_Cruisers)).EndInit();
@@ -321,7 +321,7 @@
 
         #endregion
 
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox pbx_SideBackround;
         private System.Windows.Forms.Button Btn_Back;
         private System.Windows.Forms.Label lbl_Title;
         private System.Windows.Forms.NumericUpDown num_Carriers;

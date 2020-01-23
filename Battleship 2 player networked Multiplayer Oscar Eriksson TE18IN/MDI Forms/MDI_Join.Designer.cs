@@ -29,11 +29,11 @@
         private void InitializeComponent()
         {
             this.btn_Back_To_MainMenu = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pbx_SideBackround = new System.Windows.Forms.PictureBox();
             this.lbl_Title = new System.Windows.Forms.Label();
             this.tbx_IP = new System.Windows.Forms.TextBox();
             this.Btn_Join = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbx_SideBackround)).BeginInit();
             this.SuspendLayout();
             // 
             // btn_Back_To_MainMenu
@@ -50,15 +50,15 @@
             this.btn_Back_To_MainMenu.UseVisualStyleBackColor = false;
             this.btn_Back_To_MainMenu.Click += new System.EventHandler(this.Btn_Back_To_MainMenu_Click);
             // 
-            // pictureBox1
+            // pbx_SideBackround
             // 
-            this.pictureBox1.BackColor = System.Drawing.SystemColors.Highlight;
-            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBox1.Location = new System.Drawing.Point(532, -11);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(550, 724);
-            this.pictureBox1.TabIndex = 7;
-            this.pictureBox1.TabStop = false;
+            this.pbx_SideBackround.BackColor = System.Drawing.SystemColors.Highlight;
+            this.pbx_SideBackround.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pbx_SideBackround.Location = new System.Drawing.Point(532, -11);
+            this.pbx_SideBackround.Name = "pbx_SideBackround";
+            this.pbx_SideBackround.Size = new System.Drawing.Size(550, 724);
+            this.pbx_SideBackround.TabIndex = 7;
+            this.pbx_SideBackround.TabStop = false;
             // 
             // lbl_Title
             // 
@@ -103,12 +103,12 @@
             this.Controls.Add(this.Btn_Join);
             this.Controls.Add(this.tbx_IP);
             this.Controls.Add(this.lbl_Title);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.pbx_SideBackround);
             this.Controls.Add(this.btn_Back_To_MainMenu);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "MDI_Join";
             this.Text = "MDI_Join";
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbx_SideBackround)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -117,7 +117,7 @@
         #endregion
 
         private System.Windows.Forms.Button btn_Back_To_MainMenu;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox pbx_SideBackround;
         private System.Windows.Forms.Label lbl_Title;
         private System.Windows.Forms.TextBox tbx_IP;
         private System.Windows.Forms.Button Btn_Join;

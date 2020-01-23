@@ -28,9 +28,10 @@ namespace Battleship2pMP.MDI_Forms
 
         private void Btn_Host_Click(object sender, EventArgs e)
         {
+            //Start/stop the server listening
             if (!Networking.NetworkServer.ServerListening)
             {
-                tbx_IPs.Lines = Networking.NetworkServer.StartServer(30664);
+                tbx_IPs.Lines = Networking.NetworkServer.StartServer(Properties.Settings.Default.Port);
                 btn_Host.Text = "Stop Server";
                 lbl_IP.Visible = true;
                 tbx_IPs.Visible = true;
@@ -50,6 +51,7 @@ namespace Battleship2pMP.MDI_Forms
 
         private void Btn_GameSettings_Click(object sender, EventArgs e)
         {
+            //Go to the settings MDI
             MDI_Container.SwitchMDI(MDI_Form_Enum.MDI_GameSettings);
         }
     }

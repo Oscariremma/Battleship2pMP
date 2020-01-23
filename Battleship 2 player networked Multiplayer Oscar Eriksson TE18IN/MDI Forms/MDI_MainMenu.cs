@@ -21,7 +21,7 @@ namespace Battleship2pMP.MDI_Forms
             btn_Join.SetMilitaryFont();
             btn_Quit.SetMilitaryFont();
 
-            pictureBox1.BackgroundImage = Program.MainMenuImg;
+            pbx_SideBackround.BackgroundImage = Program.MainMenuImg;
 
         }
 
@@ -29,12 +29,13 @@ namespace Battleship2pMP.MDI_Forms
 
         private void Btn_Host_Click(object sender, EventArgs e)
         {
-            //Switch to game host MDI
+            //Switch to the Host MDI
             MDI_Container.SwitchMDI(MDI_Form_Enum.MDI_Host, true);
         }
 
         private void Btn_Join_Click(object sender, EventArgs e)
         {
+            //Switch to the Join MDI
             MDI_Container.SwitchMDI(MDI_Form_Enum.MDI_Join, true);
         }
 

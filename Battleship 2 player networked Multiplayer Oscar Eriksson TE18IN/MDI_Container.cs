@@ -4,6 +4,9 @@ using System.Windows.Forms;
 
 namespace Battleship2pMP
 {
+    /// <summary>
+    /// The main game window, acts as an MDI container
+    /// </summary>
     public partial class MDI_Container : Form
     {
         public static MDI_Container staticMdi_Container;
@@ -14,6 +17,7 @@ namespace Battleship2pMP
 
         public DelLostConnection DLostConnection;
         public DelLeaveGame DLeaveGame;
+
         private MDI_MainMenu mdi_MainMenu;
         private MDI_Game mdi_Game;
         private MDI_Host mdi_Host;
@@ -39,11 +43,17 @@ namespace Battleship2pMP
             this.FormClosing += new FormClosingEventHandler(GameClosing);
         }
 
+        /// <summary>
+        /// Switch to the MainMenu MDI when the MDI Container has loaded
+        /// </summary>
         private void MDI_Container_Load(object sender, EventArgs e)
         {
             SwitchMDI(MDI_Form_Enum.MDI_MainMenu, true);
         }
 
+        /// <summary>
+        /// Switch to the MDI displayed to the MDI corresponding to the MDI enum, ResetMDI causes a new instance of the selected MDI to created and the old to be disposed
+        /// </summary>
         public static void SwitchMDI(MDI_Form_Enum MDI, bool ResetMDI = false)
         {
             if (staticMdi_Container.CurrentMDI != null)
@@ -109,6 +119,9 @@ namespace Battleship2pMP
             staticMdi_Container.CurrentMDI.Show();
         }
 
+        /// <summary>
+        /// Called if a connection is unexpectedly closed, gracefully exits the game if it can not continue
+        /// </summary>
         public void LostConnection()
         {
             if (staticMdi_Container.mdi_Game != null && GameIsFinished && !OpponentHasLeftGame)
@@ -130,6 +143,9 @@ namespace Battleship2pMP
             }
         }
 
+        /// <summary>
+        /// Shutsdown all networking and returns to game to the main menu
+        /// </summary>
         public void LeaveGame()
         {
             SwitchMDI(MDI_Form_Enum.MDI_MainMenu, false);
@@ -143,6 +159,9 @@ namespace Battleship2pMP
             Networking.ShutdownAllNetworking();
         }
 
+        /// <summary>
+        /// Catch when the user clicks on the X button and check if it is OK to leave and exit the game
+        /// </summary>
         void GameClosing(object sender, FormClosingEventArgs formClosingEventArgs)
         {
             if(CurrentMDI.GetType() == typeof(MDI_Game))
@@ -204,6 +223,9 @@ namespace Battleship2pMP
 
     }
 
+    /// <summary>
+    /// Enum corresponding to all available MDI forms
+    /// </summary>
     public enum MDI_Form_Enum
     {
         MDI_MainMenu,

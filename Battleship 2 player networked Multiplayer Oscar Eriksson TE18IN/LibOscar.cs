@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace LibOscar
@@ -33,17 +34,26 @@ namespace LibOscar
             return array;
         }
 
+
+        private static readonly byte CompressionFlag = 0xC1;
+        private static readonly byte NoCompressionFlag = 0xFC;
+
         /// <summary>
-        /// Gets a serialized byte array of an object with optional an compression flag
+        /// Returns a <see cref="byte[]"/> from a <see cref="object"/>. Opposite of <see cref="Methods.GetObjectFromBinaryArray{T}(byte[])"/>
         /// </summary>
-        public static byte[] GetBinaryArray<T>(T objectToConvert, bool commpress = false)
+        /// <param name="objectToConvert">The object to convert to a <see cref="byte[]"/></param>
+        /// <param name="Compress">If true the data will be compressed</param>
+        public static byte[] GetBinaryArray(object objectToConvert, bool Compress = false)
         {
             BinaryFormatter formatter = new BinaryFormatter();
 
-            if (commpress == true)
+            if (Compress == true)
             {
                 using (MemoryStream compMS = new MemoryStream())
                 {
+                    //Write the CompressionFlag to the raw stream
+                    compMS.Write(new byte[] { CompressionFlag }, 0, 1);
+
                     using (DeflateStream deflateStream = new DeflateStream(compMS, CompressionMode.Compress, true))
                     {
                         formatter.Serialize(deflateStream, objectToConvert);
@@ -55,6 +65,9 @@ namespace LibOscar
             {
                 using (MemoryStream ms = new MemoryStream())
                 {
+                    //Write the NoCompressionFlag to the raw stream
+                    ms.Write(new byte[] { NoCompressionFlag }, 0, 1);
+
                     formatter.Serialize(ms, objectToConvert);
 
                     return ms.ToArray();
@@ -63,27 +76,32 @@ namespace LibOscar
         }
 
         /// <summary>
-        /// Gets back an object of type T from a serialized byte array (Opposite of GetBinaryArray). Decompress flag needs to be set accordingly.
+        /// Returns a <see cref="object"/> of type <typeparamref name="T"/> from a <see cref="byte[]"/>. Opposite of <see cref="GetBinaryArray(object, bool)"/> / <seealso cref="Methods.GetBinaryArray(object, bool)"/>
         /// </summary>
-        public static T GetObjectFromBinaryArray<T>(byte[] Bytes, bool Decommpress = false)
+        /// <typeparam name="T">The type of the original object passed to <see cref="Methods.GetBinaryArray(object, bool)"/> </typeparam>
+        /// <param name="Bytes">The <see cref="byte[]"/> returned from <see cref="Methods.GetBinaryArray(object, bool)"/></param>
+        public static T GetObjectFromBinaryArray<T>(byte[] Bytes)
         {
             BinaryFormatter formatter = new BinaryFormatter();
 
-            if (Decommpress == true)
+            if (Bytes[0] == CompressionFlag)
             {
-                using (DeflateStream deflateStream = new DeflateStream(new MemoryStream(Bytes), CompressionMode.Decompress))
+                using (DeflateStream deflateStream = new DeflateStream(new MemoryStream(Bytes.Skip(1).ToArray()), CompressionMode.Decompress))
                 {
-                    using (MemoryStream ms = new MemoryStream())
-                    {
-                        return (T)formatter.Deserialize(deflateStream);
-                    }
+                    return (T)formatter.Deserialize(deflateStream);
+                }
+            }else if(Bytes[0] == NoCompressionFlag)
+            {
+                using (MemoryStream ms = new MemoryStream(Bytes.Skip(1).ToArray()))
+                {
+                    return (T)formatter.Deserialize(ms);
                 }
             }
-
-            using (MemoryStream ms = new MemoryStream(Bytes))
+            else
             {
-                return (T)formatter.Deserialize(ms);
+                throw new InvalidDataException("No valid compression flag found. Data may be corrupt or in the wrong format");
             }
+
         }
 
         /// <summary>
@@ -172,6 +190,7 @@ namespace LibOscar
             int j = Array.IndexOf<T>(Arr, srcEnum) + 1;
             return (Arr.Length == j) ? Arr[0] : Arr[j];
         }
+
         /// <summary>
         /// Get the previous Enum Value from EnumType
         /// </summary>
@@ -183,5 +202,28 @@ namespace LibOscar
             int j = Array.IndexOf<T>(Arr, srcEnum) - 1;
             return (j == -1) ? Arr[Arr.Length - 1] : Arr[j];
         }
+        /// <summary>
+        /// Extension version of <see cref="LibOscar.Methods.GetBinaryArray(object, bool)"/>. Will get a <see cref="byte[]"/> from a <see cref="object"/>. Opposite of <see cref="Methods.GetObjectFromBinaryArray{T}(byte[])"/>
+        /// </summary>
+        /// <param name="sourceObject">The <see cref="object"/> to serialize</param>
+        /// <param name="Compress">If true the data will be compressed</param>
+        /// <returns></returns>
+        public static byte[] GetBinaryArray(this object sourceObject, bool Compress = false)
+        {
+            return Methods.GetBinaryArray(sourceObject, Compress);
+        }
+
+        /// <summary>
+        /// Extension version of <see cref="LibOscar.Methods.GetObjectFromBinaryArray{T}(byte[])"/>. Will get back a <see cref="object"/> of type <typeparamref name="T"/> from a <see cref="byte[]"/>. Opposite of <see cref="Methods.GetBinaryArray(object, bool)"/>
+        /// </summary>
+        /// <typeparam name="T">The type of the original object passed to <see cref="Methods.GetBinaryArray(object, bool)"/> </typeparam>
+        /// <param name="ByteArray">The <see cref="byte[]"/> returned from <see cref="Methods.GetBinaryArray(object, bool)"/></param>
+        /// <returns></returns>
+        public static T GetObjectFromBinaryArray<T>(this byte[] ByteArray)
+        {
+            return Methods.GetObjectFromBinaryArray<T>(ByteArray);
+        }
+
+
     }
 }
