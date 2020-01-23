@@ -124,6 +124,7 @@ namespace LibOscar
         /// <summary>
         /// Execute DelayedMethod after the specified delay
         /// </summary>
+        /// <param name="Delay">The delay in ms</param>
         public static void ExecuteAfterDelay(System.Timers.ElapsedEventHandler DelayedMethod, int Delay)
         {
             System.Timers.Timer Timer = new System.Timers.Timer();
@@ -138,8 +139,9 @@ namespace LibOscar
             Timer.Start();
         }
         /// <summary>
-        /// Execute DelayedMethod after the specified delay with SychronizingObject for compatibility with WinForms
+        /// Execute DelayedMethod after the specified delay with <see cref="System.ComponentModel.ISynchronizeInvoke"/> for compatibility with WinForms
         /// </summary>
+        /// <param name="Delay">The delay in ms</param>
         public static void ExecuteAfterDelay(System.Timers.ElapsedEventHandler DelayedMethod, int Delay, System.ComponentModel.ISynchronizeInvoke SynchronizingObject)
         {
             System.Timers.Timer Timer = new System.Timers.Timer();
