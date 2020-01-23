@@ -144,7 +144,7 @@ namespace Battleship2pMP
         }
 
         /// <summary>
-        /// Shutsdown all networking and returns to game to the main menu
+        /// Shuts down all networking and returns to game to the main menu
         /// </summary>
         public void LeaveGame()
         {
@@ -199,7 +199,7 @@ namespace Battleship2pMP
                             {
                                 Networking.NetworkServer.StaticgameLogic.Surrender(true);
                                 Networking.NetworkServer.StaticgameLogic.LeaveGame(true);
-                                Networking.ShutdownAllNetworking();
+                                LibOscar.ExecutionTimer.ExecuteAfterDelay((o, ev) => Networking.ShutdownAllNetworking(), 100);
                             }
                             else
                             {
