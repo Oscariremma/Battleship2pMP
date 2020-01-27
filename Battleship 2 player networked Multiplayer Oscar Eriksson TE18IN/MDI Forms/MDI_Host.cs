@@ -22,6 +22,16 @@ namespace Battleship2pMP.MDI_Forms
             //Ask if user wants to return to Main Menu
             if (MessageBox.Show("Are you sure you want to return to the main menu?", "Return to Main Menu", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
+                if (Networking.NetworkServer.ServerListening)
+                {
+                    Networking.NetworkServer.StopServerListener();
+                    btn_Host.Text = "Start Server";
+                    lbl_IP.Visible = false;
+                    tbx_IPs.Visible = false;
+                    lbl_GameStart.Visible = false;
+                    Btn_GameSettings.Enabled = true;
+                }
+
                 MDI_Container.SwitchMDI(MDI_Form_Enum.MDI_MainMenu);
             }
         }
