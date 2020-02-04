@@ -41,7 +41,7 @@ namespace Battleship2pMP.MDI_Forms
             //Start/stop the server listening
             if (!Networking.NetworkServer.ServerListening)
             {
-                tbx_IPs.Lines = Networking.NetworkServer.StartServer(Properties.Settings.Default.Port);
+                tbx_IPs.Lines = Networking.NetworkServer.StartServer(Settings.Default.Port);
                 btn_Host.Text = "Stop Server";
                 lbl_IP.Visible = true;
                 tbx_IPs.Visible = true;

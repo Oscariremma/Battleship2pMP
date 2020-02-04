@@ -389,9 +389,9 @@ namespace Battleship2pMP
                 MDI_Container.GameIsFinished = false;
                 MDI_Container.staticMdi_Container.Invoke(MDI_Container.DSwitchMDI, new object[] { MDI_Form_Enum.MDI_Game, true });
                 NetworkServer.StaticgameLogic = new GameLogic();
-                NetworkServer.StaticClientInterface.GameStarting(GetBinaryArray(NetworkServer.StaticgameLogic.ClientGameBoard, true), GetBinaryArray(NetworkServer.StaticgameLogic.HostGameBoard, true), NetworkServer.StaticgameLogic.ClientShipsLeft, Properties.Settings.Default.ShotsFirstTurn, Properties.Settings.Default.ShotsPerTurn);
+                NetworkServer.StaticClientInterface.GameStarting(GetBinaryArray(NetworkServer.StaticgameLogic.ClientGameBoard, true), GetBinaryArray(NetworkServer.StaticgameLogic.HostGameBoard, true), NetworkServer.StaticgameLogic.ClientShipsLeft, Settings.Default.ShotsFirstTurn, Settings.Default.ShotsPerTurn);
                 MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DUpdateGameBoard, new object[] { NetworkServer.StaticgameLogic.HostGameBoard, NetworkServer.StaticgameLogic.ClientGameBoard });
-                MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DSetGameSettings, new object[] { NetworkServer.StaticgameLogic.HostShipsLeft, Properties.Settings.Default.ShotsFirstTurn, Properties.Settings.Default.ShotsPerTurn });
+                MDI_Game.staticGame.BeginInvoke(MDI_Game.staticGame.DSetGameSettings, new object[] { NetworkServer.StaticgameLogic.HostShipsLeft, Settings.Default.ShotsFirstTurn, Settings.Default.ShotsPerTurn });
                 return null;
             }
 

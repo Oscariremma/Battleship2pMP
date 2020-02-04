@@ -22,16 +22,16 @@ namespace Battleship2pMP.MDI_Forms
         /// </summary>
         private void LoadValuesFromSettings()
         {
-            num_Carriers.Value = Properties.Settings.Default.Carriers;
-            num_Battleships.Value = Properties.Settings.Default.Battleships;
-            num_Cruisers.Value = Properties.Settings.Default.Cruisers;
-            num_Destroyers.Value = Properties.Settings.Default.Destroyers;
-            num_Submarines.Value = Properties.Settings.Default.Submarines;
+            num_Carriers.Value = Settings.Default.Carriers;
+            num_Battleships.Value = Settings.Default.Battleships;
+            num_Cruisers.Value = Settings.Default.Cruisers;
+            num_Destroyers.Value = Settings.Default.Destroyers;
+            num_Submarines.Value = Settings.Default.Submarines;
 
-            num_ShotsFirstTurn.Value = Properties.Settings.Default.ShotsFirstTurn;
-            num_ShotsPerTurn.Value = Properties.Settings.Default.ShotsPerTurn;
+            num_ShotsFirstTurn.Value = Settings.Default.ShotsFirstTurn;
+            num_ShotsPerTurn.Value = Settings.Default.ShotsPerTurn;
 
-            num_PostTurnDelay.Value = decimal.Divide(Properties.Settings.Default.PostTurnDelay, 1000);
+            num_PostTurnDelay.Value = decimal.Divide(Settings.Default.PostTurnDelay, 1000);
         }
 
         /// <summary>
@@ -41,10 +41,10 @@ namespace Battleship2pMP.MDI_Forms
         {
             if (MessageBox.Show("Are you sure that you want to reset all settings to their defaults?", "Reset all settings?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
 
-            string LastIP = Properties.Settings.Default.LastIP;
-            Properties.Settings.Default.Reset();
-            Properties.Settings.Default.LastIP = LastIP;
-            Properties.Settings.Default.Save();
+            string LastIP = Settings.Default.LastIP;
+            Settings.LoadSettings();
+            Settings.Default.LastIP = LastIP;
+            Settings.SaveSettings();
             LoadValuesFromSettings();
         }
 
@@ -59,18 +59,18 @@ namespace Battleship2pMP.MDI_Forms
             }
 
             //Save all settings
-            Properties.Settings.Default.Carriers = (int)num_Carriers.Value;
-            Properties.Settings.Default.Battleships = (int)num_Battleships.Value;
-            Properties.Settings.Default.Cruisers = (int)num_Cruisers.Value;
-            Properties.Settings.Default.Destroyers = (int)num_Destroyers.Value;
-            Properties.Settings.Default.Submarines = (int)num_Submarines.Value;
+            Settings.Default.Carriers = (int)num_Carriers.Value;
+            Settings.Default.Battleships = (int)num_Battleships.Value;
+            Settings.Default.Cruisers = (int)num_Cruisers.Value;
+            Settings.Default.Destroyers = (int)num_Destroyers.Value;
+            Settings.Default.Submarines = (int)num_Submarines.Value;
 
-            Properties.Settings.Default.ShotsFirstTurn = (int)num_ShotsFirstTurn.Value;
-            Properties.Settings.Default.ShotsPerTurn = (int)num_ShotsPerTurn.Value;
+            Settings.Default.ShotsFirstTurn = (int)num_ShotsFirstTurn.Value;
+            Settings.Default.ShotsPerTurn = (int)num_ShotsPerTurn.Value;
 
-            Properties.Settings.Default.PostTurnDelay = (int)(num_PostTurnDelay.Value * 1000);
+            Settings.Default.PostTurnDelay = (int)(num_PostTurnDelay.Value * 1000);
 
-            Properties.Settings.Default.Save();
+            Settings.SaveSettings();
             // Switch back to the Host MDI
             MDI_Container.SwitchMDI(MDI_Form_Enum.MDI_Host);
         }

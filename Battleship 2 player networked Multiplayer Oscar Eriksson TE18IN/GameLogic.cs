@@ -47,8 +47,8 @@ namespace Battleship2pMP
 
         public GameLogic()
         {
-            HostShipsLeft = new Ships.ShipsLeft(Properties.Settings.Default.Carriers, Properties.Settings.Default.Battleships, Properties.Settings.Default.Cruisers, Properties.Settings.Default.Destroyers, Properties.Settings.Default.Submarines);
-            PostTurnDelay = Properties.Settings.Default.PostTurnDelay;
+            HostShipsLeft = new Ships.ShipsLeft(Settings.Default.Carriers, Settings.Default.Battleships, Settings.Default.Cruisers, Settings.Default.Destroyers, Settings.Default.Submarines);
+            PostTurnDelay = Settings.Default.PostTurnDelay;
             ClientShipsLeft = HostShipsLeft;
 
             //Generate the game boards

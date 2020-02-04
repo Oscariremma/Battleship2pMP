@@ -255,6 +255,7 @@
     <Compile Include="RPC Code Part of the networking lib\RPCException.cs" />
     <Compile Include="RPC Code Part of the networking lib\Server.cs" />
     <Compile Include="RPC Code Part of the networking lib\Wrappers.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Ships.cs" />
     <EmbeddedResource Include="MDI Forms\MDI_Game.resx">
       <DependentUpon>MDI_Game.cs</DependentUpon>
@@ -291,15 +292,6 @@
     <None Include="NetworkComms.Net Modified\NetworkCommsDotNet\networkcomms.net.snk" />
     <None Include="NetworkComms.Net Modified\NetworkCommsDotNet\packages.config" />
     <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

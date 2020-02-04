@@ -29,7 +29,7 @@ namespace Battleship2pMP.MDI_Forms
 
             DJoinResult = new DelJoinResult(JoinResult);
 
-            tbx_IP.Text = Properties.Settings.Default.LastIP;
+            tbx_IP.Text = Settings.Default.LastIP;
             tbx_IP.KeyDown += new KeyEventHandler(Tbx_IP_KeyDown);
         }
 
@@ -48,7 +48,7 @@ namespace Battleship2pMP.MDI_Forms
 
             try
             {
-                iPEndPoint = IPTools.ParseEndPointFromString(tbx_IP.Text + ":" + Properties.Settings.Default.Port.ToString());
+                iPEndPoint = IPTools.ParseEndPointFromString(tbx_IP.Text + ":" + Settings.Default.Port.ToString());
             }
             catch (Exception)
             {
@@ -60,8 +60,8 @@ namespace Battleship2pMP.MDI_Forms
             tbx_IP.Enabled = false;
             Btn_Join.Enabled = false;
             Btn_Join.Text = "Connecting...";
-            Properties.Settings.Default.LastIP = tbx_IP.Text;
-            Properties.Settings.Default.Save();
+            Settings.Default.LastIP = tbx_IP.Text;
+            Settings.SaveSettings();
         }
 
         void Tbx_IP_KeyDown(object sender, KeyEventArgs e)
