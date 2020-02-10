@@ -61,14 +61,25 @@ namespace Battleship2pMP
 
             if (File.Exists(SettingsFilePath))
             {
-                TextReader reader = new StreamReader(SettingsFilePath);
 
                 try
                 {
-                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(Settings));
+                    TextReader reader = new StreamReader(SettingsFilePath);
 
-                    LoadedSettings = (Settings)xmlSerializer.Deserialize(reader);
-                    SettingsLoaded = true;
+                    try
+                    {
+                        XmlSerializer xmlSerializer = new XmlSerializer(typeof(Settings));
+
+                        LoadedSettings = (Settings)xmlSerializer.Deserialize(reader);
+                        SettingsLoaded = true;
+                    }
+                    catch
+                    {
+                        LoadedSettings = new Settings();
+                        SettingsLoaded = true;
+                    }
+
+                    reader.Close();
                 }
                 catch
                 {
@@ -76,7 +87,6 @@ namespace Battleship2pMP
                     SettingsLoaded = true;
                 }
 
-                reader.Close();
 
             }
             else
@@ -95,20 +105,27 @@ namespace Battleship2pMP
         {
             if(LoadedSettings != null)
             {
-                TextWriter writer = new StreamWriter(SettingsFilePath);
-
                 try
                 {
-                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(Settings));
+                    TextWriter writer = new StreamWriter(SettingsFilePath);
 
-                    xmlSerializer.Serialize(writer, LoadedSettings);
+                    try
+                    {
+                        XmlSerializer xmlSerializer = new XmlSerializer(typeof(Settings));
+
+                        xmlSerializer.Serialize(writer, LoadedSettings);
+                    }
+                    catch
+                    {
+
+                    }
+
+                    writer.Close();
                 }
                 catch
                 {
 
                 }
-
-                writer.Close();
             }
         }
     }

@@ -42,7 +42,7 @@ namespace Battleship2pMP.MDI_Forms
             if (MessageBox.Show("Are you sure that you want to reset all settings to their defaults?", "Reset all settings?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
 
             string LastIP = Settings.Default.LastIP;
-            Settings.LoadSettings();
+            Settings.Default = new Settings();
             Settings.Default.LastIP = LastIP;
             Settings.SaveSettings();
             LoadValuesFromSettings();
