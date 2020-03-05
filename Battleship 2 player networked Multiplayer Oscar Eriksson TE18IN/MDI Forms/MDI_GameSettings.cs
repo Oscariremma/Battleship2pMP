@@ -48,6 +48,21 @@ namespace Battleship2pMP.MDI_Forms
             LoadValuesFromSettings();
         }
 
+        /// <summary>
+        /// Check that the number of ships tiles can fit on the GameBoard
+        /// </summary>
+        bool ShipsFit()
+        {
+            if(num_Carriers.Value * 5 + num_Battleships.Value * 4 + num_Cruisers.Value * 3 + num_Destroyers.Value * 2 + num_Submarines.Value <= 81)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
 
         private void Btn_Back_Click(object sender, EventArgs e)
         {
@@ -55,6 +70,10 @@ namespace Battleship2pMP.MDI_Forms
             if (num_Carriers.Value + num_Battleships.Value + num_Cruisers.Value + num_Destroyers.Value + num_Submarines.Value == 0)
             {
                 MessageBox.Show("You need to have at minimum 1 ship", "No Ships", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }else if (!ShipsFit())
+            {
+                MessageBox.Show("The entered number of ships won't fit on the game board!", "To many ships", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 

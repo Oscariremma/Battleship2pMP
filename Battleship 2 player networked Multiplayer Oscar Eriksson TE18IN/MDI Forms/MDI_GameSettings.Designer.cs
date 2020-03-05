@@ -100,6 +100,11 @@
             // num_Carriers
             // 
             this.num_Carriers.Location = new System.Drawing.Point(229, 213);
+            this.num_Carriers.Maximum = new decimal(new int[] {
+            13,
+            0,
+            0,
+            0});
             this.num_Carriers.Name = "num_Carriers";
             this.num_Carriers.Size = new System.Drawing.Size(73, 20);
             this.num_Carriers.TabIndex = 7;
@@ -107,6 +112,11 @@
             // num_Battleships
             // 
             this.num_Battleships.Location = new System.Drawing.Point(229, 245);
+            this.num_Battleships.Maximum = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
             this.num_Battleships.Name = "num_Battleships";
             this.num_Battleships.Size = new System.Drawing.Size(73, 20);
             this.num_Battleships.TabIndex = 8;
@@ -114,6 +124,11 @@
             // num_Cruisers
             // 
             this.num_Cruisers.Location = new System.Drawing.Point(229, 278);
+            this.num_Cruisers.Maximum = new decimal(new int[] {
+            27,
+            0,
+            0,
+            0});
             this.num_Cruisers.Name = "num_Cruisers";
             this.num_Cruisers.Size = new System.Drawing.Size(73, 20);
             this.num_Cruisers.TabIndex = 9;
@@ -121,6 +136,11 @@
             // num_Destroyers
             // 
             this.num_Destroyers.Location = new System.Drawing.Point(229, 308);
+            this.num_Destroyers.Maximum = new decimal(new int[] {
+            40,
+            0,
+            0,
+            0});
             this.num_Destroyers.Name = "num_Destroyers";
             this.num_Destroyers.Size = new System.Drawing.Size(73, 20);
             this.num_Destroyers.TabIndex = 10;
@@ -128,6 +148,11 @@
             // num_Submarines
             // 
             this.num_Submarines.Location = new System.Drawing.Point(229, 338);
+            this.num_Submarines.Maximum = new decimal(new int[] {
+            81,
+            0,
+            0,
+            0});
             this.num_Submarines.Name = "num_Submarines";
             this.num_Submarines.Size = new System.Drawing.Size(73, 20);
             this.num_Submarines.TabIndex = 11;
@@ -221,9 +246,9 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(35, 340);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(167, 13);
+            this.label5.Size = new System.Drawing.Size(172, 13);
             this.label5.TabIndex = 19;
-            this.label5.Text = "Number of Destroyers (1 unit long)";
+            this.label5.Text = "Number of Submarines (1 unit long)";
             // 
             // label6
             // 
